@@ -18,7 +18,7 @@ Commit 메세지는 날짜 : 내용으로 적당히 넣을 것<br>
 
 # 현재 레포지토리를 로컬 컴퓨터로 받는 방법
 1) 소스트리를 열고 Clone 클릭
-2) 소스 경로에 https://github.com/2021-KNU-Capstone-Team1/2021_KNU_FishDic.git 입력
+2) 소스 경로에 https://github.com/2021-KNU-Capstone-Team1/FishDic.git 입력
 3) 현재 컴퓨터에서 저장 할 폴더 지정 후 클론 클릭
  
 # 로컬 컴퓨터에서 깃허브로 올리는 방법
