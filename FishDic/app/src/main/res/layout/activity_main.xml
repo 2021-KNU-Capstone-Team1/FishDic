@@ -28,13 +28,25 @@
             android:layout_height="match_parent"
             android:layout_weight="10">
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/outerMain_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                android:visibility="visible"
+                tools:visibility="visible">
+
             <TextView
-                android:id="@+id/test1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="상단 테이블 레이아웃 출력부"
-                android:textSize="36sp"
-                android:visibility="visible" />
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="Title test"
+                />
+
+            </androidx.appcompat.widget.Toolbar>
 
         </TableRow>
 
