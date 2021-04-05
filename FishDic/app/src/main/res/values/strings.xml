@@ -1,3 +1,5 @@
+<!-- 앱에서 사용 할 문자열들 정의 -->
+
 <resources>
     <string name="app_name">FishDic</string>
 </resources>

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- 메인화면 레이아웃 정의 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,13 +8,67 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <!-- 메인화면 외부 테이블 레이아웃 -->
+    <TableLayout
+        android:id="@+id/outerMain_tableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        tools:visibility="visible">
 
+        <!-- 메인화면 외부 테이블 레이아웃 : 상단 테이블 -->
+        <TableRow
+            android:id="@+id/outerMain_topTable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10">
+
+            <TextView
+                android:id="@+id/test1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상단 테이블 레이아웃 출력부"
+                android:textSize="36sp"
+                android:visibility="visible" />
+
+        </TableRow>
+
+        <!-- 메인화면 외부 테이블 레이아웃 : 가운데 테이블 -->
+        <TableRow
+            android:id="@+id/outerMain_centerTable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="70">
+
+            <TextView
+                android:id="@+id/test2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가운데 테이블 레이아웃 출력부"
+                android:textSize="36sp"
+                android:visibility="visible" />
+        </TableRow>
+
+        <!-- 메인화면 외부 테이블 레이아웃 : 하단 테이블 -->
+        <TableRow
+            android:id="@+id/outerMain_bottomTable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="20">
+
+            <TextView
+                android:id="@+id/test3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="하단 테이블 레이아웃 출력부"
+                android:textSize="36sp"
+                android:visibility="visible" />
+        </TableRow>
+
+    </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

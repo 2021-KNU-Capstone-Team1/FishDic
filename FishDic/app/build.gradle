@@ -4,14 +4,14 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.2" //Failed to find Build Tools revision 오류가 날 경우 이 부분을 SDKManager에 들어가서 현재 설치 된 Build-Tools 버전으로 변경하거나, 해당 버전에 맞는 Build-Tools을 설치해야 함
 
     defaultConfig {
         applicationId "com.knu.fishdic"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion 16 //최소 실행 SDK 버전
+        targetSdkVersion 30 //타겟 SDK 버전
         versionCode 1
-        versionName "1.0"
+        versionName "1.0" //앱 버전
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,7 +28,7 @@ android {
     }
 }
 
-dependencies {
+dependencies { //의존성
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.1.0'
