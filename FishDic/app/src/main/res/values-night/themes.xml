@@ -1,5 +1,0 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- 앱 테마 관련 정의 : 사용 안함-->
-    <style name="Theme.FishDic" parent="Theme.AppCompat.Light.NoActionBar">
-    </style>
-</resources>
