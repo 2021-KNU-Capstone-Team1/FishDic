@@ -8,9 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/icon_96x96"
         android:supportsRtl="true">
+
         <!-- 시작 액티비티를 스플래시로 변경 -->
         <activity
-            android:name=".InitManager"
+            android:name=".manager.InitManager"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

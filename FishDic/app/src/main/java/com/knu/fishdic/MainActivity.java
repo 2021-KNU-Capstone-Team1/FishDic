@@ -3,6 +3,7 @@ package com.knu.fishdic;
 import android.app.Activity;
 import android.os.Bundle;
 
+// 메인 화면 액티비티 정의
 
 public class MainActivity extends Activity {
 

@@ -10,7 +10,7 @@
 
     <!-- 도감 외부 테이블 레이아웃 -->
     <TableLayout
-        android:id="@+id/outerDic_tableLayout"
+        android:id="@+id/outerDeniedFish_tableLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
@@ -18,19 +18,18 @@
 
         <!-- 도감 외부 테이블 레이아웃 : 상단 테이블 -->
         <TableRow
-            android:id="@+id/outerDic_topTable"
+            android:id="@+id/outerDeniedFish_topTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="10">
 
             <!-- 상단 툴바 -->
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/outerDic_toolBar"
+                android:id="@+id/outerDeniedFish_toolBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@color/logo"
-                android:gravity="top|left"
                 android:visibility="visible"
                 tools:visibility="visible">
 
@@ -39,21 +38,26 @@
                     android:id="@+id/innerDic_toolBar_vertical_linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <!-- 상단 툴바 : 가로 선형 레이아웃 1 -->
                     <LinearLayout
                         android:id="@+id/innerDic_toolBar_horizontal_linearLayout1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
                         <ImageButton
                             android:id="@+id/back_imageButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/logo"
-                            android:padding="20dp"
+                            android:paddingTop="20dp"
+                            android:paddingRight="20dp"
                             android:src="@drawable/back_to_40x40"
                             android:visibility="visible"
                             tools:visibility="visible" />
@@ -62,11 +66,12 @@
                             android:id="@+id/dic_textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingTop="25dp"
+                            android:paddingTop="20dp"
                             android:text="@string/dic"
                             android:textColor="@color/white"
                             android:textSize="24sp"
-                            android:visibility="visible" />
+                            android:visibility="visible"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
                     <!-- 상단 툴바 : 가로 선형 레이아웃 2 -->
@@ -74,13 +79,17 @@
                         android:id="@+id/innerDic_toolBar_horizontal_linearLayout2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/search_imageView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="20dp"
+                            android:paddingTop="20dp"
+                            android:paddingRight="20dp"
+                            android:paddingBottom="20dp"
                             android:visibility="visible"
                             app:srcCompat="@drawable/search_40x40"
                             tools:visibility="visible" />
@@ -90,10 +99,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:duplicateParentState="false"
-                            android:gravity="center"
-                            android:editable="true"
                             android:ems="15"
+                            android:gravity="center"
                             android:hint="@string/enter_name"
+                            android:importantForAutofill="no"
                             android:inputType="textPersonName"
                             android:padding="20dp"
                             android:textAllCaps="false"
@@ -101,27 +110,26 @@
                             android:textColorHint="@color/white"
                             android:visibility="visible"
                             tools:visibility="visible" />
-
                     </LinearLayout>
-
                 </LinearLayout>
             </androidx.appcompat.widget.Toolbar>
-
-
         </TableRow>
 
-        <!-- 메인화면 외부 테이블 레이아웃 : 가운데 테이블 -->
+        <!-- 도감 외부 테이블 레이아웃 : 가운데 테이블 -->
         <TableRow
-            android:id="@+id/outerDic_centerTable"
+            android:id="@+id/outerDeniedFish_centerTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="99" >
+            android:layout_weight="90" >
 
             <ListView
+                android:id="@+id/deniedFish_listView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="visible"
+                tools:visibility="visible" />
         </TableRow>
-
 
     </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
