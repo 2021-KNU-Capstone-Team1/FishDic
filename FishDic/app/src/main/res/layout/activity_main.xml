@@ -64,7 +64,7 @@
 
             <!-- 메인화면 내부 하단 버튼을 위한 레이아웃 -->
             <LinearLayout
-                android:id="@+id/innerMain_imageButtons_linearLayout"
+                android:id="@+id/innerMain_bottomTable_linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="20dp"

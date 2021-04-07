@@ -1,9 +1,11 @@
 <!-- 앱에서 사용 할 문자열들 정의 -->
 <resources>
     <string name="app_name">FishDic</string>
-    <string name="fish_dic">어류 도감</string>
+    <string name="dic">어류 도감</string>
     <string name="denied_fish">이달의 금어기</string>
     <string name="fish_identification">어류 판별</string>
-    <string name="parasite_dic">기생충 정보</string>
+    <string name="parasite">기생충 정보</string>
     <string name="help">이용가이드</string>
+
+    <string name="enter_name">이름 입력</string>
 </resources>
