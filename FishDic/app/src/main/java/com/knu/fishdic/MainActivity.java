@@ -11,7 +11,5 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
         setContentView(R.layout.activity_main);
-
-
     }
 }

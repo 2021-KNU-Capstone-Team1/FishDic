@@ -14,11 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
         tools:visibility="visible">
 
         <!-- 메인화면 외부 테이블 레이아웃 : 상단 테이블 -->
@@ -26,24 +21,28 @@
             android:id="@+id/outerMain_topTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="10">
+            android:layout_weight="5">
 
+            <!-- 상단 툴바 -->
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/outerMain_toolbar"
+                android:id="@+id/outerMain_toolBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:background="@color/logo"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="?attr/actionBarTheme"
                 android:visibility="visible"
                 tools:visibility="visible">
 
-                <TextView
+                <ImageButton
+                    android:id="@+id/menu_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Title test"
-                    android:textSize="20dp" />
+                    android:adjustViewBounds="false"
+                    android:background="@color/logo"
+                    android:src="@drawable/menu_40x40"
+                    android:visibility="visible"
+                    tools:visibility="visible" />
+
 
             </androidx.appcompat.widget.Toolbar>
 
@@ -54,31 +53,69 @@
             android:id="@+id/outerMain_centerTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="70">
-
-            <TextView
-                android:id="@+id/test2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="가운데 테이블 레이아웃 출력부"
-                android:textSize="36sp"
-                android:visibility="visible" />
-        </TableRow>
+            android:layout_weight="85"/>
 
         <!-- 메인화면 외부 테이블 레이아웃 : 하단 테이블 -->
         <TableRow
             android:id="@+id/outerMain_bottomTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="20">
+            android:layout_weight="10">
 
-            <TextView
-                android:id="@+id/test3"
-                android:layout_width="wrap_content"
+            <!-- 메인화면 내부 하단 버튼을 위한 레이아웃 -->
+            <LinearLayout
+                android:id="@+id/innerMain_imageButtons_linearLayout"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="하단 테이블 레이아웃 출력부"
-                android:textSize="36sp"
-                android:visibility="visible" />
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:padding="20dp">
+
+                <!-- 메인화면 내부 하단 버튼 -->
+                <ImageButton
+                    android:id="@+id/dic_imageButton"
+                    style="@style/Widget.AppCompat.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:src="@drawable/icon_40x40" />
+
+                <ImageButton
+                    android:id="@+id/deniedFish_imageButton"
+                    style="@style/Widget.AppCompat.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:src="@drawable/denied_fish_40x40" />
+
+                <ImageButton
+                    android:id="@+id/fishIden_imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:src="@drawable/camera_40x40" />
+
+                <ImageButton
+                    android:id="@+id/parasite_imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:src="@drawable/parasite_40x40" />
+
+                <ImageButton
+                    android:id="@+id/help_imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:src="@drawable/help_40x40" />
+            </LinearLayout>
+
         </TableRow>
 
     </TableLayout>
