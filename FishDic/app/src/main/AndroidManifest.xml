@@ -11,7 +11,7 @@
 
         <!-- 시작 액티비티를 스플래시로 변경 -->
         <activity
-            android:name=".manager.InitManager"
+            android:name=".SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -25,9 +25,11 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".DicActivity" />
+        <activity android:name=".DeniedFishActivity" />
+        <activity android:name=".FishDetailActivity" />
     </application>
 </manifest>

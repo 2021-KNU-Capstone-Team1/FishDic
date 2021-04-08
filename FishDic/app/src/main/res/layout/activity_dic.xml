@@ -95,7 +95,7 @@
                             tools:visibility="visible" />
 
                         <EditText
-                            android:id="@+id/search_plainText"
+                            android:id="@+id/search_editText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:duplicateParentState="false"

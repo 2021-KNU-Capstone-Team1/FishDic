@@ -21,7 +21,7 @@
             android:id="@+id/outerMain_topTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5">
+            android:layout_weight="1">
 
             <!-- 상단 툴바 -->
             <androidx.appcompat.widget.Toolbar
@@ -52,14 +52,14 @@
             android:id="@+id/outerMain_centerTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="85"/>
+            android:layout_weight="94"/>
 
         <!-- 메인화면 외부 테이블 레이아웃 : 하단 테이블 -->
         <TableRow
             android:id="@+id/outerMain_bottomTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="10">
+            android:layout_weight="5">
 
             <!-- 메인화면 내부 하단 버튼을 위한 레이아웃 -->
             <LinearLayout
