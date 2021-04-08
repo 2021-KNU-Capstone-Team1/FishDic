@@ -34,7 +34,7 @@
                 tools:visibility="visible">
 
                 <ImageButton
-                    android:id="@+id/menu_imageButton"
+                    android:id="@+id/main_menu_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="20dp"
@@ -73,7 +73,7 @@
 
                 <!-- 메인화면 내부 하단 버튼 -->
                 <ImageButton
-                    android:id="@+id/dic_imageButton"
+                    android:id="@+id/main_dic_imageButton"
                     style="@style/Widget.AppCompat.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -82,7 +82,7 @@
                     android:src="@drawable/icon_40x40" />
 
                 <ImageButton
-                    android:id="@+id/deniedFish_imageButton"
+                    android:id="@+id/main_deniedFish_imageButton"
                     style="@style/Widget.AppCompat.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -91,7 +91,7 @@
                     android:src="@drawable/denied_fish_40x40" />
 
                 <ImageButton
-                    android:id="@+id/fishIdentification_imageButton"
+                    android:id="@+id/main_fishIdentification_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -99,7 +99,7 @@
                     android:src="@drawable/camera_40x40" />
 
                 <ImageButton
-                    android:id="@+id/parasite_imageButton"
+                    android:id="@+id/main_parasite_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -107,7 +107,7 @@
                     android:src="@drawable/parasite_40x40" />
 
                 <ImageButton
-                    android:id="@+id/help_imageButton"
+                    android:id="@+id/main_help_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
