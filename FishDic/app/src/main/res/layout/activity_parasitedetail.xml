@@ -97,7 +97,7 @@
                     android:layout_height="100dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:src="@drawable/test_Parasite_image"
+                    android:src="@drawable/test_parasite_image"
                     android:scaleType = "fitXY"
                     android:layout_gravity="center"/>
                     <!-- 여기 일단 보여주는 형식으로 테스트 이미지 삽입 + 사진 사이즈 조정도 필요할듯-->

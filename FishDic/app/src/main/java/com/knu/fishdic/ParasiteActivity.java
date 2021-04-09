@@ -13,14 +13,14 @@ public class ParasiteActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
-        setContentView(R.layout.activity_deniedfish);
+        setContentView(R.layout.activity_parasite);
 
         setComponentsInteraction();
     }
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
     {
-        parasite_back_imageButton = (ImageButton) findViewById(R.id. parasite_back_imageButton);
+        parasite_back_imageButton = (ImageButton) findViewById(R.id.parasite_back_imageButton);
 
         parasite_back_imageButton.setOnClickListener(v ->
         {

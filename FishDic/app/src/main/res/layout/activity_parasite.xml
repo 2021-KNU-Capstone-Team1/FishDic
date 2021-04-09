@@ -78,7 +78,7 @@
 
         <!-- 이달의 금어기 외부 테이블 레이아웃 : 가운데 테이블 -->
         <TableRow
-            android:id="@+id/outerparasite_centerTable"
+            android:id="@+id/outerParasite_centerTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="90" >

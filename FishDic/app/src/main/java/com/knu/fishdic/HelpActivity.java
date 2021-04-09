@@ -13,7 +13,7 @@ public class HelpActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
-        setContentView(R.layout.activity_deniedfish);
+        setContentView(R.layout.activity_help);
 
         setComponentsInteraction();
     }

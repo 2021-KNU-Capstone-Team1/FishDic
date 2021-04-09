@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        main_parasite_imageButton.setOnClickListener(new View.OnClickListener(){                    //기생충 화면으로 넘어가는 클릭 리스너
+        main_parasite_imageButton.setOnClickListener(new View.OnClickListener(){                    //기생충 화면으로 넘어가
             public void onClick(View v){
                 Intent intent = new Intent(getApplicationContext(), ParasiteActivity.class);
                 startActivity(intent);
