@@ -9,4 +9,5 @@
 
     <string name="enter_name">이름 입력</string>
     <string name="fish_detail">어류 상세 정보</string>
+    <string name="parasite_derail">기생충 상세 정보</string>
 </resources>

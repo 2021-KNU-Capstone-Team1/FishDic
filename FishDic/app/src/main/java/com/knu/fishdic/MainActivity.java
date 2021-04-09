@@ -52,16 +52,16 @@ public class MainActivity extends Activity {
             }
         });
 
-        main_parasite_imageButton.setOnClickListener(new View.OnClickListener(){                    //기생충 화면으로 넘어가야 하는데 아직 없어서 금어기로 연결해두었음 수정필요
+        main_parasite_imageButton.setOnClickListener(new View.OnClickListener(){                    //기생충 화면으로 넘어가는 클릭 리스너
             public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), DeniedFishActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ParasiteActivity.class);
                 startActivity(intent);
             }
         });
 
-        main_help_imageButton.setOnClickListener(new View.OnClickListener(){                        //도움 화면으로 넘어가야 하는데 아직 없어서 금어기로 연결해 두었음 수정필요
+        main_help_imageButton.setOnClickListener(new View.OnClickListener(){                        //도움 화면으로 넘어가는 클릭 리스너
             public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), DeniedFishActivity.class);
+                Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
                 startActivity(intent);
             }
         });
