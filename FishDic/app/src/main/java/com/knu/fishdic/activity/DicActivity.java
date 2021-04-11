@@ -1,9 +1,11 @@
-package com.knu.fishdic;
+package com.knu.fishdic.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import com.knu.fishdic.R;
 
 // 도감 화면 액티비티 정의
 

@@ -1,9 +1,11 @@
-package com.knu.fishdic;
+package com.knu.fishdic.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.knu.fishdic.R;
 
 // 스플래시 스크린 출력을 위한 액티비티 정의
 

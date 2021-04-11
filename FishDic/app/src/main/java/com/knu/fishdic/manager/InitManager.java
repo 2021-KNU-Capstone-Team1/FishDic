@@ -4,8 +4,8 @@ package com.knu.fishdic.manager;
 
 import android.content.Context;
 
+
 public class InitManager {
-    public static DBManager loadDataBase(Context context) { //DB 로드
-        return new DBManager(context);
-    }
+   // public static DBManager loadDataBase(Context context) { //DB 로드
+       // return new DBManager(context);
 }

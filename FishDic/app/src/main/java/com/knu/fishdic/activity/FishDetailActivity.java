@@ -1,8 +1,10 @@
-package com.knu.fishdic;
+package com.knu.fishdic.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageButton;
+
+import com.knu.fishdic.R;
 
 // 어류 상세정보 화면 액티비티 정의
 

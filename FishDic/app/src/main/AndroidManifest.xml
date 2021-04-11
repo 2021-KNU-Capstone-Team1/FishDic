@@ -7,11 +7,13 @@
         android:icon="@drawable/icon_96x96"
         android:label="@string/app_name"
         android:roundIcon="@drawable/icon_96x96"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:name=".FishDic"
+        >
 
         <!-- 시작 액티비티를 스플래시로 변경 -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -21,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -30,27 +32,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DicActivity"
+            android:name=".activity.DicActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".DeniedFishActivity"
+            android:name=".activity.DeniedFishActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".FishDetailActivity"
+            android:name=".activity.FishDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".HelpActivity"
+            android:name=".activity.HelpActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".ParasiteActivity"
+            android:name=".activity.ParasiteActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".ParasiteDetailActivity"
+            android:name=".activity.ParasiteDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>

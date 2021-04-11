@@ -1,10 +1,13 @@
-package com.knu.fishdic;
+package com.knu.fishdic.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+
+import com.knu.fishdic.FishDic;
+import com.knu.fishdic.R;
 
 // 메인 화면 액티비티 정의
 
@@ -34,14 +37,14 @@ public class MainActivity extends Activity {
 
         main_dic_imageButton.setOnClickListener(new View.OnClickListener(){                         //도감 화면으로 넘어가는 클릭 리스너
             public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), DicActivity.class);
+                Intent intent = new Intent(FishDic.globalContext, DicActivity.class);
                 startActivity(intent);
             }
         });
 
         main_deniedFish_imageButton.setOnClickListener(new View.OnClickListener(){                  //금어기 화면으로 넘어가는 클릭 리스너
             public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), DeniedFishActivity.class);
+                Intent intent = new Intent(FishDic.globalContext, DeniedFishActivity.class);
                 startActivity(intent);
             }
         });
@@ -54,14 +57,14 @@ public class MainActivity extends Activity {
 
         main_parasite_imageButton.setOnClickListener(new View.OnClickListener(){                    //기생충 화면으로 넘어가
             public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), ParasiteActivity.class);
+                Intent intent = new Intent(FishDic.globalContext, ParasiteActivity.class);
                 startActivity(intent);
             }
         });
 
         main_help_imageButton.setOnClickListener(new View.OnClickListener(){                        //도움 화면으로 넘어가는 클릭 리스너
             public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
+                Intent intent = new Intent(FishDic.globalContext, HelpActivity.class);
                 startActivity(intent);
             }
         });
