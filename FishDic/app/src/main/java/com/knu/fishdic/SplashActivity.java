@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.knu.fishdic.manager.InitManager;
-
 // 스플래시 스크린 출력을 위한 액티비티 정의
 
 public class SplashActivity extends Activity {
@@ -16,7 +14,7 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
 
         /*** 앱 로딩 시 필요한 작업 수행 후 MainActivity 실행 ***/
-        InitManager.doSomeInitProc();
+       // InitManager.loadDataBase();
 
         Handler handler = new Handler();
         handler.postDelayed(() -> {
