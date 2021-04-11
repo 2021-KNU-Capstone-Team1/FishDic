@@ -21,11 +21,13 @@ public class DBManager extends SQLiteOpenHelper {
 
     private enum DB_STATE { //DB 상태 정의
         INIT, //초기 상태
-        OLD, //구 버전
+        OUT_DATED, //구 버전
         UPDATED //갱신 된 버전
     };
 
-    public DBManager(Context context) {
+    public DBManager(//Context context) {
+        /// 전역 콘텍스트 데이터들을 참조할 수 있게 Application을 상속받는 클래스를 만든다?
+
         super(context, DB_NAME, null, 1); //SQLiteOpenHelper(context, name, factory, version)
         DB_PATH = "/data/data/" + context.getPackageName() + "/databases/"; //안드로이드의 DB 저장 경로는 "/data/data/앱 이름/databases/"
         this.context = context;
