@@ -24,7 +24,7 @@ public class HelpActivity extends Activity {
     {
         help_back_imageButton = (ImageButton) findViewById(R.id.help_back_imageButton);
 
-        help_back_imageButton.setOnClickListener(v ->
+        help_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
         {
             onBackPressed();
         });

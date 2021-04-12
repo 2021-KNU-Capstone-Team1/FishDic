@@ -2,6 +2,8 @@ package com.knu.fishdic.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -27,9 +29,23 @@ public class DicActivity extends Activity {
         dic_back_imageButton = (ImageButton) findViewById(R.id.dic_back_imageButton);
         dic_search_editText = (EditText) findViewById(R.id.dic_search_editText);
 
-        dic_back_imageButton.setOnClickListener(v ->
+        dic_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
         {
             onBackPressed();
+        });
+
+        dic_search_editText.addTextChangedListener(new TextWatcher() { //검색 창에 대한 텍스트 변경 리스너
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { //텍스트 변경 시마다 호출
+            }
         });
     }
 }

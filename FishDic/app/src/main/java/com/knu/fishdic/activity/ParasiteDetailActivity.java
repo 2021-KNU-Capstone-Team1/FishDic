@@ -24,7 +24,7 @@ public class ParasiteDetailActivity extends Activity {
     {
         parasiteDetail_back_imageButton = (ImageButton) findViewById(R.id.parasiteDetail_back_imageButton);
 
-        parasiteDetail_back_imageButton.setOnClickListener(v ->
+        parasiteDetail_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
         {
             onBackPressed();
         });

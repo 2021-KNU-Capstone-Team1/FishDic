@@ -24,7 +24,7 @@ public class DeniedFishActivity extends Activity {
     {
         deniedFIsh_back_imageButton = (ImageButton) findViewById(R.id.deniedFish_back_imageButton);
 
-        deniedFIsh_back_imageButton.setOnClickListener(v ->
+        deniedFIsh_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
         {
             onBackPressed();
         });

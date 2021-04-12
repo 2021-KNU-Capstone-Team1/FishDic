@@ -24,7 +24,7 @@ public class FishDetailActivity extends Activity {
     {
         fishDetail_back_imageButton = (ImageButton) findViewById(R.id.fishDetail_back_imageButton);
 
-        fishDetail_back_imageButton.setOnClickListener(v ->
+        fishDetail_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
         {
             onBackPressed();
         });
