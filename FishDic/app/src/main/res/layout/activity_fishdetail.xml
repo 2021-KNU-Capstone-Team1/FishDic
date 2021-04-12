@@ -35,7 +35,7 @@
 
                 <!-- 상단 툴바 : 세로 선형 레이아웃 -->
                 <LinearLayout
-                    android:id="@+id/innerDic_toolBar_vertical_linearLayout"
+                    android:id="@+id/innerFishDetail_toolBar_vertical_linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -44,7 +44,7 @@
 
                     <!-- 상단 툴바 : 가로 선형 레이아웃 1 -->
                     <LinearLayout
-                        android:id="@+id/innerDic_toolBar_horizontal_linearLayout1"
+                        android:id="@+id/innerFishDetail_toolBar_horizontal_linearLayout1"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="1"

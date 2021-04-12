@@ -10,7 +10,7 @@
 
     <!-- 도감 외부 테이블 레이아웃 -->
     <TableLayout
-        android:id="@+id/outerDeniedFish_tableLayout"
+        android:id="@+id/outerDic_tableLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
@@ -18,14 +18,14 @@
 
         <!-- 도감 외부 테이블 레이아웃 : 상단 테이블 -->
         <TableRow
-            android:id="@+id/outerDeniedFish_topTable"
+            android:id="@+id/outerDic_topTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="10">
 
             <!-- 상단 툴바 -->
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/outerDeniedFish_toolBar"
+                android:id="@+id/outerDic_toolBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -117,18 +117,18 @@
 
         <!-- 도감 외부 테이블 레이아웃 : 가운데 테이블 -->
         <TableRow
-            android:id="@+id/outerDeniedFish_centerTable"
+            android:id="@+id/outerDic_centerTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="90" >
 
-            <ListView
-                android:id="@+id/dic_deniedFish_listView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/dic_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:visibility="visible"
-                tools:visibility="visible" />
+                />
         </TableRow>
 
     </TableLayout>

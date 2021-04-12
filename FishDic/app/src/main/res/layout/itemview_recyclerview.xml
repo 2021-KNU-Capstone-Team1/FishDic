@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- 이달의 금어기, 도감에 사용되는 RecyclerView를 위한 ItemView 정의 : 수정예정 임시로 추가함 -->
+<!-- 이달의 금어기, 도감에 사용되는 RecyclerView를 위한 ItemView 정의 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="20dp"
     android:gravity="center_vertical"
     android:layout_marginBottom="8dp"
     android:background="@android:color/white">
 
     <!-- 각 어류 이미지 출력 위한 ImageView -->
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:id="@+id/innerRecyclerView_imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/icon_96x96"/>
 
     <!-- ItemView 내부 선형 레이아웃 -->
@@ -21,28 +22,30 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <!-- 제목 -->
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/innerRecyclerView_title_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:text="제목입니다"
-            android:textSize="15sp"
+            android:text="제목"
             android:textColor="@android:color/black"
-            android:textStyle="bold"/>
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <!-- 내용 -->
+        <!-- 도감의 경우 생물분류,
+        이달의 금어기의 경우 금지체장, 금지체중, 수심, 특별금지구역, 금지시작기간, 금지종료기간 -->
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/innerRecyclerView_content_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:text="내용 추가 예정\n1234"
-            android:textSize="13sp"
-            android:textColor="@android:color/darker_gray"/>
-        </LinearLayout>
+            android:text="test"
+            android:textColor="@android:color/black"
+            android:textSize="10dp" />
+    </LinearLayout>
 </LinearLayout>

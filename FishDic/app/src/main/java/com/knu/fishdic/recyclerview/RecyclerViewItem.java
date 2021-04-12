@@ -1,9 +1,11 @@
-package com.knu.fishdic;
+package com.knu.fishdic.recyclerview;
 
-public class RecyclerItem {
-    private String title;
-    private String content;
-    private int resId;
+// 이달의 금어기, 도감에 사용되는 RecyclerView를 위한 RecyclerViewItem 정의
+
+public class RecyclerViewItem {
+    private int resId; //이미지 아이디
+    private String title; //제목
+    private String content; //내용
 
     public String getTitle() {
         return title;

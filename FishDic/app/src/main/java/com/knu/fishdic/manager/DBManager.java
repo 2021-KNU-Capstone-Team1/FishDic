@@ -1,7 +1,6 @@
 package com.knu.fishdic.manager;
 
 // 이달의 금어기, 도감 관련 모든 기능을 위한 DBManager 정의
-// 일회성 개체로서 DBManager에 의해 이달의 금어기, 도감 관련 모든 기능을 위하여 데이터를 받아온다.
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
