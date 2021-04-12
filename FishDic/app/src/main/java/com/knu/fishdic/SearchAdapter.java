@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
-
+// 임시파일임
+/*
 public class SearchAdapter extends BaseAdapter {
 
     private Context context;
@@ -58,4 +59,4 @@ public class SearchAdapter extends BaseAdapter {
     class ViewHolder {
         public TextView label;
     }
-}
+}*/

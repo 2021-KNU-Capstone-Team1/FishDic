@@ -9,6 +9,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+
+// 임시파일임
+/*
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
     //private ArrayList<RecyclerItem> listItem = new ArrayList<>();
@@ -56,3 +59,4 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         }
     }
 }
+*/

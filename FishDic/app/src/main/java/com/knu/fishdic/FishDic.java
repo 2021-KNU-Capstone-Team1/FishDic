@@ -3,11 +3,14 @@ package com.knu.fishdic;
 import android.app.Application;
 import android.content.Context;
 
+import com.knu.fishdic.manager.DBManager;
+
 // 전역 앱 상태 관리, 공용 컴포넌트 사용을 위한 FishDic 정의
 // https://developer.android.com/reference/android/app/Application
 
 public class FishDic extends Application {
     public static Context globalContext; //전역 앱 Context (앱 실행 후 종료 시 까지 유지)
+    public static DBManager dbManager; //전역 DBManager
     //public static ArrayList<RecyclerItem> dicItemArray = null; //도감에 사용 할 데이터 배열
     // 이달의 금어기는 도감에 사용 할 데이터 배열에서 시스템 현재 시간을 기준으로 뽑아서 출력
     
@@ -17,11 +20,13 @@ public class FishDic extends Application {
     @Override
     public void onCreate() { //최초 앱 가동 시
         super.onCreate();
-        this.globalContext = getApplicationContext();
+        globalContext = getApplicationContext();
+        dbManager = null;
     }
 
     @Override
     public void onTerminate() { //앱 종료 시
         super.onTerminate();
+        dbManager.close();
     }
 }
