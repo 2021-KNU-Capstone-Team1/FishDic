@@ -1,6 +1,7 @@
 package com.knu.fishdic.manager;
 
-// 이달의 금어기, 도감관련 모든 기능을 위한 DBManager 정의
+// 이달의 금어기, 도감 관련 모든 기능을 위한 DBManager 정의
+// 일회성 개체로서 DBManager에 의해 이달의 금어기, 도감 관련 모든 기능을 위하여 데이터를 받아온다.
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -14,8 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class DBManager extends SQLiteOpenHelper {
-    public SQLiteDatabase sqlDB; //DB 접근 위한 SQLiteDatabase 객체
-    
+    private SQLiteDatabase sqlDB; //DB 접근 위한 SQLiteDatabase 객체
     private static String DB_PATH = ""; //DB 경로
     private static final String DB_NAME = "FishDicDB.db"; //DB 이름
 
@@ -23,23 +23,24 @@ public class DBManager extends SQLiteOpenHelper {
         INIT, //초기 상태
         OUT_DATED, //구 버전
         UPDATED //갱신 된 버전
-    };
+    }
 
     public DBManager() {
         super(FishDic.globalContext, DB_NAME, null, 1); //SQLiteOpenHelper(context, name, factory, version)
         DB_PATH = "/data/data/" + FishDic.globalContext.getPackageName() + "/databases/"; //안드로이드의 DB 저장 경로는 "/data/data/앱 이름/databases/"
 
-       switch(chkDB()) //DB 상태 확인
-       {
-           case INIT: //초기 상태일 경우
-               copyDB(); //assets으로부터 시스템으로 DB 복사
-               break;
+        switch (this.chkDB()) //DB 상태 확인
+        {
+            case INIT: //초기 상태일 경우
+                this.copyDB(); //assets으로부터 시스템으로 DB 복사
 
-           default:
-               break;
-       }
+                break;
 
-       this.sqlDB = this.getReadableDatabase(); //읽기 전용 DB 로드
+            default:
+                break;
+        }
+
+        this.sqlDB = this.getReadableDatabase(); //읽기 전용 DB 로드
     }
 
     @Override
@@ -52,26 +53,29 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase sqlDB) {
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    public void onOpen(SQLiteDatabase sqlDB) {
+        super.onOpen(sqlDB);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase sqlDB, int oldVersion, int newVersion) {
     }
 
     private DB_STATE chkDB() {  //기존 DB 확인
         File dbFile = new File(DB_PATH + DB_NAME);
 
+        /*
         //나중에 DB 버전 확인 한다면 코드 수정
-        if(dbFile.exists())
+        if (dbFile.exists())
             return DB_STATE.UPDATED;
 
         return DB_STATE.INIT;
+        */
+        return DB_STATE.INIT; //디버그 위해 매 번 새로 복사
     }
 
     private void copyDB() { //assets으로부터 시스템으로 DB 복사
@@ -101,6 +105,7 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public void getDataFromDataBase() {
+    public void getDataFromDB() { //DB로부터 모든 데이터 반환
+
     }
 }
