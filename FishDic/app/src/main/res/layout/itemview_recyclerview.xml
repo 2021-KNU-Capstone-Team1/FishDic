@@ -37,8 +37,6 @@
             android:textStyle="bold" />
 
         <!-- 내용 -->
-        <!-- 도감의 경우 생물분류,
-        이달의 금어기의 경우 금지체장, 금지체중, 수심, 특별금지구역, 금지시작기간, 금지종료기간 -->
         <TextView
             android:id="@+id/innerRecyclerView_content_textView"
             android:layout_width="wrap_content"

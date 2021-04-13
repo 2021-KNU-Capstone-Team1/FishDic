@@ -1,16 +1,7 @@
 package com.knu.fishdic.recyclerview;
 
-import android.widget.BaseAdapter;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import java.util.List;
-
 // 도감에 사용되는 검색 기능을 위한 SearchAdapter 정의
-// 임시파일임
+
 /*
 public class SearchAdapter extends BaseAdapter {
 

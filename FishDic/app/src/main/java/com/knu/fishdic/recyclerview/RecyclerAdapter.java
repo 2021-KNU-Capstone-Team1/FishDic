@@ -16,12 +16,20 @@ import java.util.ArrayList;
 // 이달의 금어기, 도감에 사용되는 RecyclerView를 위한 어댑터 정의
 // https://developer.android.com/jetpack/androidx/releases/recyclerview
 
+/***
+ * 어댑터는 보여지는 뷰와 그 뷰에 올릴 데이터를 연결하는 일종의 다리 역할을 하는 객체
+ * ---
+ * RecyclerView는 특정 View Group이 반복되는 구조로서
+ * RecyclerView의 각 리스트는 View Holder로 나타내어지고, View Holder를 원하는대로 추가한다.
+ * View Holder는 RecyclerView에 담기는 실제 데이터 집합(View Group)으로 하나의 리스트를 구성한다.
+ ***/
+
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
-    private ArrayList<RecyclerViewItem> listItem = new ArrayList<>();
+    private ArrayList<RecyclerViewItem> itemList = new ArrayList<>();
 
     @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { //뷰 홀더 생성 시 호출
         //https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#onCreateViewHolder(android.view.ViewGroup,%20int)
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.itemview_recyclerview, parent, false);
@@ -29,19 +37,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) { //해당 position에 데이터 표시위해 호출
         //https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#onBindViewHolder(VH,%20int)
 
-        holder.onBind(listItem.get(position));
+        holder.onBind(this.itemList.get(position));
     }
 
     @Override
     public int getItemCount() { //item의 총 개수 반환
-        return listItem.size();
+        return this.itemList.size();
     }
 
-    void addItem(RecyclerViewItem Item) { // 외부에서 item 추가
-        listItem.add(Item);
+   public void addItem(RecyclerViewItem Item) { //외부에서 item 추가
+        this.itemList.add(Item);
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
