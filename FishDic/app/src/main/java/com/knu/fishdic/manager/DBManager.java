@@ -126,7 +126,7 @@ public class DBManager extends SQLiteOpenHelper {
     public void addFishDicListFromDB(RecyclerAdapter recyclerAdapter) { //DB로부터 모든 어류 데이터 추가
        // this.cursor = this.sqlDB.query(FISH_DIC_TABLE, , null, null, null, null ,null);
         while(this.cursor.moveToNext()) { //행 데이터 수만큼 반복해서 전달
-            recyclerAdapter.addItem();
+            //recyclerAdapter.addItem();    실행이 안되서 잠깐 주석처리하였음. -남진
         }
 
         //this.sqlDB.execSQL();

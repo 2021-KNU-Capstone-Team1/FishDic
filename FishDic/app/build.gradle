@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.knu.fishdic"
-        minSdkVersion 21 //최소 실행 SDK 버전
+        minSdkVersion 23 //최소 실행 SDK 버전     (21에서 23으로 수정하였음)
         targetSdkVersion 30 //타겟 SDK 버전
         versionCode 1
         versionName "1.0" //앱 버전

@@ -133,12 +133,12 @@
                     android:layout_marginRight="10dp"/>
 
                 <ImageButton
-                    android:id="@+id/main_parasite_imageButton"
+                    android:id="@+id/main_gallery_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:src="@drawable/parasite_40x40"
+                    android:src="@drawable/gallery_40x40"
                     android:layout_marginRight="10dp"/>
 
                 <ImageButton
