@@ -2,6 +2,13 @@ package com.knu.fishdic.recyclerview;
 
 // 이달의 금어기, 도감에 사용되는 RecyclerView를 위한 RecyclerViewItem 정의
 
+import android.view.MotionEvent;
+import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.knu.fishdic.FishDic;
+
 public class RecyclerViewItem {
     public enum DIC_TYPE //도감 타입 정의
     {

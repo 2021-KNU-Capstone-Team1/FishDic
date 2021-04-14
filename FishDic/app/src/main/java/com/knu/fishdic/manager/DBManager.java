@@ -31,12 +31,18 @@ public class DBManager extends SQLiteOpenHelper {
 
     private static final String FISH_DIC_QUERY = "SELECT 어류_테이블.이름, 어류_테이블.이미지, 생물분류_테이블.생물분류 FROM 어류_테이블 INNER JOIN 생물분류_테이블 ON 어류_테이블.이름 = 생물분류_테이블.이름"; //도감 출력
 
-    CursorAdapter
+    //CursorAdapter
     /***
      * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
      * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
      ***/
     //이달의 금어기 출력 (금지기간에 속하는 것과 금지기간이 정해지지 않은 것 모두 출력)
+/*
+SELECT 금어기_테이블.*, 특별_금지행정_테이블.특별_금지구역, 특별_금지행정_테이블.금지시작기간, 특별_금지행정_테이블.금지종료기간
+FROM 금어기_테이블
+	LEFT OUTER JOIN 특별_금지행정_관계_테이블 ON 금어기_테이블.이름 = 특별_금지행정_관계_테이블.이름
+	LEFT OUTER JOIN 특별_금지행정_테이블 ON 특별_금지행정_관계_테이블.특별_금지행정_ID = 특별_금지행정_테이블.특별_금지행정_ID;
+ */
 
     private enum DB_STATE { //DB 상태 정의
         INIT, //초기 상태
@@ -82,6 +88,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqlDB, int oldVersion, int newVersion) {
+        copyDB();
     }
 
     private DB_STATE getCurrentDBState() {  //기존 DB 상태 반환
@@ -124,18 +131,12 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public void getAllFishDataFromDB(RecyclerAdapter recyclerAdapter) { //DB로부터 모든 어류 데이터 반환
-       // this.cursor = this.sqlDB.query(FISH_DIC_TABLE, , null, null, null, null ,null);
-        while(this.cursor.moveToNext()) { //행 데이터 수만큼 반복해서 전달
-            //recyclerAdapter.addItem();
-        }
-
+    public Cursor getAllFishDataCursorFromDB(RecyclerAdapter recyclerAdapter) { //DB로부터 모든 어류 데이터 커서 반환
         //SELECT 어류_테이블.이름, 어류_테이블.이미지, 생물분류_테이블.생물분류 FROM 어류_테이블 INNER JOIN 생물분류_테이블 ON 어류_테이블.이름 = 생물분류_테이블.이름
         this.cursor = this.sqlDB.rawQuery(FISH_DIC_QUERY.toString(), null);
-
+        return this.cursor;
         //this.cursor.close();
     }
-
     public void addDeniedFishListFromDB(RecyclerAdapter recyclerAdapter)
     {
 
@@ -151,9 +152,10 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
-    private int getCurrentMonth() //현재 달 반환
+    private String getCurrentYearMonth() //현재 "년-달" 반환
     {
-        Calendar cal=Calendar.getInstance();
-        return cal.get(Calendar.MONTH)+1;
+        Calendar cal = Calendar.getInstance();
+        String result = String.valueOf(cal.get(Calendar.YEAR)) + "-" + String.valueOf(cal.get(Calendar.MONTH)+1); //현재 "년-달" 문자열
+        return result;
     }
 }
