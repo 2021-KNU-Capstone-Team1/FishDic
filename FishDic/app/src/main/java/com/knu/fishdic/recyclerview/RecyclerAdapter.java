@@ -3,6 +3,8 @@ package com.knu.fishdic.recyclerview;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,8 +26,45 @@ import java.util.ArrayList;
  * View Holder는 RecyclerView에 담기는 실제 데이터 집합(View Group)으로 하나의 리스트를 구성한다.
  ***/
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
-    private ArrayList<RecyclerViewItem> itemList = new ArrayList<>();
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> implements Filterable {
+    private ArrayList<RecyclerViewItem> itemList; //필터링 되지 않은 전체 목록
+    private ArrayList<RecyclerViewItem> filteredList; //검색 결과에 따라 필터링된 목록
+
+    public RecyclerAdapter() {
+        this.itemList = new ArrayList<>();
+        this.filteredList = new ArrayList<>();
+    }
+
+    @Override
+    public Filter getFilter() { //필터링 패턴으로 검색 결과를 제한하는 데 사용할 수 있는 필터를 반환
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) { //제약 조건에 따라 데이터를 필터링하기 위해 작업자 스레드에서 호출
+                String str = constraint.toString(); //사용자로부터 입력받은 문자열
+                if (str.isEmpty()) { //비어있으면 초기화
+                    if(!filteredList.isEmpty())
+                        filteredList.clear();
+                } else {
+                    for (RecyclerViewItem item : itemList) { //전체 목록에 대하여
+                        if (item.getTitle().toLowerCase().contains(str)) //어류 이름이 일치할 경우 필터링된 리스트에 추가
+                            filteredList.add(item);
+                    }
+                }
+
+                //필터링 된 결과 반환
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) { //필터링 된 결과에 따라 화면 재구성
+                filteredList = (ArrayList<RecyclerViewItem>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
 
     @NonNull
     @Override
@@ -48,16 +87,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         return this.itemList.size();
     }
 
-   public void addItem(RecyclerViewItem Item) { //외부에서 item 추가
+    public void addItem(RecyclerViewItem Item) { //외부에서 item 추가
         this.itemList.add(Item);
     }
+
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
         private ImageView innerRecyclerView_imageView; //어류 이미지 뷰
         private TextView innerRecyclerView_title_textView; //제목 텍스트 뷰
         private TextView innerRecyclerView_content_textView; //내용 텍스트 뷰
 
-        ItemViewHolder(View itemView) {
+        ItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
             innerRecyclerView_title_textView = itemView.findViewById(R.id.innerRecyclerView_title_textView);

@@ -5,10 +5,10 @@ package com.knu.fishdic.manager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.CursorAdapter;
 
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
-import com.knu.fishdic.recyclerview.RecyclerViewItem;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,8 +29,9 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String SPECIAL_PROHIBIT_ADMIN_TABLE = "특별_금지행정_테이블";
     private static final String SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE = "특별_금지행정_관계_테이블";
 
-    private static final String FISH_DIC_QUERY = "SELECT 어류_테이블.이름, 생물분류_테이블.생물분류 FROM 어류_테이블 INNER JOIN 생물분류_테이블 ON 어류_테이블.이름 = 생물분류_테이블.이름"; //도감 출력
+    private static final String FISH_DIC_QUERY = "SELECT 어류_테이블.이름, 어류_테이블.이미지, 생물분류_테이블.생물분류 FROM 어류_테이블 INNER JOIN 생물분류_테이블 ON 어류_테이블.이름 = 생물분류_테이블.이름"; //도감 출력
 
+    CursorAdapter
     /***
      * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
      * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
@@ -47,7 +48,7 @@ public class DBManager extends SQLiteOpenHelper {
         super(FishDic.globalContext, DB_NAME, null, 1); //SQLiteOpenHelper(context, name, factory, version)
         DB_PATH = "/data/data/" + FishDic.globalContext.getPackageName() + "/databases/"; //안드로이드의 DB 저장 경로는 "/data/data/앱 이름/databases/"
 
-        switch (this.chkDB()) //DB 상태 확인
+        switch (this.getCurrentDBState()) //기존 DB 상태 확인
         {
             case INIT: //초기 상태일 경우
                 this.copyDB(); //assets으로부터 시스템으로 DB 복사
@@ -83,7 +84,7 @@ public class DBManager extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqlDB, int oldVersion, int newVersion) {
     }
 
-    private DB_STATE chkDB() {  //기존 DB 확인
+    private DB_STATE getCurrentDBState() {  //기존 DB 상태 반환
         File dbFile = new File(DB_PATH + DB_NAME);
 
         /*
@@ -123,14 +124,16 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public void addFishDicListFromDB(RecyclerAdapter recyclerAdapter) { //DB로부터 모든 어류 데이터 추가
+    public void getAllFishDataFromDB(RecyclerAdapter recyclerAdapter) { //DB로부터 모든 어류 데이터 반환
        // this.cursor = this.sqlDB.query(FISH_DIC_TABLE, , null, null, null, null ,null);
         while(this.cursor.moveToNext()) { //행 데이터 수만큼 반복해서 전달
-            //recyclerAdapter.addItem();    실행이 안되서 잠깐 주석처리하였음. -남진
+            //recyclerAdapter.addItem();
         }
 
-        //this.sqlDB.execSQL();
-        this.cursor.close();
+        //SELECT 어류_테이블.이름, 어류_테이블.이미지, 생물분류_테이블.생물분류 FROM 어류_테이블 INNER JOIN 생물분류_테이블 ON 어류_테이블.이름 = 생물분류_테이블.이름
+        this.cursor = this.sqlDB.rawQuery(FISH_DIC_QUERY.toString(), null);
+
+        //this.cursor.close();
     }
 
     public void addDeniedFishListFromDB(RecyclerAdapter recyclerAdapter)
