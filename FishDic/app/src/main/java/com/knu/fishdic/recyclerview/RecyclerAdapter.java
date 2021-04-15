@@ -1,21 +1,16 @@
 package com.knu.fishdic.recyclerview;
 
-import android.content.Context;
-import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 
 import java.util.ArrayList;
@@ -33,15 +28,15 @@ import java.util.ArrayList;
 
 //implements Filterable
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
-    private ArrayList<RecyclerViewItem> itemList; //필터링 되지 않은 전체 목록
-   // private ArrayList<RecyclerViewItem> filteredList; //검색 결과에 따라 필터링된 목록
-    CursorAdapter cursorAdapter; //커서에서 위젯으로 데이터를 노출하는 어댑터
-    
-    public RecyclerAdapter(Cursor cursor) {
+    private ArrayList<RecyclerViewItem> itemList; //전체 목록
+    // private ArrayList<RecyclerViewItem> filteredList; //이름으로 검색 결과에 따라 필터링된 어류 목록
+    // CursorAdapter cursorAdapter; //커서에서 위젯으로 데이터를 노출하는 어댑터
+
+    public RecyclerAdapter() {
         this.itemList = new ArrayList<>();
         //this.filteredList = new ArrayList<>();
     }
-
+/*
     public void setCursorAdapter(Cursor cursor) { //DB 데이터 뷰에 바인딩을 위해 커서 어댑터 설정
         this.cursorAdapter = new CursorAdapter(FishDic.globalContext, cursor, 0) {
             @Override
@@ -55,6 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             }
         };
     }
+    */
 /*
     @Override
     public Filter getFilter() { //필터링 패턴으로 검색 결과를 제한하는 데 사용할 수 있는 필터를 반환
@@ -90,7 +86,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { //뷰 홀더 생성 시 호출
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { //뷰 홀더 초기화
         //https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#onCreateViewHolder(android.view.ViewGroup,%20int)
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.itemview_recyclerview, parent, false);
@@ -98,7 +94,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) { //해당 position에 데이터 표시위해 호출
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) { //뷰에 데이터 바인딩
         //https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#onBindViewHolder(VH,%20int)
 
         holder.onBind(this.itemList.get(position));
@@ -127,10 +123,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             innerRecyclerView_imageView = itemView.findViewById(R.id.innerRecyclerView_imageView);
         }
 
-        public void onBind(RecyclerViewItem recyclerViewItem) {
+        public void onBind(RecyclerViewItem recyclerViewItem) { //뷰 홀더에 데이터 바인딩
             innerRecyclerView_title_textView.setText(recyclerViewItem.getTitle());
             innerRecyclerView_content_textView.setText(recyclerViewItem.getContent());
-            innerRecyclerView_imageView.setImageResource(recyclerViewItem.getResId());
+
+            int imageLength = recyclerViewItem.getImageLength(); //이미지 배열 길이
+            if (imageLength > 0) { //이미지가 존재 할 경우만 이미지 설정
+                Bitmap bitmap = BitmapFactory.decodeByteArray(recyclerViewItem.getImage(), 0, imageLength); //DB로부터 읽어들인 이미지를 Bitmap 형식으로 변환
+                innerRecyclerView_imageView.setImageBitmap(bitmap);
+            }
+
         }
     }
 }

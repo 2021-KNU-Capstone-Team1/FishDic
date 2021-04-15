@@ -6,6 +6,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.knu.fishdic.manager.DBManager;
+import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
 // 전역 앱 상태 관리, 공용 컴포넌트 사용을 위한 FishDic 정의
 // https://developer.android.com/reference/android/app/Application
@@ -13,7 +14,11 @@ import com.knu.fishdic.manager.DBManager;
 public class FishDic extends Application {
     public static Context globalContext; //전역 앱 Context (앱 실행 후 종료 시 까지 유지)
     public static DBManager globalDBManager; //전역 DBManager
-    public static GestureDetector globalGestureDetector; //전역 제스처 및 이벤트 감지위한 개체
+    public static GestureDetector globalGestureDetector; //전역 제스처 및 이벤트 감지 위한 개체
+
+    //앱 로딩 시점에 DB로부터 바인딩 작업 수행 위한 도감, 이달의 금어기 RecyclerAdapter
+    public static RecyclerAdapter global_Dic_RecyclerAdapter;
+    public static RecyclerAdapter global_DeniedFish_RecyclerAdapter;
 
     @Override
     public void onCreate() { //최초 앱 가동 시
@@ -26,6 +31,8 @@ public class FishDic extends Application {
                 return true;
             }
         });
+
+        global_Dic_RecyclerAdapter = global_DeniedFish_RecyclerAdapter = null;
     }
 
     @Override

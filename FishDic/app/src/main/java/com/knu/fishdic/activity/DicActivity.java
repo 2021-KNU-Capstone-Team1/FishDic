@@ -4,19 +4,17 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
-import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
 // 도감 화면 액티비티 정의
 
@@ -25,9 +23,8 @@ public class DicActivity extends Activity {
     EditText dic_search_editText; //검색 창
 
     RecyclerView dic_recyclerView;
-    RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.OnItemTouchListener onItemTouchListener; //RecyclerView 내부의 아이템에 대해 터치 이벤트 발생 시 처리 위한 리스너
+    RecyclerView.OnItemTouchListener onItemTouchListener; //RecyclerView 내부의 아이템에 대해 터치 이벤트 발생 시 처리 위한 리스너
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +42,10 @@ public class DicActivity extends Activity {
 
         dic_recyclerView = (RecyclerView)findViewById(R.id.dic_recyclerView);
         dic_recyclerView.setHasFixedSize(true); //최적화를 위해서 사이즈 고정
+        dic_recyclerView.setItemAnimator(new DefaultItemAnimator());
         layoutManager = new LinearLayoutManager(this);
         dic_recyclerView.setLayoutManager(layoutManager);
-        
-        /////////////////작업중
-        //adapter = new RecyclerAdapter();
-        //dic_recyclerView.setAdapter(adapter);
+        dic_recyclerView.setAdapter(FishDic.global_Dic_RecyclerAdapter);
 
         dic_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
         {
