@@ -12,7 +12,7 @@ namespace SQLiteDBImageUpdater
     {
         public static string _targetDBPath = @"D:\FishDic\설계\DB\FishDicDB.db;"; //DB 경로
         public static string _totalImagePath = @"D:\FishDic\설계\DB\images\"; //전체 이미지 저장 경로
-        public static string _insertImageQuery = "UPDATE 어류_테이블 SET 이미지 = (@IMAGE) WHERE 이름 = (@IMAGE_NAME);";
+        public static string _updateImageQuery = "UPDATE 어류_테이블 SET 이미지 = (@IMAGE) WHERE 이름 = (@IMAGE_NAME);";
         public static long _imageCompressQuality = 75L; //이미지 압축 수준 (0 ~ 100)
 
         static void Main(string[] args)
@@ -25,7 +25,7 @@ namespace SQLiteDBImageUpdater
             int currentImageCount = 0;
 
             SQLiteConnection con = new SQLiteConnection(@"Data Source = " + _targetDBPath); //DB 연결
-            SQLiteCommand cmd = new SQLiteCommand(_insertImageQuery, con); //쿼리 명령어
+            SQLiteCommand cmd = new SQLiteCommand(_updateImageQuery, con); //쿼리 명령어
             SQLiteParameter imageParam = new SQLiteParameter("@IMAGE", DbType.Binary); //이미지 파라미터
             SQLiteParameter imageNameParam = new SQLiteParameter("@IMAGE_NAME", DbType.String); //이미지 이름 파라미터
 

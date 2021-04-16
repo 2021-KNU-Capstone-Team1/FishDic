@@ -94,6 +94,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     }
 
     @Override
+    public int getItemViewType(int position) { //뷰 재활용을 위해 position의 뷰 타입 반환
+       /***
+        * 기본적으로 해당 메소드는 어댑터에 대해 단일 보기 유형을 가정하여 0을 반환한다.
+        * 스크롤시에 정상적으로 각 뷰를 고유하게 식별하기 위해 해당 position을 반환
+        ***/
+        return position;
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) { //뷰에 데이터 바인딩
         //https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#onBindViewHolder(VH,%20int)
 

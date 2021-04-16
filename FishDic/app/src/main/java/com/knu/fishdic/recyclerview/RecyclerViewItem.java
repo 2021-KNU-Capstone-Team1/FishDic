@@ -39,13 +39,13 @@ public class RecyclerViewItem {
     }
 
     public void setImage(byte[] image) {
-        this.image = image;
+           this.image = image;
     }
 
     public int getImageLength() { //이미지 byte 배열 길이 반환
         if (this.image != null)
             return this.image.length;
-        else
+        else //할당 된 이미지가 없으면
             return 0;
     }
 }
