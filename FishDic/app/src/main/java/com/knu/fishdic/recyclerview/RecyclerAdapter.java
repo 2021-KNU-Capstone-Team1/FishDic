@@ -97,7 +97,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) { //뷰에 데이터 바인딩
         //https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#onBindViewHolder(VH,%20int)
 
-        holder.onBind(this.itemList.get(position));
+        holder.onBind(this.itemList.get(position)); //전체 목록(itemList)에 대하여 해당 position의 데이터를 뷰 홀더에 바인딩
     }
 
     @Override
