@@ -14,7 +14,8 @@
     <ImageView
         android:id="@+id/innerRecyclerView_imageView"
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="125dp"
+        android:layout_marginRight="20dp"
         android:src="@drawable/photo_coming_soon_600x600"/>
 
     <!-- ItemView 내부 선형 레이아웃 -->
@@ -22,7 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <!-- 제목 -->
@@ -30,6 +31,7 @@
             android:id="@+id/innerRecyclerView_title_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:includeFontPadding="false"
             android:text="제목"
             android:textColor="@android:color/black"

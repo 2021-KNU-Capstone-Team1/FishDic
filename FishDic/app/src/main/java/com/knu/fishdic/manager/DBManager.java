@@ -60,7 +60,7 @@ public class DBManager extends SQLiteOpenHelper {
             "\tINNER JOIN 어류_테이블 ON 금어기_테이블.이름 = 어류_테이블.이름\n" +
             "\tLEFT OUTER JOIN 특별_금지행정_관계_테이블 ON 금어기_테이블.이름 = 특별_금지행정_관계_테이블.이름\n" +
             "\tLEFT OUTER JOIN 특별_금지행정_테이블 ON 특별_금지행정_관계_테이블.특별_금지행정_ID = 특별_금지행정_테이블.특별_금지행정_ID\n" +
-            "WHERE 특별_금지행정_테이블.금지시작기간"; //이달의 금어기 쿼리
+            "WHERE 특별_금지행정_테이블.금지시작기간"; //이달의 금어기 쿼리 수정예정
 
     private enum DB_STATE { //DB 상태 정의
         INIT, //초기 상태
@@ -172,7 +172,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     public void doBindingAllDeniedFishData(RecyclerAdapter recyclerAdapter) //모든 이달의 금어기 정보 바인딩 작업 수행
     {
-        String currentYearMonth = ">= " + this.getCurrentYearMonth(); //현재 "년-달"
+        String currentYearMonth = ">=" + this.getCurrentYearMonth(); //현재 "년-달"
 
         Cursor cursor = this.sqlDB.rawQuery(DENIED_FISH_QUERY + currentYearMonth, null);
 
@@ -193,6 +193,8 @@ public class DBManager extends SQLiteOpenHelper {
             recyclerViewItem.setImage(cursor.getBlob(imageIndex)); //어류 이미지
 
             //금지체장, 금지체중, 수심, 특별 금지구역, 금지시작기간, 금지종료기간
+            //null인 경우 예외처리 수정예정
+
             recyclerViewItem.setContent("금지체장 : " + cursor.getString(deniedLengthIndex) +
                     "\n금지체중 : " + cursor.getString(deniedWeightIndex) +
                     "\n수심 : " + cursor.getString(waterDepthIndex) +
