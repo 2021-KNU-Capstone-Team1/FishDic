@@ -10,10 +10,10 @@ namespace SQLiteDBImageUpdater
 {
     class Program
     {
-        public static string _targetDBPath = @"D:\FishDic\설계\DB\FishDicDB.db;"; //DB 경로
-        public static string _totalImagePath = @"D:\FishDic\설계\DB\images\"; //전체 이미지 저장 경로
+        public static string _targetDBPath = @"D:\FishDic\DB\FishDicDB.db;"; //DB 경로
+        public static string _totalImagePath = @"D:\FishDic\DB\images\"; //전체 이미지 저장 경로
         public static string _updateImageQuery = "UPDATE 어류_테이블 SET 이미지 = (@IMAGE) WHERE 이름 = (@IMAGE_NAME);";
-        public static long _imageCompressQuality = 75L; //이미지 압축 수준 (0 ~ 100)
+        public static long _imageCompressQuality = 50L; //이미지 압축 수준 (0 ~ 100)
 
         static void Main(string[] args)
         {

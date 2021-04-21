@@ -5,16 +5,22 @@ package com.knu.fishdic.manager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 import com.knu.fishdic.recyclerview.RecyclerViewItem;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 
 public class DBManager extends SQLiteOpenHelper {
@@ -24,8 +30,13 @@ public class DBManager extends SQLiteOpenHelper {
         UPDATED //갱신 된 버전
     }
 
+    private static final String DB_SERVER = "https://github.com/2021-KNU-Capstone-Team1/FishDic/DB/"; //DB 저장 된 서버 경로
+    private static final String DB_VERSION_FILE_NAME = "version"; //DB 버전 관리 파일 이름
+    private static final int DB_VERSION_FILE_SIZE = 10; //DB 버전 관리 파일 크기 (바이트 단위)
+
     private SQLiteDatabase sqlDB; //DB 접근 위한 SQLiteDatabase 객체
     private static String DB_PATH = ""; //DB 경로
+    private static String CACHE_PATH = ""; //임시파일 경로
     private static final String DB_NAME = "FishDicDB.db"; //DB 이름
 
     //테이블명 정의
@@ -34,7 +45,7 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String BIO_CLASS_TABLE = "생물분류_테이블";
     private static final String SPECIAL_PROHIBIT_ADMIN_TABLE = "특별_금지행정_테이블";
     private static final String SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE = "특별_금지행정_관계_테이블";
-    
+
     //필드명 정의
     private static final String NAME = "이름";
     private static final String SCIENTIFIC_NAME = "학명";
@@ -56,9 +67,6 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String SPECIAL_PROHIBIT_ADMIN_START_DATE = "금지시작기간";
     private static final String SPECIAL_PROHIBIT_ADMIN_END_DATE = "금지종료기간";
 
-    private static final String FISH_DIC_QUERY = "SELECT " + FISH_DIC_TABLE + "." + NAME + ", " + FISH_DIC_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
-            " FROM " + FISH_DIC_TABLE +
-            " INNER JOIN " + BIO_CLASS_TABLE + " ON " + FISH_DIC_TABLE + "." + NAME + " = " + BIO_CLASS_TABLE + "." + NAME; //도감 쿼리
     /***
      * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
      * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
@@ -74,14 +82,18 @@ public class DBManager extends SQLiteOpenHelper {
     public DBManager() {
         super(FishDic.globalContext, DB_NAME, null, 1); //SQLiteOpenHelper(context, name, factory, version)
         DB_PATH = "/data/data/" + FishDic.globalContext.getPackageName() + "/databases/"; //안드로이드의 DB 저장 경로는 "/data/data/앱 이름/databases/"
+        CACHE_PATH = FishDic.globalContext.getCacheDir().toString() + "/";
 
         switch (this.getCurrentDBState()) //기존 DB 상태 확인
         {
             case INIT: //초기 상태일 경우
-                this.copyDB(); //assets으로부터 시스템으로 DB 복사
+                //this.copyDB();
                 break;
 
-            default:
+            case OUT_DATED:
+                break;
+
+            case UPDATED:
                 break;
         }
 
@@ -108,22 +120,88 @@ public class DBManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqlDB, int oldVersion, int newVersion) {
-        copyDB();
     }
 
     private DB_STATE getCurrentDBState() {  //기존 DB 상태 반환
-        File dbFile = new File(DB_PATH + DB_NAME);
+        /***
+         * 1) 로컬 DB와 로컬 DB 버전 관리 파일이 존재하지 않을 경우 서버로부터의 갱신을 위한 초기 상태 반환
+         * 2) 로컬 DB와 로컬 DB 버전 관리 파일이 존재할 경우 서버와 로컬 DB 버전을 비교하여
+         *  2-1) 로컬 DB 버전 >= 서버 DB 버전일 경우 : 구 버전 상태 반환
+         *  2-2) 로컬 DB 버전 < 서버 DB 버전일 경우 : 최신 버전 상태 반환
+         ***/
+        File folder = new File(DB_PATH);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
 
-        /*
-        //나중에 DB 버전 확인 한다면 코드 수정
-        if (dbFile.exists())
-            return DB_STATE.UPDATED;
+        File currentDBFile = new File(DB_PATH + DB_NAME); //현재 로컬 DB
+        File currentDBVersionFile = new File(DB_PATH + DB_VERSION_FILE_NAME); //로컬 DB 버전
 
-        return DB_STATE.INIT;
-        */
+        if (!currentDBVersionFile.exists() || !currentDBFile.exists()) { //기존 DB가 존재하지 않거나, 버전 관리 파일이 존재하지 않을 경우
+            return DB_STATE.INIT;
+        }
+
+        try { //서버의 DB 버전과 로컬 DB 버전 비교
+            String serverDBVersion;
+            String currentDBVersion;
+            byte[] buffer = new byte[DB_VERSION_FILE_SIZE];
+            URL dbVersionUrl = new URL(DB_SERVER + DB_VERSION_FILE_NAME); //서버의 DB 버전
+            HttpURLConnection urlConnection = (HttpURLConnection) dbVersionUrl.openConnection(); //서버 연결
+
+            //서버 DB 버전 가져오기
+            InputStream urlConnectionInputStream = urlConnection.getInputStream(); //연결로부터 입력 스트림 생성
+            urlConnectionInputStream.read(buffer, 0, DB_VERSION_FILE_SIZE);
+            serverDBVersion = buffer.toString();
+
+            urlConnectionInputStream.close();
+            urlConnection.disconnect();
+
+            //로컬 DB 버전 가져오기
+            InputStream inputStream = new FileInputStream(currentDBVersionFile);
+            inputStream.read(buffer, 0, DB_VERSION_FILE_SIZE);
+            currentDBVersion = buffer.toString();
+
+            if (currentDBVersion.compareTo(serverDBVersion) >= 0) { //로컬 DB 버전 >= 서버 DB 버전일 경우
+
+            } else { //로컬 DB 버전 < 서버 DB 버전일 경우
+
+            }
+
+            Log.d("로컬 DB 버전 : ", currentDBVersion);
+            Log.d("서버 DB 버전 : ", serverDBVersion);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return DB_STATE.INIT; //디버그 위해 매 번 새로 복사
     }
 
+    private void updateDBFromServer() { //서버로부터 최신 DB 갱신
+        try {
+            URL dbUrl = new URL(DB_SERVER + "/FishDicDB.db"); //서버의 DB 경로
+
+            InputStream inputStream = FishDic.globalContext.getAssets().open(DB_NAME);
+            String outFileName = DB_PATH + DB_NAME;
+            OutputStream outputStream = new FileOutputStream(outFileName);
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.flush();
+            ;
+            outputStream.close();
+            inputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
     private void copyDB() { //assets으로부터 시스템으로 DB 복사
         try {
             File folder = new File(DB_PATH);
@@ -150,10 +228,12 @@ public class DBManager extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
-
+    */
     public void doBindingAllFishData(RecyclerAdapter recyclerAdapter) //모든 어류 정보 바인딩 작업 수행
     {
-        Cursor cursor = this.sqlDB.rawQuery(FISH_DIC_QUERY, null);
+        Cursor cursor = this.sqlDB.rawQuery("SELECT " + FISH_DIC_TABLE + "." + NAME + ", " + FISH_DIC_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
+                " FROM " + FISH_DIC_TABLE +
+                " INNER JOIN " + BIO_CLASS_TABLE + " ON " + FISH_DIC_TABLE + "." + NAME + " = " + BIO_CLASS_TABLE + "." + NAME, null);
 
         int nameIndex = cursor.getColumnIndex(NAME);
         int imageIndex = cursor.getColumnIndex(IMAGE);
