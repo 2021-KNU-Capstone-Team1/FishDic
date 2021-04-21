@@ -17,8 +17,8 @@ public class FishDic extends Application {
     public static GestureDetector globalGestureDetector; //전역 제스처 및 이벤트 감지 위한 개체
 
     //앱 로딩 시점에 DB로부터 바인딩 작업 수행 위한 도감, 이달의 금어기 RecyclerAdapter
-    public static RecyclerAdapter global_Dic_RecyclerAdapter;
-    public static RecyclerAdapter global_DeniedFish_RecyclerAdapter;
+    public static RecyclerAdapter globalDicRecyclerAdapter;
+    public static RecyclerAdapter globalDeniedFishRecyclerAdapter;
 
     @Override
     public void onCreate() { //최초 앱 가동 시
@@ -32,12 +32,12 @@ public class FishDic extends Application {
             }
         });
 
-        global_Dic_RecyclerAdapter = global_DeniedFish_RecyclerAdapter = null;
+        globalDicRecyclerAdapter = globalDeniedFishRecyclerAdapter = null;
     }
 
     @Override
     public void onTerminate() { //앱 종료 시
-        super.onTerminate();
         globalDBManager.close();
+        super.onTerminate();
     }
 }

@@ -8,9 +8,9 @@ import com.knu.fishdic.recyclerview.RecyclerAdapter;
 public class InitManager {
     public static void doDataBindingJob() { //DBManager에 의해 데이터 받아와서 바로 사용 할 수 있게 바인딩 작업 수행
         FishDic.globalDBManager = new DBManager();
-        FishDic.global_Dic_RecyclerAdapter = new RecyclerAdapter();
-        FishDic.global_DeniedFish_RecyclerAdapter = new RecyclerAdapter();
-        FishDic.globalDBManager.doBindingAllFishData(FishDic.global_Dic_RecyclerAdapter);
-        FishDic.globalDBManager.doBindingAllDeniedFishData(FishDic.global_DeniedFish_RecyclerAdapter);
+        FishDic.globalDicRecyclerAdapter = new RecyclerAdapter();
+        FishDic.globalDeniedFishRecyclerAdapter = new RecyclerAdapter();
+        FishDic.globalDBManager.doBindingAllFishData(FishDic.globalDicRecyclerAdapter);
+        FishDic.globalDBManager.doBindingAllDeniedFishData(FishDic.globalDeniedFishRecyclerAdapter);
     }
 }

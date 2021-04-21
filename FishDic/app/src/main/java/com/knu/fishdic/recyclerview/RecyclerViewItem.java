@@ -26,12 +26,8 @@ public class RecyclerViewItem {
     }
 
     public void setContent(String content) {
-        /***
-         * 도감의 경우 내용에 생물분류 출력
-         * 이달의 금어기의 경우 금지체장, 금지체중, 수심, 특별금지구역, 금지시작기간, 금지종료기간 출력
-         ***/
-
         this.content = content;
+
     }
 
     public byte[] getImage() {

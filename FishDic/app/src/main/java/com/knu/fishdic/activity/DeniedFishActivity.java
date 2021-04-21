@@ -40,7 +40,7 @@ public class DeniedFishActivity extends Activity {
         deniedFish_recyclerView.setItemAnimator(new DefaultItemAnimator());
         layoutManager = new LinearLayoutManager(this);
         deniedFish_recyclerView.setLayoutManager(layoutManager);
-        deniedFish_recyclerView.setAdapter(FishDic.global_DeniedFish_RecyclerAdapter);
+        deniedFish_recyclerView.setAdapter(FishDic.globalDeniedFishRecyclerAdapter);
 
         deniedFish_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
         {
