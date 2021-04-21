@@ -12,6 +12,7 @@ import com.knu.fishdic.manager.InitManager;
 public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //수정 예정 : SplashActivity 제거 및 MainActiity에서 초기화 작업 수행, 스플래시 스크린은 앱 테마 변경으로 보여지도록
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 

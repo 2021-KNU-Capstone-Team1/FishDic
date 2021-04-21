@@ -129,6 +129,8 @@ public class DBManager extends SQLiteOpenHelper {
          *  2-1) 로컬 DB 버전 >= 서버 DB 버전일 경우 : 구 버전 상태 반환
          *  2-2) 로컬 DB 버전 < 서버 DB 버전일 경우 : 최신 버전 상태 반환
          ***/
+
+        //수정예정, 로컬에 DB 버전 관리 파일 생성 및 현재 날짜 기록
         File folder = new File(DB_PATH);
         if (!folder.exists()) {
             folder.mkdir();
@@ -152,7 +154,6 @@ public class DBManager extends SQLiteOpenHelper {
             InputStream urlConnectionInputStream = urlConnection.getInputStream(); //연결로부터 입력 스트림 생성
             urlConnectionInputStream.read(buffer, 0, DB_VERSION_FILE_SIZE);
             serverDBVersion = buffer.toString();
-
             urlConnectionInputStream.close();
             urlConnection.disconnect();
 
@@ -160,6 +161,7 @@ public class DBManager extends SQLiteOpenHelper {
             InputStream inputStream = new FileInputStream(currentDBVersionFile);
             inputStream.read(buffer, 0, DB_VERSION_FILE_SIZE);
             currentDBVersion = buffer.toString();
+            inputStream.close();
 
             if (currentDBVersion.compareTo(serverDBVersion) >= 0) { //로컬 DB 버전 >= 서버 DB 버전일 경우
 
