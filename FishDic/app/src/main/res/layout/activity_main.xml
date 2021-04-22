@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
         <!-- 메인화면 외부 테이블 레이아웃 : 상단 테이블 -->
@@ -37,8 +38,8 @@
                     android:id="@+id/main_menu_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
                     android:background="@color/logo"
+                    android:padding="20dp"
                     android:src="@drawable/menu_40x40"
                     android:visibility="visible"
                     tools:visibility="visible" />
@@ -76,8 +77,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/button_style"
-                        android:src="@drawable/test_festival_image"
-                        android:scaleType = "fitXY">
+                        android:scaleType="fitXY"
+                        android:src="@drawable/test_festival_image">
                         <!-- 여기 일단 보여주는 형식으로 테스트 이미지 넣었는데 나중에 서버로 받은 파일을 출력할 수 있도록 java쪽에서 변경해야함 -->
                     </ImageButton>
                 </LinearLayout>
@@ -108,38 +109,38 @@
                     style="@style/Widget.AppCompat.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:src="@drawable/icon_40x40"
-                    android:layout_marginRight="10dp"/>
+                    android:src="@drawable/icon_40x40" />
 
                 <ImageButton
                     android:id="@+id/main_deniedFish_imageButton"
                     style="@style/Widget.AppCompat.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:src="@drawable/denied_fish_40x40"
-                    android:layout_marginRight="10dp"/>
+                    android:src="@drawable/denied_fish_40x40" />
 
                 <ImageButton
                     android:id="@+id/main_fishIdentification_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:src="@drawable/camera_40x40"
-                    android:layout_marginRight="10dp"/>
+                    android:src="@drawable/camera_40x40" />
 
                 <ImageButton
                     android:id="@+id/main_gallery_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:src="@drawable/gallery_40x40"
-                    android:layout_marginRight="10dp"/>
+                    android:src="@drawable/gallery_40x40" />
 
                 <ImageButton
                     android:id="@+id/main_help_imageButton"

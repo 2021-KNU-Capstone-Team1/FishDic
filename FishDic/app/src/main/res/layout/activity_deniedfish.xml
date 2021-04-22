@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.DeniedFishActivity">
 
     <!-- 이달의 금어기 외부 테이블 레이아웃 -->
     <TableLayout
@@ -20,8 +20,7 @@
         <TableRow
             android:id="@+id/outerDeniedFish_topTable"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <!-- 상단 툴바 -->
             <androidx.appcompat.widget.Toolbar
@@ -82,8 +81,7 @@
         <TableRow
             android:id="@+id/outerDeniedFish_centerTable"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-             >
+            android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/deniedFish_recyclerView"

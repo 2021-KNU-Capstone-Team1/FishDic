@@ -3,21 +3,23 @@
     package="com.knu.fishdic">
 
     <!-- 권한 설정 -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera" android:required="true"/>  <!-- 카메라 어픙이 없는 경우, 카메라 어플이 자동 설치되지 않도록 한다. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />  <!-- 카메라 어픙이 없는 경우, 카메라 어플이 자동 설치되지 않도록 한다. -->
 
     <application
+        android:name=".FishDic"
         android:allowBackup="true"
         android:icon="@drawable/icon_96x96"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/icon_96x96"
-        android:supportsRtl="true"
-        android:name=".FishDic"
         android:largeHeap="true"
-        >
+        android:roundIcon="@drawable/icon_96x96"
+        android:supportsRtl="true">
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
