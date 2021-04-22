@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 스플래시 스크린의 배경으로 사용 될 배경 정의 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/white" />
+    <item>
+        <bitmap
+            android:gravity="fill"
+            android:src="@drawable/splash_img" />
+    </item>
+</layer-list>

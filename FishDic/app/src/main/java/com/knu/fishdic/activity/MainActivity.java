@@ -6,18 +6,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
+import com.knu.fishdic.manager.InitManager;
 
 import java.io.InputStream;
 
@@ -34,10 +36,16 @@ public class MainActivity extends Activity {
     final static int TAKE_PICTURE = 1;      //카메라 어플 열 때 전달 될 키값 상수
     // ImageView camera_picture; 나중에 찍은 사진 저장할 용도
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /*** 초기화 작업 수행 ***/
+        InitManager.doDataBindingJob(); //도감 및 이달의 금어기를 위한 바인딩 작업 수행
+
         setTitle(R.string.app_name);
+        setTheme(R.style.AppTheme); //초기화 적업 완료 후 스플래시 테마에서 기존 앱 테마로 변경
         setContentView(R.layout.activity_main);
         setComponentsInteraction();
 

@@ -112,7 +112,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         this.itemList.add(Item);
     }
 
-
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         private ImageView innerRecyclerView_imageView; //어류 이미지 뷰
         private TextView innerRecyclerView_title_textView; //제목 텍스트 뷰
