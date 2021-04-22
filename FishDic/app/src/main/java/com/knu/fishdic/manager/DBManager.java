@@ -13,13 +13,11 @@ import com.knu.fishdic.recyclerview.RecyclerViewItem;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 
@@ -30,13 +28,13 @@ public class DBManager extends SQLiteOpenHelper {
         UPDATED //갱신 된 버전
     }
 
-    private static final String DB_SERVER = "https://github.com/2021-KNU-Capstone-Team1/FishDic/DB/"; //DB 저장 된 서버 경로
+    private static final String DB_SERVER = "https://raw.githubusercontent.com/2021-KNU-Capstone-Team1/FishDic/master/DB/"; //DB 저장 된 서버 경로
     private static final String DB_VERSION_FILE_NAME = "version"; //DB 버전 관리 파일 이름
-    private static final int DB_VERSION_FILE_SIZE = 10; //DB 버전 관리 파일 크기 (바이트 단위)
+    private static final int DB_VERSION_FILE_SIZE = 8; //DB 버전 관리 파일 크기 (바이트 단위)
 
     private SQLiteDatabase sqlDB; //DB 접근 위한 SQLiteDatabase 객체
     private static String DB_PATH = ""; //DB 경로
-    private static String CACHE_PATH = ""; //임시파일 경로
+    //private static String CACHE_PATH = ""; //임시파일 경로
     private static final String DB_NAME = "FishDicDB.db"; //DB 이름
 
     //테이블명 정의
@@ -67,22 +65,12 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String SPECIAL_PROHIBIT_ADMIN_START_DATE = "금지시작기간";
     private static final String SPECIAL_PROHIBIT_ADMIN_END_DATE = "금지종료기간";
 
-    /***
-     * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
-     * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
-     ***/
-    private static final String DENIED_FISH_QUERY = "SELECT 금어기_테이블.*, 어류_테이블.이미지, 특별_금지행정_테이블.특별_금지구역, 특별_금지행정_테이블.금지시작기간, 특별_금지행정_테이블.금지종료기간\n" +
-            "FROM 금어기_테이블\n" +
-            "\tINNER JOIN 어류_테이블 ON 금어기_테이블.이름 = 어류_테이블.이름\n" +
-            "\tLEFT OUTER JOIN 특별_금지행정_관계_테이블 ON 금어기_테이블.이름 = 특별_금지행정_관계_테이블.이름\n" +
-            "\tLEFT OUTER JOIN 특별_금지행정_테이블 ON 특별_금지행정_관계_테이블.특별_금지행정_ID = 특별_금지행정_테이블.특별_금지행정_ID"; //이달의 금어기 쿼리
-
-    private static final String EMPTY_DATA = "등록 된 데이터가 없습니다."; //입력되지 않은 데이터에 대하여 치환 할 문자열
+    private static final String EMPTY_DATA = "등록 된 정보가 없습니다."; //입력되지 않은 데이터에 대하여 치환 할 문자열
 
     public DBManager() {
         super(FishDic.globalContext, DB_NAME, null, 1); //SQLiteOpenHelper(context, name, factory, version)
         DB_PATH = "/data/data/" + FishDic.globalContext.getPackageName() + "/databases/"; //안드로이드의 DB 저장 경로는 "/data/data/앱 이름/databases/"
-        CACHE_PATH = FishDic.globalContext.getCacheDir().toString() + "/";
+        //CACHE_PATH = FishDic.globalContext.getCacheDir().toString() + "/";
 
         switch (this.getCurrentDBState()) //기존 DB 상태 확인
         {
@@ -257,9 +245,18 @@ public class DBManager extends SQLiteOpenHelper {
 
     public void doBindingAllDeniedFishData(RecyclerAdapter recyclerAdapter) //모든 이달의 금어기 정보 바인딩 작업 수행
     {
-        String currentDate = this.getCurrentDate(); //현재 "년-달-일"
+        String currentDate = this.getCurrentDateWithSeparator(); //현재 "년-달-일"
 
-        Cursor cursor = this.sqlDB.rawQuery(DENIED_FISH_QUERY + " WHERE " + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + currentDate +
+        /***
+         * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
+         * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
+         ***/
+        Cursor cursor = this.sqlDB.rawQuery("SELECT 금어기_테이블.*, 어류_테이블.이미지, 특별_금지행정_테이블.특별_금지구역, 특별_금지행정_테이블.금지시작기간, 특별_금지행정_테이블.금지종료기간\n" +
+                "FROM 금어기_테이블\n" +
+                "\tINNER JOIN 어류_테이블 ON 금어기_테이블.이름 = 어류_테이블.이름\n" +
+                "\tLEFT OUTER JOIN 특별_금지행정_관계_테이블 ON 금어기_테이블.이름 = 특별_금지행정_관계_테이블.이름\n" +
+                "\tLEFT OUTER JOIN 특별_금지행정_테이블 ON 특별_금지행정_관계_테이블.특별_금지행정_ID = 특별_금지행정_테이블.특별_금지행정_ID" +
+                " WHERE " + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + currentDate +
                 " AND " + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + currentDate + ";", null); //금지시작기간은 현재 날짜보다 이전, 금지종료기간은 현재 날짜보다 이전이 아닌 경우만
 
         int nameIndex = cursor.getColumnIndex(NAME);
@@ -297,7 +294,15 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
-    private String getCurrentDate() //현재 "년-달-일" 반환
+    private String getCurrentDateWithoutSeparator() //현재 "년달일" 반환
+    {
+        Calendar cal = Calendar.getInstance();
+        String result = String.valueOf(cal.get(Calendar.YEAR)) + String.valueOf(cal.get(Calendar.MONTH) + 1) +
+                String.valueOf(cal.get(Calendar.DATE)); //현재 "년달일" 문자열
+        return result;
+    }
+
+    private String getCurrentDateWithSeparator() //현재 "년-달-일" 반환
     {
         Calendar cal = Calendar.getInstance();
         String result = String.valueOf(cal.get(Calendar.YEAR)) + "-" + String.valueOf(cal.get(Calendar.MONTH) + 1) +
