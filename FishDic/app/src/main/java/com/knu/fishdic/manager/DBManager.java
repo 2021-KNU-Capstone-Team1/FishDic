@@ -329,6 +329,7 @@ public class DBManager extends SQLiteOpenHelper {
             case WITHOUT_SEPARATOR: //구분자 사용하지 않음(YYMMDD)
                 dateFormat = new SimpleDateFormat("YYYYMMdd");
                 break;
+
             default:
                 throw new IllegalStateException("Unexpected value: " + dateFormatType);
         }

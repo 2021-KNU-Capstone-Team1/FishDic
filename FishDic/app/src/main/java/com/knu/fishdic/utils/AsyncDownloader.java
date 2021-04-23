@@ -1,4 +1,4 @@
-package com.knu.fishdic;
+package com.knu.fishdic.utils;
 
 // DB 갱신, 배너 다운로드를 위한 AsyncDownloader 정의
 // https://developer.android.com/reference/android/os/AsyncTask

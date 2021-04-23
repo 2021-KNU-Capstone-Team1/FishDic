@@ -22,9 +22,9 @@ public class HelpActivity extends Activity {
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
     {
-        help_back_imageButton = (ImageButton) findViewById(R.id.help_back_imageButton);
+        this.help_back_imageButton = (ImageButton) findViewById(R.id.help_back_imageButton);
 
-        help_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
+        this.help_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
         {
             onBackPressed();
         });

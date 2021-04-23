@@ -2,6 +2,7 @@ package com.knu.fishdic.recyclerview;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,21 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> implements Filterable {
     private ArrayList<RecyclerViewItem> itemList; //전체 목록
     private ArrayList<RecyclerViewItem> refItemList; //현재 참조중인 목록
+    private OnItemClickListener refItemClickListener; //아이템 클릭 리스너 참조
 
     public RecyclerAdapter() {
         this.itemList = new ArrayList<>();
         this.refItemList = itemList; //초기 원본 리스트를 참조
+        this.refItemClickListener = null;
+    }
+
+
+    public interface OnItemClickListener { //커스텀 리스너 인터페이스
+        void onItemClick(View v, int pos);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) { //아이템 클릭 리스너 참조 설정
+        this.refItemClickListener = itemClickListener;
     }
 
     @Override
@@ -79,6 +91,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { //뷰 홀더 초기화
         //https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#onCreateViewHolder(android.view.ViewGroup,%20int)
+        /***
+         * RecyclerView는 ViewHolder를 새로 만들어야 할 때마다 이 메서드를 호출한다.
+         * 이 메서드는 ViewHolder와 그에 연결된 View를 생성하고 초기화하지만 ViewHolder가 아직 특정 데이터에 바인딩된 상태가 아니기 때문에, 뷰의 콘텐츠를 채우지는 않는다.
+         ***/
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.itemview_recyclerview, parent, false);
         return new ItemViewHolder(view);
     }
@@ -95,6 +111,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) { //뷰에 데이터 바인딩
         //https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView.Adapter#onBindViewHolder(VH,%20int)
+        /***
+         * RecyclerView는 ViewHolder를 데이터와 연결할 때 이 메서드를 호출한다. 
+         * 이 메서드는 적절한 데이터를 가져와서 그 데이터를 사용하여 뷰 홀더의 레이아웃을 채운다.
+         ***/
         holder.onBind(this.refItemList.get(position)); //현재 참조중인 목록에 대하여 해당 position의 데이터를 뷰 홀더에 바인딩
     }
 
@@ -113,21 +133,41 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
+        /***
+         * 어댑터를 통해 만들어진 각 아이템 뷰는 뷰홀더(ViewHolder) 객체에 저장되어 화면에 표시되고,
+         * 필요에 따라 생성 또는 재활용(Recycle)된다.
+         * ---
+         * 아이템 뷰에서 클릭 이벤트를 직접 처리하고, 아이템 뷰는 뷰홀더 객체가 가지고 있으니, 아이템 클릭 이벤트는 뷰홀더에서 작성
+         ***/
+
         private ImageView innerRecyclerView_imageView; //어류 이미지 뷰
         private TextView innerRecyclerView_title_textView; //제목 텍스트 뷰
         private TextView innerRecyclerView_content_textView; //내용 텍스트 뷰
 
         ItemViewHolder(@NonNull View itemView) {
             super(itemView);
+            setComponentsInteraction();
+        }
 
-            innerRecyclerView_title_textView = itemView.findViewById(R.id.innerRecyclerView_title_textView);
-            innerRecyclerView_content_textView = itemView.findViewById(R.id.innerRecyclerView_content_textView);
-            innerRecyclerView_imageView = itemView.findViewById(R.id.innerRecyclerView_imageView);
+        private void setComponentsInteraction() { //내부 구성요소 상호작용 설정
+            this.innerRecyclerView_title_textView = itemView.findViewById(R.id.innerRecyclerView_title_textView);
+            this.innerRecyclerView_content_textView = itemView.findViewById(R.id.innerRecyclerView_content_textView);
+            this.innerRecyclerView_imageView = itemView.findViewById(R.id.innerRecyclerView_imageView);
+
+            this.itemView.setOnClickListener(v -> { //현재 아이템에 대한 클릭 이벤트 리스너
+                int bindingAdapterPosition = getBindingAdapterPosition();
+                //int absoluteAdapterPosition = getAbsoluteAdapterPosition();
+                Log.d("bindingPos : ", Integer.toString(bindingAdapterPosition));
+                //Log.d("absolutePos : ", Integer.toString(absoluteAdapterPosition));
+
+                if (bindingAdapterPosition != RecyclerView.NO_POSITION && refItemClickListener != null) //클릭 된 아이템이 존재하며, 클릭 리스너가 참조되어 있으면
+                    refItemClickListener.onItemClick(v, bindingAdapterPosition);
+            });
         }
 
         public void onBind(RecyclerViewItem recyclerViewItem) { //뷰 홀더에 데이터 바인딩
-            innerRecyclerView_title_textView.setText(recyclerViewItem.getTitle());
-            innerRecyclerView_content_textView.setText(recyclerViewItem.getContent());
+            this.innerRecyclerView_title_textView.setText(recyclerViewItem.getTitle());
+            this.innerRecyclerView_content_textView.setText(recyclerViewItem.getContent());
 
             int imageLength = recyclerViewItem.getImageLength(); //이미지 배열 길이
             if (imageLength > 0) { //이미지가 존재 할 경우만 이미지 설정
