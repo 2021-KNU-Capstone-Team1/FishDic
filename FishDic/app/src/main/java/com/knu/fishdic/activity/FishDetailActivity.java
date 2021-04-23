@@ -1,7 +1,9 @@
 package com.knu.fishdic.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 
 import com.knu.fishdic.R;
@@ -18,6 +20,12 @@ public class FishDetailActivity extends Activity {
         setContentView(R.layout.activity_fishdetail);
 
         setComponentsInteraction();
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        String title = bundle.getString("title"); //전달 받은 어류 이름
+        Log.d("어류 이름 : ", title);
+
     }
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정

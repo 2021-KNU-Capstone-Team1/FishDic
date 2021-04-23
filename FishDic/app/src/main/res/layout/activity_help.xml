@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- 이달의 금어기 레이아웃 정의 -->
+<!-- 이용가이드 레이아웃 정의 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.FishDetailActivity">
 
-    <!-- 이달의 금어기 외부 테이블 레이아웃 -->
+    <!-- 이용가이드 외부 테이블 레이아웃 -->
     <TableLayout
         android:id="@+id/outerHelp_tableLayout"
         android:layout_width="match_parent"
@@ -16,72 +16,58 @@
         android:visibility="visible"
         tools:visibility="visible">
 
-        <!-- 이달의 금어기 외부 테이블 레이아웃 : 상단 테이블 -->
+        <!-- 이용가이드 외부 테이블 레이아웃 : 상단 테이블 -->
         <TableRow
             android:id="@+id/outerHelp_topTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="10">
+            android:layout_weight="1"
+            android:background="@color/logo">
 
-            <!-- 상단 툴바 -->
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/outerHelp_toolBar"
+            <!-- 이용가이드 내부 ConstraintLayout -->
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/logo"
-                android:visibility="visible"
-                tools:visibility="visible">
+                android:layout_height="match_parent">
 
-                <!-- 상단 툴바 : 세로 선형 레이아웃 -->
-                <LinearLayout
-                    android:id="@+id/innerHelp_toolBar_vertical_linearLayout"
+                <!-- 상단 툴바 -->
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/outerHelp_toolBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:visibility="visible">
+                    android:background="@color/logo"
+                    android:visibility="visible"
+                    tools:visibility="visible">
 
-                    <!-- 상단 툴바 : 가로 선형 레이아웃 1 -->
-                    <LinearLayout
-                        android:id="@+id/innerHelp_toolBar_horizontal_linearLayout1"
+                    <ImageButton
+                        android:id="@+id/help_back_imageButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:visibility="visible">
+                        android:layout_height="wrap_content"
+                        android:background="@color/logo"
+                        android:src="@drawable/back_to_40x40"
+                        android:visibility="visible"
+                        tools:visibility="visible" />
 
-                        <ImageButton
-                            android:id="@+id/help_back_imageButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/logo"
-                            android:padding="20dp"
-                            android:src="@drawable/back_to_40x40"
-                            android:visibility="visible"
-                            tools:visibility="visible" />
-
-                        <TextView
-                            android:id="@+id/help_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="20dp"
-                            android:text="@string/help"
-                            android:textColor="@color/white"
-                            android:textSize="24sp"
-                            android:visibility="visible"
-                            tools:visibility="visible" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.appcompat.widget.Toolbar>
+                    <TextView
+                        android:id="@+id/help_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="15dp"
+                        android:text="@string/help"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:visibility="visible"
+                        tools:visibility="visible" />
+                </androidx.appcompat.widget.Toolbar>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </TableRow>
 
-        <!-- 이달의 금어기 외부 테이블 레이아웃 : 가운데 테이블 -->
+        <!-- 이용가이드 외부 테이블 레이아웃 : 가운데 테이블 -->
         <TableRow
             android:id="@+id/outerHelp_centerTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1400" >
+            android:layout_weight="99">
 
 
             <!-- 메인화면하고 다른 화면 2~3장 정도 사용해서 어둡게하고 그위에 화살표로 설명 들어가 있는 형태 이미지로 출력. 끝나면 메인트오 돌아갈 수 있게 한다. -->

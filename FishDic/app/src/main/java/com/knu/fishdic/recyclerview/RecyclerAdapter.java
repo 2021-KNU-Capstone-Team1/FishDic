@@ -2,7 +2,6 @@ package com.knu.fishdic.recyclerview;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,8 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> implements Filterable {
     private ArrayList<RecyclerViewItem> itemList; //전체 목록
     private ArrayList<RecyclerViewItem> refItemList; //현재 참조중인 목록
-    private OnItemClickListener refItemClickListener; //아이템 클릭 리스너 참조
+
+    private OnItemClickListener refItemClickListener; //아이템 클릭 리스너 참조 변수
 
     public RecyclerAdapter() {
         this.itemList = new ArrayList<>();
@@ -41,12 +41,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         this.refItemClickListener = null;
     }
 
-
     public interface OnItemClickListener { //커스텀 리스너 인터페이스
-        void onItemClick(View v, int pos);
+        void onItemClick(View v, String title);
     }
 
-    public void setOnItemClickListener(OnItemClickListener itemClickListener) { //아이템 클릭 리스너 참조 설정
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) { //아이템 클릭 리스너 참조 변수 할당
         this.refItemClickListener = itemClickListener;
     }
 
@@ -155,13 +154,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             this.innerRecyclerView_imageView = itemView.findViewById(R.id.innerRecyclerView_imageView);
 
             this.itemView.setOnClickListener(v -> { //현재 아이템에 대한 클릭 이벤트 리스너
+                /***
+                 * 1) 도감 혹은 이달의 금어기에서 새로운 클릭 리스너 객체 생성 하여 RecyclerAdapter 내부의 refItemClickListener가 참조
+                 * 2) 각 어류 클릭 이벤트 발생 시
+                 *  2-1) 현재 아이템에 대한 클릭 이벤트 먼저 발생, RecyclerAdapter 내부의 참조 된 refItemClickListener로 클릭 된 어류의 이름 전달하여 클릭 이벤트 발생
+                 *  2-2) Intent 생성 및 어류 이름 전달하여 어류 상세 정보 액티비티 시작
+                 ***/
                 int bindingAdapterPosition = getBindingAdapterPosition();
                 //int absoluteAdapterPosition = getAbsoluteAdapterPosition();
-                Log.d("bindingPos : ", Integer.toString(bindingAdapterPosition));
+                //Log.d("bindingPos : ", Integer.toString(bindingAdapterPosition));
                 //Log.d("absolutePos : ", Integer.toString(absoluteAdapterPosition));
-
+                
                 if (bindingAdapterPosition != RecyclerView.NO_POSITION && refItemClickListener != null) //클릭 된 아이템이 존재하며, 클릭 리스너가 참조되어 있으면
-                    refItemClickListener.onItemClick(v, bindingAdapterPosition);
+                    refItemClickListener.onItemClick(v, this.innerRecyclerView_title_textView.getText().toString()); //클릭 된 어류의 이름 전달
             });
         }
 
