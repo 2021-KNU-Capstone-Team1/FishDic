@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 이용가이드 인디케이터 동그라미 정의 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid
+        android:color="@android:color/black"/>
+</shape>
