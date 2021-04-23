@@ -26,8 +26,8 @@
 
             <!-- 어류 상세정보 내부 ConstraintLayout -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <!-- 상단 툴바 -->
                 <androidx.appcompat.widget.Toolbar
