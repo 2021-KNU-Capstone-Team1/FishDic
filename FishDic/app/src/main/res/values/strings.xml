@@ -1,5 +1,6 @@
 <!-- 앱에서 사용 할 문자열들 정의 -->
 <resources>
+    <!-- 메인 화면에서 사용 할 문자열 -->
     <string name="app_name">FishDic</string>
     <string name="dic">도감</string>
     <string name="denied_fish">이달의 금어기</string>
@@ -7,7 +8,25 @@
     <string name="parasite">기생충 정보</string>
     <string name="help">이용가이드</string>
 
+    <!-- 액티비티에서 사용 할 문자열 -->
     <string name="enter_name">이름 입력</string>
     <string name="fish_detail">어류 상세 정보</string>
     <string name="parasite_derail">기생충 상세 정보</string>
+
+    <!-- 어류 상세 정보에서 사용 할 문자열 -->
+    <string name="basic_info">기본 정보</string>
+    <string name="name">이름(국명)</string>
+    <string name="scientific_name">학명</string>
+    <string name="bio_class">생물분류</string>
+    <string name="shape">형태</string>
+    <string name="distribution">분포</string>
+    <string name="body_length">몸길이</string>
+    <string name="habitat">서식지</string>
+    <string name="warnings">주의사항</string>
+    <string name="denied_length">금지체장</string>
+    <string name="denied_weight">금지체중</string>
+    <string name="denied_water_depth">수심</string>
+    <string name="special_prohibit_admin_area">특별 금지구역</string>
+    <string name="special_prohibit_admin_start_date">금지시작기간</string>
+    <string name="special_prohibit_admin_end_date">금지종료기간</string>
 </resources>

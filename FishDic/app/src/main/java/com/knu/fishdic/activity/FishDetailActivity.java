@@ -23,7 +23,7 @@ public class FishDetailActivity extends Activity {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        String title = bundle.getString("title"); //전달 받은 어류 이름
+        String title = bundle.getString("fishName"); //전달 받은 어류 이름
         Log.d("어류 이름 : ", title);
 
     }

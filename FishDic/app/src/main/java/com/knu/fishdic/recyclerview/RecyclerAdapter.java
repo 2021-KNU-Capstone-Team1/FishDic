@@ -138,8 +138,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         /***
-         * 어댑터를 통해 만들어진 각 아이템 뷰는 뷰홀더(ViewHolder) 객체에 저장되어 화면에 표시되고,
-         * 필요에 따라 생성 또는 재활용(Recycle)된다.
+         * 어댑터를 통해 만들어진 각 아이템 뷰는 뷰홀더(ViewHolder) 객체에 저장되어 화면에 표시되고, 필요에 따라 생성 또는 재활용(Recycle)된다.
          * ---
          * 아이템 뷰에서 클릭 이벤트를 직접 처리하고, 아이템 뷰는 뷰홀더 객체가 가지고 있으니, 아이템 클릭 이벤트는 뷰홀더에서 작성
          ***/

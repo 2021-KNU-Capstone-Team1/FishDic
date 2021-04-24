@@ -73,7 +73,10 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String SPECIAL_PROHIBIT_ADMIN_START_DATE = "금지시작기간";
     private static final String SPECIAL_PROHIBIT_ADMIN_END_DATE = "금지종료기간";
 
-    private static final String EMPTY_DATA = "등록 된 정보가 없습니다."; //입력되지 않은 데이터에 대하여 치환 할 문자열
+    //입력되지 않은 데이터에 대하여 치환 할 문자열들 정의
+    private static final String EMPTY_DATA = "등록 된 정보가 없습니다.";
+    private static final String EMPTY_AREA = "전 지역을 대상으로 포획을 금지한다.";
+    private static final String EMPTY_DATE = "별도의 행정명령 시까지 포획을 금지한다.";
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public DBManager() {
@@ -274,9 +277,9 @@ public class DBManager extends SQLiteOpenHelper {
                 " FROM " + DENIED_FISH_TABLE +
                 " INNER JOIN " + FISH_DIC_TABLE + " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + FISH_DIC_TABLE + "." + NAME +
                 " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
-                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE + " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
-                " WHERE " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + '"' + currentDate + '"' +
-                " AND " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + '"' + currentDate + '"';
+                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE + " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID;
+                //" WHERE " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + '"' + currentDate + '"' +
+                //" AND " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + '"' + currentDate + '"';
 
         Log.d("금어기 Query : ", sqlQuery);
         Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
@@ -312,7 +315,7 @@ public class DBManager extends SQLiteOpenHelper {
         cursor.close();
     }
 
-    public void getFishDetailDataFromDB(String fishName) {
+    public void doBindingFishDetailData(String fishName) { //어류 상세정보 바인딩 작업 수행
 
     }
 

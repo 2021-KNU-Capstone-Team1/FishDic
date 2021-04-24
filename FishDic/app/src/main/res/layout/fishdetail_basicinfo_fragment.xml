@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 어류 상세정보의 기본 정보 표 정의 -->
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="1">
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TextView
+        android:layout_column="0"
+        android:gravity="center"
+        android:text="@string/basic_info"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="5dip"
+            android:gravity="center"
+            android:text="@string/name" />
+
+        <TextView
+            android:layout_column="1"
+            android:padding="5dip"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:gravity="left"
+            android:text="longmotherlessexamplelongmotherlessexamplelongmotherlessexamplelongmotherlessexamplelongmotherlessexamplelongmotherlessexamplelongmotherlessexamplelongmotherlessexamplelongmotherlessexample" />
+    </TableRow>
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="5dip"
+            android:gravity="center"
+            android:text="@string/scientific_name" />
+
+    </TableRow>
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="5dip"
+            android:gravity="center"
+            android:text="@string/bio_class" />
+
+    </TableRow>
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="5dip"
+            android:gravity="center"
+            android:text="@string/shape" />
+
+    </TableRow>
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="5dip"
+            android:gravity="center"
+            android:text="@string/distribution" />
+
+    </TableRow>
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="5dip"
+            android:gravity="center"
+            android:text="@string/body_length" />
+
+    </TableRow>
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="5dip"
+            android:gravity="center"
+            android:text="@string/habitat" />
+
+    </TableRow>
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="5dip"
+            android:gravity="center"
+            android:text="@string/warnings" />
+
+    </TableRow>
+
+    <View
+        android:layout_height="1dip"
+        android:background="@color/black" />
+</TableLayout>

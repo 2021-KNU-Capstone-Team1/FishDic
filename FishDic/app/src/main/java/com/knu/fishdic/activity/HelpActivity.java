@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.knu.fishdic.R;
+import com.knu.fishdic.viewpager.MyPagerAdapter;
 
 import me.relex.circleindicator.CircleIndicator;
 
@@ -27,45 +26,13 @@ public class HelpActivity extends AppCompatActivity {
 
         setComponentsInteraction();
 
+        /////코드 정리 예정
         ViewPager viewPager = findViewById(R.id.help_viewPager);
         viewPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
 
         CircleIndicator indicator = findViewById(R.id.help_circleIndicator);
         indicator.setViewPager(viewPager);
-    }
-
-
-    ////////////////////코드 정리 예정
-    public static class MyPagerAdapter extends FragmentPagerAdapter {
-        /***
-         * 참고자료
-         * https://github.com/ongakuer/CircleIndicator
-         * https://webnautes.tistory.com/1013
-         ***/
-        private static int NUM_ITEMS = 10; //임시값
-
-        public MyPagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        // Returns total number of pages
-        @Override
-        public int getCount() {
-            return NUM_ITEMS;
-        }
-
-        // Returns the fragment to display for that page
-        @Override
-        public Fragment getItem(int position) {
-            return HelpFragment.newInstance(position);
-        }
-
-        // Returns the page title for the top indicator
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "Page " + position;
-        }
     }
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
@@ -76,4 +43,3 @@ public class HelpActivity extends AppCompatActivity {
                 onBackPressed());
     }
 }
-

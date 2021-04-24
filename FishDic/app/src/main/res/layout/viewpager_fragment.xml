@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- 이용가이드의 ViewPager를 위한 Fragment 레이아웃 정의 -->
+<!-- 메인화면의 배너 및 이용가이드의 ViewPager를 위한 Fragment 레이아웃 정의 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"

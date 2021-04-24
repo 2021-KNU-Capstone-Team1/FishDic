@@ -1,4 +1,4 @@
-package com.knu.fishdic.activity;
+package com.knu.fishdic.viewpager;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,12 +10,12 @@ import androidx.fragment.app.Fragment;
 import com.knu.fishdic.R;
 
 ////////////////////코드 정리 예정
-public class HelpFragment extends Fragment {
+public class MyFragment extends Fragment {
     private int pageIndex;
 
     // newInstance constructor for creating fragment with arguments
-    public static HelpFragment newInstance(int pageIndex) {
-        HelpFragment fragment = new HelpFragment();
+    public static MyFragment newInstance(int pageIndex) {
+        MyFragment fragment = new MyFragment();
         Bundle args = new Bundle();
         args.putInt("pageIndex", pageIndex);
         fragment.setArguments(args);

@@ -82,7 +82,7 @@ public class DeniedFishActivity extends Activity {
         FishDic.globalDeniedFishRecyclerAdapter.setOnItemClickListener((v, title) -> { //새로운 클릭 리스너 객체 생성 하여 RecyclerAdapter 내부의 refItemClickListener가 참조
             /*** 커스텀 리스너 인터페이스내의 void onItemClick(View v, String title) 오버라이드 ***/
             Intent intent = new Intent(FishDic.globalContext, FishDetailActivity.class);
-            intent.putExtra("title", title); //어류 이름
+            intent.putExtra("fishName", title); //어류 이름
             startActivity(intent);
         });
     }
