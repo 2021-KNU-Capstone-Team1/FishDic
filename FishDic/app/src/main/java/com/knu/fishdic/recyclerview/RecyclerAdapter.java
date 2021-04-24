@@ -30,9 +30,8 @@ import java.util.ArrayList;
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> implements Filterable {
-    private ArrayList<RecyclerViewItem> itemList; //전체 목록
+    private ArrayList<RecyclerViewItem> itemList; //전체 목록 (원본)
     private ArrayList<RecyclerViewItem> refItemList; //현재 참조중인 목록
-
     private OnItemClickListener refItemClickListener; //아이템 클릭 리스너 참조 변수
 
     public RecyclerAdapter() {
@@ -127,8 +126,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         return this.refItemList.size();
     }
 
-    public void addItem(RecyclerViewItem Item) { //외부에서 전체 목록에 요소 추가
+    public void addItem(RecyclerViewItem Item) { //외부에서 전체 목록 (원본)에 요소 추가
         this.itemList.add(Item);
+    }
+
+    public void resetRefItemList(){ //참조 목록에 대한 초기화
+        this.refItemList = this.itemList; //기존의 원본 리스트를 가라킴
+        notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
+        System.gc(); //필터링 된 리스트에 대해 가비지 컬렉션 요청
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

@@ -1,11 +1,7 @@
 package com.knu.fishdic.activity;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -17,7 +13,7 @@ import com.knu.fishdic.R;
 
 import me.relex.circleindicator.CircleIndicator;
 
-// 이달의 금어기 화면 액티비티 정의
+// 이용가이드 액티비티 정의
 
 public class HelpActivity extends AppCompatActivity {
     ImageButton help_back_imageButton; //뒤로 가기 버튼
@@ -77,9 +73,7 @@ public class HelpActivity extends AppCompatActivity {
         this.help_back_imageButton = (ImageButton) findViewById(R.id.help_back_imageButton);
 
         this.help_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
-        {
-            onBackPressed();
-        });
+                onBackPressed());
     }
 }
 

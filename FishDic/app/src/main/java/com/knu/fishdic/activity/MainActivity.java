@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -63,48 +62,43 @@ public class MainActivity extends Activity {
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
     {
-        this.main_dic_imageButton = (ImageButton) findViewById(R.id.main_dic_imageButton);
-        this.main_deniedFish_imageButton = (ImageButton) findViewById(R.id.main_deniedFish_imageButton);
-        this.main_fishIdentification_imageButton = (ImageButton) findViewById(R.id.main_fishIdentification_imageButton);
-        this.main_gallery_imageButton = (ImageButton) findViewById(R.id.main_gallery_imageButton);
-        this.main_help_imageButton = (ImageButton) findViewById(R.id.main_help_imageButton);
+        this.main_dic_imageButton = findViewById(R.id.main_dic_imageButton);
+        this.main_deniedFish_imageButton = findViewById(R.id.main_deniedFish_imageButton);
+        this.main_fishIdentification_imageButton = findViewById(R.id.main_fishIdentification_imageButton);
+        this.main_gallery_imageButton = findViewById(R.id.main_gallery_imageButton);
+        this.main_help_imageButton = findViewById(R.id.main_help_imageButton);
 
-        this.main_dic_imageButton.setOnClickListener(new View.OnClickListener(){                         //도감 화면으로 넘어가는 클릭 리스너
-            public void onClick(View v){
-                Intent intent = new Intent(FishDic.globalContext, DicActivity.class);
-                startActivity(intent);
-            }
+        //도감 화면으로 넘어가는 클릭 리스너
+        this.main_dic_imageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FishDic.globalContext, DicActivity.class);
+            startActivity(intent);
         });
 
-        this.main_deniedFish_imageButton.setOnClickListener(new View.OnClickListener(){                  //금어기 화면으로 넘어가는 클릭 리스너
-            public void onClick(View v){
-                Intent intent = new Intent(FishDic.globalContext, DeniedFishActivity.class);
-                startActivity(intent);
-            }
+        //금어기 화면으로 넘어가는 클릭 리스너
+        this.main_deniedFish_imageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FishDic.globalContext, DeniedFishActivity.class);
+            startActivity(intent);
         });
 
-        this.main_fishIdentification_imageButton.setOnClickListener(new View.OnClickListener(){          //카메라 촬영으로 넘어가는 클릭 리스너
-            public void onClick(View v){
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, TAKE_PICTURE);
-            }
+        //카메라 촬영으로 넘어가는 클릭 리스너
+        this.main_fishIdentification_imageButton.setOnClickListener(v -> {
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, TAKE_PICTURE);
         });
 
-        this.main_gallery_imageButton.setOnClickListener(new View.OnClickListener(){                    //갤러리 사진 선택으로 넘어가는 클릭 리스너
-            public void onClick(View v){
-                Intent galleryIntent = new Intent();
-                galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(galleryIntent, GET_FROM_GALLERY);
+        //갤러리 사진 선택으로 넘어가는 클릭 리스너
+        this.main_gallery_imageButton.setOnClickListener(v -> {
+            Intent galleryIntent = new Intent();
+            galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(galleryIntent, GET_FROM_GALLERY);
 
-            }
         });
 
-        this.main_help_imageButton.setOnClickListener(new View.OnClickListener(){                        //도움 화면으로 넘어가는 클릭 리스너
-            public void onClick(View v){
-                Intent intent = new Intent(FishDic.globalContext, HelpActivity.class);
-                startActivity(intent);
-            }
+        //도움 화면으로 넘어가는 클릭 리스너
+        this.main_help_imageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FishDic.globalContext, HelpActivity.class);
+            startActivity(intent);
         });
     }
 

@@ -66,6 +66,13 @@
             android:id="@+id/outerFishDetail_centerTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="99" />
+            android:layout_weight="99" >
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="188dp"
+                android:src="@drawable/photo_coming_soon_600x600" />
+        </TableRow>
     </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

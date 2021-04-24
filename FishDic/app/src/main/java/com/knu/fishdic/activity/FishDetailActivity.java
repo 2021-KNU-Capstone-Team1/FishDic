@@ -30,11 +30,9 @@ public class FishDetailActivity extends Activity {
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
     {
-        this.fishDetail_back_imageButton = (ImageButton) findViewById(R.id.fishDetail_back_imageButton);
+        this.fishDetail_back_imageButton = findViewById(R.id.fishDetail_back_imageButton);
 
         this.fishDetail_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
-        {
-            onBackPressed();
-        });
+                onBackPressed());
     }
 }

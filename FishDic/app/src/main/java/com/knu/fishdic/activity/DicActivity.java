@@ -33,24 +33,36 @@ public class DicActivity extends Activity {
         setComponentsInteraction();
     }
 
+    @Override
+    public void onBackPressed() { //하드웨어, 소프트웨어 back 키와 앱 내의 뒤로 가기 버튼을 위하여 현재 액티비티 종료 시 수행 할 작업 설정
+        FishDic.globalDicRecyclerAdapter.resetRefItemList(); //참조 목록 초기화 및 가비지 컬렉션 요청
+        super.onBackPressed();
+    }
+
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
     {
-        this.dic_back_imageButton = (ImageButton) findViewById(R.id.dic_back_imageButton);
-        this.dic_search_editText = (EditText) findViewById(R.id.dic_search_editText);
+        this.dic_back_imageButton = findViewById(R.id.dic_back_imageButton);
+        this.dic_search_editText = findViewById(R.id.dic_search_editText);
 
-        this.dic_recyclerView = (RecyclerView) findViewById(R.id.dic_recyclerView);
+        this.dic_recyclerView = findViewById(R.id.dic_recyclerView);
         this.dic_recyclerView.setHasFixedSize(true); //최적화를 위해서 사이즈 고정
         this.dic_recyclerView.setItemAnimator(new DefaultItemAnimator());
         this.layoutManager = new LinearLayoutManager(this);
         this.dic_recyclerView.setLayoutManager(layoutManager);
         this.dic_recyclerView.setAdapter(FishDic.globalDicRecyclerAdapter);
 
-        this.dic_back_imageButton.setOnClickListener(v -> //뒤로 가기 버튼에 대한 클릭 리스너
-        {
+        this.dic_back_imageButton.setOnClickListener(v -> { //뒤로 가기 버튼에 대한 클릭 리스너
             onBackPressed();
         });
 
-        this.dic_search_editText.setOnFocusChangeListener((v, hasFocus) -> dic_search_editText.setHint("")); //검색 창 클릭 시 힌트 제거
+        this.dic_search_editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) { //사용자가 검색 창 누를 시
+                dic_search_editText.setHint(""); //힌트 제거
+            } else { //포커스 해제 시
+                dic_search_editText.setHint(R.string.enter_name); //힌트 재 설정
+            }
+        });
+
         this.dic_search_editText.addTextChangedListener(new TextWatcher() { //검색 창에 대한 텍스트 감시 리스너
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
