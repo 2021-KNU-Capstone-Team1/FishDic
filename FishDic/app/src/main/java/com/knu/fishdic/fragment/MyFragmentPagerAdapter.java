@@ -1,4 +1,4 @@
-package com.knu.fishdic.viewpager;
+package com.knu.fishdic.fragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 ////////////////////코드 정리 예정
 //배너에서 사용하기 위해 시간마다 자동으로 넘어가는 기능 추가해야함 https://salix97.tistory.com/90
-public class MyPagerAdapter extends FragmentPagerAdapter {
+public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
     /***
      * 참고자료
      * https://github.com/ongakuer/CircleIndicator
@@ -14,7 +14,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
      ***/
     private static int NUM_ITEMS = 10; //임시값
 
-    public MyPagerAdapter(FragmentManager fragmentManager) {
+    public MyFragmentPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 
@@ -27,7 +27,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     // Returns the fragment to display for that page
     @Override
     public Fragment getItem(int position) {
-        return MyFragment.newInstance(position);
+        return MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.HELP, position, null);
     }
 
     // Returns the page title for the top indicator

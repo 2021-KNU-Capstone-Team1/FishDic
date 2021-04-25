@@ -11,10 +11,11 @@
     <!-- 액티비티에서 사용 할 문자열 -->
     <string name="enter_name">이름 입력</string>
     <string name="fish_detail">어류 상세 정보</string>
-    <string name="parasite_derail">기생충 상세 정보</string>
+    <string name="parasite_detail">기생충 상세 정보</string>
 
     <!-- 어류 상세 정보에서 사용 할 문자열 -->
     <string name="basic_info">기본 정보</string>
+    <string name="denied_info">금지 행정정보</string>
     <string name="name">이름(국명)</string>
     <string name="scientific_name">학명</string>
     <string name="bio_class">생물분류</string>

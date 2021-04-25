@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.knu.fishdic.R;
-import com.knu.fishdic.viewpager.MyPagerAdapter;
+import com.knu.fishdic.fragment.MyFragmentPagerAdapter;
 
 import me.relex.circleindicator.CircleIndicator;
 
@@ -28,7 +28,7 @@ public class HelpActivity extends AppCompatActivity {
 
         /////코드 정리 예정
         ViewPager viewPager = findViewById(R.id.help_viewPager);
-        viewPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
 
         CircleIndicator indicator = findViewById(R.id.help_circleIndicator);

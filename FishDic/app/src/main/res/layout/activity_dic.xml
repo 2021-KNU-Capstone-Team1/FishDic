@@ -54,7 +54,7 @@
                             tools:visibility="visible" />
 
                         <TextView
-                            android:id="@+id/dic_textView"
+                            android:id="@+id/dic_title_textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="15dp"
