@@ -14,8 +14,8 @@
     <ImageView
         android:id="@+id/innerRecyclerView_imageView"
         android:layout_width="100dp"
-        android:layout_height="125dp"
-        android:layout_marginRight="20dp"
+        android:layout_height="100dp"
+        android:layout_marginRight="30dp"
         android:src="@drawable/photo_coming_soon_600x600"/>
 
     <!-- ItemView 내부 선형 레이아웃 -->
@@ -46,6 +46,6 @@
             android:includeFontPadding="false"
             android:text="test"
             android:textColor="@android:color/black"
-            android:textSize="10dp" />
+            android:textSize="13dp" />
     </LinearLayout>
 </LinearLayout>

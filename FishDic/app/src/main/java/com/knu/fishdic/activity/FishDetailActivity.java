@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.fragment.MyFragment;
 
@@ -32,10 +33,12 @@ public class FishDetailActivity extends AppCompatActivity {
         setComponentsInteraction();
 
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        String fishName = bundle.getString("fishName"); //전달 받은 어류 이름
+        Bundle args = intent.getExtras(); //전달받은 키(문자열),값 쌍
+        String fishName = args.getString("fishName"); //전달 받은 어류 이름
         Log.d("어류 이름 : ", fishName);
         this.fishDetail_title_textView.setText(fishName); //어류 이름으로 타이틀 텍스트 뷰 설정
+
+        Bundle result = FishDic.globalDBManager.getFishDetailBundle(fishName);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -29,8 +30,8 @@ public class DBManager extends SQLiteOpenHelper {
         OUT_DATED, //구 버전
         UPDATED //갱신 된 버전
     }
-    
-    private enum DATE_FORMAT_TYPE{ //날짜 형식 타입 정의
+
+    private enum DATE_FORMAT_TYPE { //날짜 형식 타입 정의
         WITH_SEPARATOR, //구분자 사용(YY-MM-dd)
         WITHOUT_SEPARATOR //구분자 사용하지 않음(YYMMdd)
     }
@@ -45,38 +46,40 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String DB_NAME = "FishDicDB.db"; //DB 이름
 
     //테이블명 정의
-    private static final String FISH_DIC_TABLE = "어류_테이블";
-    private static final String DENIED_FISH_TABLE = "금어기_테이블";
-    private static final String BIO_CLASS_TABLE = "생물분류_테이블";
-    private static final String SPECIAL_PROHIBIT_ADMIN_TABLE = "특별_금지행정_테이블";
-    private static final String SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE = "특별_금지행정_관계_테이블";
+    public static final String FISH_TABLE = "어류_테이블";
+    public static final String DENIED_FISH_TABLE = "금어기_테이블";
+    public static final String BIO_CLASS_TABLE = "생물분류_테이블";
+    public static final String SPECIAL_PROHIBIT_ADMIN_TABLE = "특별_금지행정_테이블";
+    public static final String SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE = "특별_금지행정_관계_테이블";
 
     //필드명 정의
-    private static final String ALL = "*";
-    private static final String NAME = "이름";
-    private static final String SCIENTIFIC_NAME = "학명";
-    private static final String IMAGE = "이미지";
-    private static final String SHAPE = "형태";
-    private static final String DISTRIBUTION = "분포";
-    private static final String BODY_LENGTH = "몸길이";
-    private static final String HABITAT = "서식지";
-    private static final String WARNINGS = "주의사항";
+    public static final String ALL = "*";
+    public static final String NAME = "이름";
+    public static final String SCIENTIFIC_NAME = "학명";
+    public static final String IMAGE = "이미지";
+    public static final String SHAPE = "형태";
+    public static final String DISTRIBUTION = "분포";
+    public static final String BODY_LENGTH = "몸길이";
+    public static final String HABITAT = "서식지";
+    public static final String WARNINGS = "주의사항";
 
-    private static final String BIO_CLASS = "생물분류";
+    public static final String BIO_CLASS = "생물분류";
 
-    private static final String DENIED_LENGTH = "금지체장";
-    private static final String DENIED_WEIGHT = "금지체중";
-    private static final String DENIED_WATER_DEPTH = "수심";
+    public static final String DENIED_LENGTH = "금지체장";
+    public static final String DENIED_WEIGHT = "금지체중";
+    public static final String DENIED_WATER_DEPTH = "수심";
 
-    private static final String SPECIAL_PROHIBIT_ADMIN_ID = "특별_금지행정_ID";
-    private static final String SPECIAL_PROHIBIT_ADMIN_AREA = "특별_금지구역";
-    private static final String SPECIAL_PROHIBIT_ADMIN_START_DATE = "금지시작기간";
-    private static final String SPECIAL_PROHIBIT_ADMIN_END_DATE = "금지종료기간";
+    public static final String SPECIAL_PROHIBIT_ADMIN_ID = "특별_금지행정_ID";
+    public static final String SPECIAL_PROHIBIT_ADMIN_AREA = "특별_금지구역";
+    public static final String SPECIAL_PROHIBIT_ADMIN_START_DATE = "금지시작기간";
+    public static final String SPECIAL_PROHIBIT_ADMIN_END_DATE = "금지종료기간";
 
-    //입력되지 않은 데이터에 대하여 치환 할 문자열들 정의
-    private static final String EMPTY_DATA = "등록 된 정보가 없습니다.";
-    private static final String EMPTY_AREA = "전 지역을 대상으로 포획을 금지한다.";
-    private static final String EMPTY_DATE = "별도의 행정명령 시까지 포획을 금지한다.";
+    /***
+     * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
+     * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
+     * ---
+     * 금지시작기간은 현재 날짜보다 이전에서 시작해서, 금지종료기간은 현재 날짜 이후일 경우만 뽑는다.
+     ***/
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public DBManager() {
@@ -84,8 +87,7 @@ public class DBManager extends SQLiteOpenHelper {
         DB_PATH = "/data/data/" + FishDic.globalContext.getPackageName() + "/databases/"; //안드로이드의 DB 저장 경로는 "/data/data/앱 이름/databases/"
         //CACHE_PATH = FishDic.globalContext.getCacheDir().toString() + "/";
 
-        switch (this.getCurrentDBState()) //기존 DB 상태 확인
-        {
+        switch (this.getCurrentDBState()) { //기존 DB 상태 확인
             case INIT: //초기 상태일 경우
                 this.copyDB();
                 break;
@@ -236,9 +238,10 @@ public class DBManager extends SQLiteOpenHelper {
 
     public void doBindingAllFishData(RecyclerAdapter recyclerAdapter) //모든 어류 정보 바인딩 작업 수행
     {
-        String sqlQuery = "SELECT " + FISH_DIC_TABLE + "." + NAME + ", " + FISH_DIC_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
-                " FROM " + FISH_DIC_TABLE +
-                " INNER JOIN " + BIO_CLASS_TABLE + " ON " + FISH_DIC_TABLE + "." + NAME + " = " + BIO_CLASS_TABLE + "." + NAME;
+        String sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
+                " FROM " + FISH_TABLE +
+                " INNER JOIN " + BIO_CLASS_TABLE +
+                " ON " + FISH_TABLE + "." + NAME + " = " + BIO_CLASS_TABLE + "." + NAME;
 
         Log.d("모든 어류 Query : ", sqlQuery);
         Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
@@ -247,8 +250,7 @@ public class DBManager extends SQLiteOpenHelper {
         int imageIndex = cursor.getColumnIndex(IMAGE);
         int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
 
-        while (cursor.moveToNext()) //쿼리 된 내용에 대하여 바인딩 작업 수행
-        {
+        while (cursor.moveToNext()) { //쿼리 된 내용에 대하여 바인딩 작업 수행
             RecyclerViewItem recyclerViewItem = new RecyclerViewItem();
 
             recyclerViewItem.setTitle(cursor.getString(nameIndex)); //어류 이름
@@ -264,67 +266,124 @@ public class DBManager extends SQLiteOpenHelper {
     public void doBindingAllDeniedFishData(RecyclerAdapter recyclerAdapter) //모든 이달의 금어기 정보 바인딩 작업 수행
     {
         String currentDate = this.getCurrentDate(DATE_FORMAT_TYPE.WITH_SEPARATOR); //현재 "년-달-일"
-
-        /***
-         * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
-         * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
-         * ---
-         * 금지시작기간은 현재 날짜보다 이전에서 시작해서, 금지종료기간은 현재 날짜 이후일 경우만 뽑는다.
-         ***/
-        String sqlQuery = "SELECT " + DENIED_FISH_TABLE + "." + ALL + ", " + FISH_DIC_TABLE + "." + IMAGE + ", " +
-                SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_AREA + ", " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + ", " +
-                SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE +
+        String sqlQuery = "SELECT DISTINCT " + DENIED_FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
                 " FROM " + DENIED_FISH_TABLE +
-                " INNER JOIN " + FISH_DIC_TABLE + " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + FISH_DIC_TABLE + "." + NAME +
-                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
-                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE + " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID;
-                //" WHERE " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + '"' + currentDate + '"' +
-                //" AND " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + '"' + currentDate + '"';
+                " INNER JOIN " + BIO_CLASS_TABLE +
+                " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + BIO_CLASS_TABLE + "." + NAME +
+                " INNER JOIN " + FISH_TABLE +
+                " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + FISH_TABLE + "." + NAME +
+                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE +
+                " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
+                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
+                " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
+                " WHERE " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + '"' + currentDate + '"' +
+                " AND " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + '"' + currentDate + '"';
 
         Log.d("금어기 Query : ", sqlQuery);
         Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
 
         int nameIndex = cursor.getColumnIndex(NAME);
         int imageIndex = cursor.getColumnIndex(IMAGE);
+        int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
+        /*
         int deniedLengthIndex = cursor.getColumnIndex(DENIED_LENGTH);
         int deniedWeightIndex = cursor.getColumnIndex(DENIED_WEIGHT);
-        int waterDepthIndex = cursor.getColumnIndex(DENIED_WATER_DEPTH);
+        int deniedWaterDepthIndex = cursor.getColumnIndex(DENIED_WATER_DEPTH);
         int specialProhibitAdminAreaIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_AREA);
         int specialProhibitAdminStartDateIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_START_DATE);
         int specialProhibitAdminEndDateIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_END_DATE);
+        */
 
-        while (cursor.moveToNext()) //쿼리 된 내용에 대하여 바인딩 작업 수행
-        {
+        while (cursor.moveToNext()) { //쿼리 된 내용에 대하여 바인딩 작업 수행
             RecyclerViewItem recyclerViewItem = new RecyclerViewItem();
 
             recyclerViewItem.setTitle(cursor.getString(nameIndex)); //금어기 이름
             recyclerViewItem.setImage(cursor.getBlob(imageIndex)); //어류 이미지
+            recyclerViewItem.setContent("생물분류 : " + cursor.getString(bioClassIndex)); //생물 분류
 
+            /*
             //금지체장, 금지체중, 수심, 특별 금지구역, 금지시작기간, 금지종료기간
             String content = "금지체장 : " + cursor.getString(deniedLengthIndex) +
                     "\n금지체중 : " + cursor.getString(deniedWeightIndex) +
-                    "\n수심 : " + cursor.getString(waterDepthIndex) +
+                    "\n수심 : " + cursor.getString(deniedWaterDepthIndex) +
                     "\n특별 금지구역 : " + cursor.getString(specialProhibitAdminAreaIndex) +
                     "\n금지시작기간 : " + cursor.getString(specialProhibitAdminStartDateIndex) +
                     "\n금지종료기간 : " + cursor.getString(specialProhibitAdminEndDateIndex);
 
             recyclerViewItem.setContent(content.replaceAll("null", EMPTY_DATA)); //입력되지 않은 데이터에 대하여 문자열 치환하여 내용 설정
+            */
+
             recyclerAdapter.addItem(recyclerViewItem);
         }
 
         cursor.close();
     }
 
-    public void doBindingFishDetailData(String fishName) { //어류 상세정보 바인딩 작업 수행
+    public Bundle getFishDetailBundle(String fishName) { //특정 어류의 상세정보 반환
+        if (fishName.isEmpty()) //입력 받은 어류 이름이 없을 경우
+            return null;
 
+        String sqlQuery = "SELECT " + FISH_TABLE + "." + ALL + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS + ", " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + ALL +
+                " FROM " + FISH_TABLE +
+                " INNER JOIN " + BIO_CLASS_TABLE +
+                " ON " + FISH_TABLE + "." + NAME + "=" + BIO_CLASS_TABLE + "." + NAME +
+                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE +
+                " ON " + FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
+                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
+                " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
+                " WHERE " + FISH_TABLE + "." + NAME + "=" + '"' + fishName + '"';
+
+        Log.d("어류 상세정보 Query : ", sqlQuery);
+        Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
+
+        int nameIndex = cursor.getColumnIndex(NAME);
+        int imageIndex = cursor.getColumnIndex(IMAGE);
+        int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
+        int deniedLengthIndex = cursor.getColumnIndex(DENIED_LENGTH);
+        int deniedWeightIndex = cursor.getColumnIndex(DENIED_WEIGHT);
+        int deniedWaterDepthIndex = cursor.getColumnIndex(DENIED_WATER_DEPTH);
+        int specialProhibitAdminIdIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_ID);
+        int specialProhibitAdminAreaIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_AREA);
+        int specialProhibitAdminStartDateIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_START_DATE);
+        int specialProhibitAdminEndDateIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_END_DATE);
+
+        /***
+         * 쿼리 결과에 대해 하나의 어류가 다수의 금지 행정정보를 가지고 있을 경우
+         * 어류_테이블과 생물분류_테이블의 데이터, 금지체장, 금지체중, 수심은 중복되므로 최초 한 번만 결과에 추가
+         * 어류 상세정보의 금지 행정정보를 동적으로 사용자에게 보여주기 위해
+         ***/
+        Bundle result = new Bundle(); //키(문자열),값 쌍의 결과
+        
+        boolean duplicateDataAdded = false; //중복 데이터가 추가 여부
+   ///     ArrayList<String> specialProhibitAdminList = new ArrayList<>(); //특별 금지행정 리스트
+      ///  String[][] aa; //Index : 각 금지행정
+
+        while (cursor.moveToNext()) {
+            if (!duplicateDataAdded) { //중복 데이터가 추가되지 않았을 경우 최초 한 번만 추가
+                result.putString(NAME, cursor.getString(nameIndex));
+                result.putString(BIO_CLASS, cursor.getString(bioClassIndex));
+                result.putByteArray(IMAGE, cursor.getBlob(imageIndex));
+                result.putString(DENIED_LENGTH, cursor.getString(deniedLengthIndex));
+                result.putString(DENIED_WEIGHT, cursor.getString(deniedWeightIndex));
+                result.putString(DENIED_WATER_DEPTH, cursor.getString(deniedWaterDepthIndex));
+
+                duplicateDataAdded = true;
+            }else{ //중복 데이터가 이미 추가되었을 경우
+///                specialProhibitAdminList.add(cursor.getString(specialProhibitAdminIdIndex));
+
+            }
+
+        }
+
+
+        return result;
     }
 
     private String getCurrentDate(DATE_FORMAT_TYPE dateFormatType) //현재 날짜 반환
     {
         SimpleDateFormat dateFormat;
 
-        switch(dateFormatType)
-        {
+        switch (dateFormatType) {
             case WITH_SEPARATOR: //구분자 사용(YY-MM-DD)
                 dateFormat = new SimpleDateFormat("YYYY-MM-dd");
                 break;

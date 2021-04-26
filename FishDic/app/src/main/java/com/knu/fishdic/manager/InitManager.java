@@ -12,6 +12,9 @@ import com.knu.fishdic.recyclerview.RecyclerAdapter;
 public class InitManager {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void doDataBindingJob() { //DBManager에 의해 데이터 받아와서 바로 사용 할 수 있게 바인딩 작업 수행
+        if(FishDic.globalDBManager != null || FishDic.globalDicRecyclerAdapter != null || FishDic.globalDeniedFishRecyclerAdapter != null)
+           return;
+
         FishDic.globalDBManager = new DBManager();
         FishDic.globalDicRecyclerAdapter = new RecyclerAdapter();
         FishDic.globalDeniedFishRecyclerAdapter = new RecyclerAdapter();
