@@ -25,6 +25,8 @@ import java.io.InputStream;
 // 메인 화면 액티비티 정의
 
 public class MainActivity extends Activity {
+    public static int totalBannerImageCount; //전체 배너 이미지 수
+    
     ImageButton main_dic_imageButton;                       //메인화면 하단부 도감 버튼
     ImageButton main_deniedFish_imageButton;                //메인화면 하단부 금어기 버튼
     ImageButton main_fishIdentification_imageButton;        //메인화면 하단부 카메라 버튼
@@ -39,6 +41,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.totalBannerImageCount = 0;
 
         /*** 초기화 작업 수행 ***/
         InitManager.doDataBindingJob(); //도감 및 이달의 금어기를 위한 바인딩 작업 수행
@@ -129,5 +132,9 @@ public class MainActivity extends Activity {
                 }
                 break;
         }
+    }
+
+    private void getBannerImages(){
+
     }
 }

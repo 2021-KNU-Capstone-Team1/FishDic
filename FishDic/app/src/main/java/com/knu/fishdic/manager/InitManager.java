@@ -21,4 +21,8 @@ public class InitManager {
         FishDic.globalDBManager.doBindingAllFishData(FishDic.globalDicRecyclerAdapter);
         FishDic.globalDBManager.doBindingAllDeniedFishData(FishDic.globalDeniedFishRecyclerAdapter);
     }
+
+    public static void doBannerUpdate(){
+
+    }
 }

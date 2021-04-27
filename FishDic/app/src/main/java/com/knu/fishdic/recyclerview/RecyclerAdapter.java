@@ -163,8 +163,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
                 /***
                  * 1) 도감 혹은 이달의 금어기에서 새로운 클릭 리스너 객체 생성 하여 RecyclerAdapter 내부의 refItemClickListener가 참조
                  * 2) 각 어류 클릭 이벤트 발생 시
-                 *  2-1) 현재 아이템에 대한 클릭 이벤트 먼저 발생, RecyclerAdapter 내부의 참조 된 refItemClickListener로 클릭 된 어류의 이름 전달하여 클릭 이벤트 발생
-                 *  2-2) Intent 생성 및 어류 이름 전달하여 어류 상세 정보 액티비티 시작
+                 *   2-1) 현재 아이템에 대한 클릭 이벤트 먼저 발생, RecyclerAdapter 내부의 참조 된 refItemClickListener로 클릭 된 어류의 이름 전달하여 클릭 이벤트 발생
+                 *   2-2) Intent 생성 및 어류 이름 전달하여 어류 상세 정보 액티비티 시작
                  ***/
                 int bindingAdapterPosition = getBindingAdapterPosition();
                 //int absoluteAdapterPosition = getAbsoluteAdapterPosition();

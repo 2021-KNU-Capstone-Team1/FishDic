@@ -74,6 +74,10 @@ public class DBManager extends SQLiteOpenHelper {
     public static final String SPECIAL_PROHIBIT_ADMIN_START_DATE = "금지시작기간";
     public static final String SPECIAL_PROHIBIT_ADMIN_END_DATE = "금지종료기간";
 
+    ///!!!!!!!!!수정예정:DBManager와 RecyclerAdapter간의 클래스 결합도를 낮추기 위해 DBManager에서 Bundle반환 후 초기 모든 어류 혹은 이달의 금어기 바인딩을 RecyclerAdapter에서 수행
+    public static final String QUERY_RESULT_COUNT_KEY_VALUE = "queryResultCount"; //쿼리 결과 수를 위한 키 값
+    public static final String SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE = "spac"; //특별 금지행정의 수를 위한 키 값
+
     /***
      * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
      * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
@@ -285,14 +289,6 @@ public class DBManager extends SQLiteOpenHelper {
         int nameIndex = cursor.getColumnIndex(NAME);
         int imageIndex = cursor.getColumnIndex(IMAGE);
         int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
-        /*
-        int deniedLengthIndex = cursor.getColumnIndex(DENIED_LENGTH);
-        int deniedWeightIndex = cursor.getColumnIndex(DENIED_WEIGHT);
-        int deniedWaterDepthIndex = cursor.getColumnIndex(DENIED_WATER_DEPTH);
-        int specialProhibitAdminAreaIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_AREA);
-        int specialProhibitAdminStartDateIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_START_DATE);
-        int specialProhibitAdminEndDateIndex = cursor.getColumnIndex(SPECIAL_PROHIBIT_ADMIN_END_DATE);
-        */
 
         while (cursor.moveToNext()) { //쿼리 된 내용에 대하여 바인딩 작업 수행
             RecyclerViewItem recyclerViewItem = new RecyclerViewItem();
@@ -300,18 +296,6 @@ public class DBManager extends SQLiteOpenHelper {
             recyclerViewItem.setTitle(cursor.getString(nameIndex)); //금어기 이름
             recyclerViewItem.setImage(cursor.getBlob(imageIndex)); //어류 이미지
             recyclerViewItem.setContent("생물분류 : " + cursor.getString(bioClassIndex)); //생물 분류
-
-            /*
-            //금지체장, 금지체중, 수심, 특별 금지구역, 금지시작기간, 금지종료기간
-            String content = "금지체장 : " + cursor.getString(deniedLengthIndex) +
-                    "\n금지체중 : " + cursor.getString(deniedWeightIndex) +
-                    "\n수심 : " + cursor.getString(deniedWaterDepthIndex) +
-                    "\n특별 금지구역 : " + cursor.getString(specialProhibitAdminAreaIndex) +
-                    "\n금지시작기간 : " + cursor.getString(specialProhibitAdminStartDateIndex) +
-                    "\n금지종료기간 : " + cursor.getString(specialProhibitAdminEndDateIndex);
-
-            recyclerViewItem.setContent(content.replaceAll("null", EMPTY_DATA)); //입력되지 않은 데이터에 대하여 문자열 치환하여 내용 설정
-            */
 
             recyclerAdapter.addItem(recyclerViewItem);
         }
@@ -323,10 +307,13 @@ public class DBManager extends SQLiteOpenHelper {
         if (fishName.isEmpty()) //입력 받은 어류 이름이 없을 경우
             return null;
 
-        String sqlQuery = "SELECT " + FISH_TABLE + "." + ALL + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS + ", " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + ALL +
+        String sqlQuery = "SELECT " + FISH_TABLE + "." + ALL + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS + ", " +
+                DENIED_FISH_TABLE + "." + DENIED_LENGTH + ", " + DENIED_FISH_TABLE + "." + DENIED_WEIGHT + ", " + DENIED_FISH_TABLE + "." + DENIED_WATER_DEPTH +
+                SPECIAL_PROHIBIT_ADMIN_TABLE + "." + ALL +
                 " FROM " + FISH_TABLE +
                 " INNER JOIN " + BIO_CLASS_TABLE +
                 " ON " + FISH_TABLE + "." + NAME + "=" + BIO_CLASS_TABLE + "." + NAME +
+                " INNER JOIN " + FISH_TABLE + "." + NAME + "=" + DENIED_FISH_TABLE + "." + NAME +
                 " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE +
                 " ON " + FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
                 " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
@@ -350,15 +337,23 @@ public class DBManager extends SQLiteOpenHelper {
         /***
          * 쿼리 결과에 대해 하나의 어류가 다수의 금지 행정정보를 가지고 있을 경우
          * 어류_테이블과 생물분류_테이블의 데이터, 금지체장, 금지체중, 수심은 중복되므로 최초 한 번만 결과에 추가
-         * 어류 상세정보의 금지 행정정보를 동적으로 사용자에게 보여주기 위해
+         * 어류 상세정보의 금지 행정정보를 동적으로 사용자에게 보여주기 위해 해당 어류의 모든 정보 반환
+         * ---
+         * 어류 테이블 : 이름, 학명, 이미지, 형태, 분포, 몸길이, 서식지, 주의사항
+         * 생물분류 테이블 : 생물분류
+         * 금어기 테이블 : 금지체장, 금지체중, 수심
+         * 특별 금지행정 테이블 : 특별 금지행정 ID, 특별 금지구역, 금지시작기간, 금지종료기간
          ***/
-        Bundle result = new Bundle(); //키(문자열),값 쌍의 결과
-        
-        boolean duplicateDataAdded = false; //중복 데이터가 추가 여부
-   ///     ArrayList<String> specialProhibitAdminList = new ArrayList<>(); //특별 금지행정 리스트
-      ///  String[][] aa; //Index : 각 금지행정
+        Bundle result = new Bundle(); //키(문자열), 값 쌍의 최종 결과
+
+        boolean duplicateDataAdded = false; //중복 데이터 추가 여부
+        boolean queryResultExist = false; //쿼리 결과 존재 여부
+        int specialProhibitAdminIndex = 0; //특별 금지행정의 인덱스
 
         while (cursor.moveToNext()) {
+            if (!queryResultExist)
+                queryResultExist = true;
+
             if (!duplicateDataAdded) { //중복 데이터가 추가되지 않았을 경우 최초 한 번만 추가
                 result.putString(NAME, cursor.getString(nameIndex));
                 result.putString(BIO_CLASS, cursor.getString(bioClassIndex));
@@ -368,15 +363,24 @@ public class DBManager extends SQLiteOpenHelper {
                 result.putString(DENIED_WATER_DEPTH, cursor.getString(deniedWaterDepthIndex));
 
                 duplicateDataAdded = true;
-            }else{ //중복 데이터가 이미 추가되었을 경우
-///                specialProhibitAdminList.add(cursor.getString(specialProhibitAdminIdIndex));
+            } else { //중복 데이터가 이미 추가되었을 경우
+                Bundle specialProhibitAdminResult = new Bundle(); //result 내부에 특별 금지행정을 각각 추가하기 위한 키(문자열), 값 쌍의 결과
+                specialProhibitAdminResult.putString(SPECIAL_PROHIBIT_ADMIN_ID, cursor.getString(specialProhibitAdminIdIndex));
+                specialProhibitAdminResult.putString(SPECIAL_PROHIBIT_ADMIN_AREA, cursor.getString(specialProhibitAdminAreaIndex));
+                specialProhibitAdminResult.putString(SPECIAL_PROHIBIT_ADMIN_START_DATE, cursor.getString(specialProhibitAdminStartDateIndex));
+                specialProhibitAdminResult.putString(SPECIAL_PROHIBIT_ADMIN_END_DATE, cursor.getString(specialProhibitAdminEndDateIndex));
+                result.putBundle(String.valueOf(specialProhibitAdminIndex), specialProhibitAdminResult); //특별 금지행정의 인덱스를 키로하여 최종 결과에 추가
 
+                specialProhibitAdminIndex++;
             }
-
         }
 
+        result.putInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE, specialProhibitAdminIdIndex); //전체 특별 금지행정의 수를 추가
 
-        return result;
+        if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
+            return result;
+        else //쿼리 결과가 존재하지 않으면
+            return null;
     }
 
     private String getCurrentDate(DATE_FORMAT_TYPE dateFormatType) //현재 날짜 반환
