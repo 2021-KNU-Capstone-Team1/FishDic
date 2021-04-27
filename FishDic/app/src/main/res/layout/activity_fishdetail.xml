@@ -81,12 +81,6 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/fishDetail_imageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/photo_coming_soon_600x600" />
-
                     <!-- FragmentManager에 의해 상세 정보 삽입 -->
 
                 </LinearLayout>

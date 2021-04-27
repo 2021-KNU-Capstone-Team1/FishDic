@@ -26,7 +26,8 @@ import java.io.InputStream;
 
 public class MainActivity extends Activity {
     public static int totalBannerImageCount; //전체 배너 이미지 수
-    
+    Bitmap[] bannerImage; //배너 이미지
+
     ImageButton main_dic_imageButton;                       //메인화면 하단부 도감 버튼
     ImageButton main_deniedFish_imageButton;                //메인화면 하단부 금어기 버튼
     ImageButton main_fishIdentification_imageButton;        //메인화면 하단부 카메라 버튼
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.bannerImage = null;
         this.totalBannerImageCount = 0;
 
         /*** 초기화 작업 수행 ***/
@@ -49,7 +51,7 @@ public class MainActivity extends Activity {
         setTitle(R.string.app_name);
         setTheme(R.style.AppTheme); //초기화 적업 완료 후 스플래시 테마에서 기존 앱 테마로 변경
         setContentView(R.layout.activity_main);
-        setComponentsInteraction();
+        this.setComponentsInteraction();
 
         //checkSelfPermission();
 

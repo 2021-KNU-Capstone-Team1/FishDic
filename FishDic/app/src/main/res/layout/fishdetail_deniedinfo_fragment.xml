@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- 어류 상세정보의 금지 행정정보 표 Fragment 레이아웃 정의 -->
+<!-- 어류 상세정보의 금지 행정정보 Fragment 레이아웃 정의 -->
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

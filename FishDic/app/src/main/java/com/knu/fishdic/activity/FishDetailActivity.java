@@ -30,13 +30,13 @@ public class FishDetailActivity extends AppCompatActivity {
         setTitle(R.string.app_name);
         setContentView(R.layout.activity_fishdetail);
 
-        setComponentsInteraction();
+        this.setComponentsInteraction();
 
         Bundle args = getIntent().getExtras(); //현재 액티비티 생성 시 전달받은 키(문자열), 값 쌍
         String fishName = args.getString(DBManager.NAME); //전달 받은 어류 이름
         Log.d("어류 이름 : ", fishName);
         this.fishDetail_title_textView.setText(fishName); //어류 이름으로 타이틀 텍스트 뷰 설정
-
+        this.doDataBindingJob(fishName);
     }
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
@@ -48,21 +48,31 @@ public class FishDetailActivity extends AppCompatActivity {
                 onBackPressed());
     }
 
-    private void temp(String fishName){
-        /*** DB로부터 상세정보를 받아온다. ***/
-        Bundle result = FishDic.globalDBManager.getFishDetailBundle(fishName);
-        int specialProhibitAdminCount = result.getInt(DBManager.SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
+    private void doDataBindingJob(String fishName) {
+        /*** 
+         * 1) DB로부터 해당 어류의 상세정보를 받아온다. 
+         * 2) 해당 어류의 상세정보가 존재 할 경우
+         *      2-1)
+         ***/
+        Bundle queryResult = FishDic.globalDBManager.getFishDetailBundle(fishName);
+        int specialProhibitAdminCount = queryResult.getInt(DBManager.SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
 
+        /*** Fragment를 Activity의 ViewGroup(innerFishDetail_linearLayout)에 추가 ***/
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        /*** Fragment를 Activity의 ViewGroup(innerFishDetail_scrollView)에 추가 ***/
-        ///////임시 DB로부터 받아와서 바인딩해야함
-        fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.BASIC_INFO, 0, null));
-        fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.DENIED_INFO, 0, null));
-        fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.DENIED_INFO, 0, null));
 
-        for (int i = 0; i < specialProhibitAdminCount; i++) { //전체 금지행정의 수만큼 금지행정 정보 추가
+        fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.BASIC_INFO, 0, queryResult)); //기본 정보에 해당하는 Fragment 인스턴스 생성 및 추가
 
+        for (int specialProhibitAdminIndex = 0; specialProhibitAdminIndex < specialProhibitAdminCount; specialProhibitAdminIndex++) { //전체 금지행정의 수만큼 금지행정 정보 추가
+            Bundle subQueryResult = queryResult.getBundle(String.valueOf(specialProhibitAdminIndex)); //특별 금지행정의 인덱스를 키로하는 각 금지행정 정보
+
+            //오류
+            if(subQueryResult == null) {
+                Log.e("err", "nullex");
+                return;
+            }
+
+            fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.DENIED_INFO, 0, subQueryResult)); //금지 행정정보에 해당하는 Fragment 인스턴스 생성 및 추가
         }
 
         fragmentTransaction.commit();

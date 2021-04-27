@@ -1,5 +1,6 @@
 package com.knu.fishdic.activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
@@ -16,6 +17,7 @@ import me.relex.circleindicator.CircleIndicator;
 
 public class HelpActivity extends AppCompatActivity {
     public static int totalHelpImageCount; //전체 이용가이드 이미지 수
+    Bitmap[] helpImage; //이용가이드 이미지
 
     ImageButton help_back_imageButton; //뒤로 가기 버튼
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
@@ -23,12 +25,13 @@ public class HelpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.helpImage = null;
         this.totalHelpImageCount = 0;
 
         setTitle(R.string.app_name);
         setContentView(R.layout.activity_help);
 
-        setComponentsInteraction();
+        this.setComponentsInteraction();
 
         /////코드 정리 예정
         ViewPager viewPager = findViewById(R.id.help_viewPager);
@@ -47,7 +50,7 @@ public class HelpActivity extends AppCompatActivity {
                 onBackPressed());
     }
 
-    private void getHelpImages(){
+    private void getHelpImages() {
 
     }
 }

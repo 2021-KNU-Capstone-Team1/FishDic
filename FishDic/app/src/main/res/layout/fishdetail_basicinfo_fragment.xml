@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- 어류 상세정보의 기본 정보 표 Fragment 레이아웃 정의 -->
+<!-- 어류 상세정보의 기본 정보 Fragment 레이아웃 정의 -->
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="20dp"
     android:stretchColumns="1">
+
+    <ImageView
+        android:id="@+id/fishDetail_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/photo_coming_soon_600x600" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,7 +42,6 @@
             android:layout_column="1"
             android:background="@drawable/background_cell"
             android:gravity="left"
-            android:text="테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트"
             android:padding="5dip" />
     </TableRow>
 

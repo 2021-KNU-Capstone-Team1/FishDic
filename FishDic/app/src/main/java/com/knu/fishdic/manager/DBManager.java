@@ -12,6 +12,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.knu.fishdic.FishDic;
+import com.knu.fishdic.R;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 import com.knu.fishdic.recyclerview.RecyclerViewItem;
 
@@ -308,12 +309,13 @@ public class DBManager extends SQLiteOpenHelper {
             return null;
 
         String sqlQuery = "SELECT " + FISH_TABLE + "." + ALL + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS + ", " +
-                DENIED_FISH_TABLE + "." + DENIED_LENGTH + ", " + DENIED_FISH_TABLE + "." + DENIED_WEIGHT + ", " + DENIED_FISH_TABLE + "." + DENIED_WATER_DEPTH +
+                DENIED_FISH_TABLE + "." + DENIED_LENGTH + ", " + DENIED_FISH_TABLE + "." + DENIED_WEIGHT + ", " + DENIED_FISH_TABLE + "." + DENIED_WATER_DEPTH + ", " +
                 SPECIAL_PROHIBIT_ADMIN_TABLE + "." + ALL +
                 " FROM " + FISH_TABLE +
                 " INNER JOIN " + BIO_CLASS_TABLE +
                 " ON " + FISH_TABLE + "." + NAME + "=" + BIO_CLASS_TABLE + "." + NAME +
-                " INNER JOIN " + FISH_TABLE + "." + NAME + "=" + DENIED_FISH_TABLE + "." + NAME +
+                " INNER JOIN " + DENIED_FISH_TABLE +
+                " ON " + FISH_TABLE + "." + NAME + "=" + DENIED_FISH_TABLE + "." + NAME +
                 " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE +
                 " ON " + FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
                 " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
@@ -344,7 +346,7 @@ public class DBManager extends SQLiteOpenHelper {
          * 금어기 테이블 : 금지체장, 금지체중, 수심
          * 특별 금지행정 테이블 : 특별 금지행정 ID, 특별 금지구역, 금지시작기간, 금지종료기간
          ***/
-        Bundle result = new Bundle(); //키(문자열), 값 쌍의 최종 결과
+        Bundle queryResult = new Bundle(); //키(문자열), 값 쌍의 최종 결과
 
         boolean duplicateDataAdded = false; //중복 데이터 추가 여부
         boolean queryResultExist = false; //쿼리 결과 존재 여부
@@ -355,30 +357,36 @@ public class DBManager extends SQLiteOpenHelper {
                 queryResultExist = true;
 
             if (!duplicateDataAdded) { //중복 데이터가 추가되지 않았을 경우 최초 한 번만 추가
-                result.putString(NAME, cursor.getString(nameIndex));
-                result.putString(BIO_CLASS, cursor.getString(bioClassIndex));
-                result.putByteArray(IMAGE, cursor.getBlob(imageIndex));
-                result.putString(DENIED_LENGTH, cursor.getString(deniedLengthIndex));
-                result.putString(DENIED_WEIGHT, cursor.getString(deniedWeightIndex));
-                result.putString(DENIED_WATER_DEPTH, cursor.getString(deniedWaterDepthIndex));
+                queryResult.putString(NAME, cursor.getString(nameIndex));
+                queryResult.putString(BIO_CLASS, cursor.getString(bioClassIndex));
+                queryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
+
+                queryResult.putString(DENIED_LENGTH, cursor.getString(deniedLengthIndex));
+                queryResult.putString(DENIED_WEIGHT, cursor.getString(deniedWeightIndex));
+                queryResult.putString(DENIED_WATER_DEPTH, cursor.getString(deniedWaterDepthIndex));
 
                 duplicateDataAdded = true;
             } else { //중복 데이터가 이미 추가되었을 경우
-                Bundle specialProhibitAdminResult = new Bundle(); //result 내부에 특별 금지행정을 각각 추가하기 위한 키(문자열), 값 쌍의 결과
-                specialProhibitAdminResult.putString(SPECIAL_PROHIBIT_ADMIN_ID, cursor.getString(specialProhibitAdminIdIndex));
-                specialProhibitAdminResult.putString(SPECIAL_PROHIBIT_ADMIN_AREA, cursor.getString(specialProhibitAdminAreaIndex));
-                specialProhibitAdminResult.putString(SPECIAL_PROHIBIT_ADMIN_START_DATE, cursor.getString(specialProhibitAdminStartDateIndex));
-                specialProhibitAdminResult.putString(SPECIAL_PROHIBIT_ADMIN_END_DATE, cursor.getString(specialProhibitAdminEndDateIndex));
-                result.putBundle(String.valueOf(specialProhibitAdminIndex), specialProhibitAdminResult); //특별 금지행정의 인덱스를 키로하여 최종 결과에 추가
+                //특별 금지 행정 ID가 존재할 경우만 하위 결과 생성
+                String specialProhibitAdminID = cursor.getString(specialProhibitAdminIdIndex);
+                if (specialProhibitAdminID.matches("null")) //특별 금지 행정 ID가 존재하지 않을 경우 건너뜀
+                    continue;
+
+                Bundle subQueryResult = new Bundle(); //queryResult 내부에 특별 금지행정을 각각 추가하기 위한 키(문자열), 값 쌍의 하위 결과
+                subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_ID,  specialProhibitAdminID);
+                subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_AREA, cursor.getString(specialProhibitAdminAreaIndex));
+                subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_START_DATE, cursor.getString(specialProhibitAdminStartDateIndex));
+                subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_END_DATE, cursor.getString(specialProhibitAdminEndDateIndex));
+                queryResult.putBundle(String.valueOf(specialProhibitAdminIndex), subQueryResult); //특별 금지행정의 인덱스를 키로하여 최종 결과에 추가
 
                 specialProhibitAdminIndex++;
             }
         }
 
-        result.putInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE, specialProhibitAdminIdIndex); //전체 특별 금지행정의 수를 추가
+        queryResult.putInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE, specialProhibitAdminIdIndex); //전체 특별 금지행정의 수를 추가
 
         if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
-            return result;
+            return queryResult;
         else //쿼리 결과가 존재하지 않으면
             return null;
     }
