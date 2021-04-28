@@ -12,6 +12,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.knu.fishdic.FishDic;
+import com.knu.fishdic.R;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 import com.knu.fishdic.recyclerview.RecyclerViewItem;
 
@@ -34,6 +35,16 @@ public class DBManager extends SQLiteOpenHelper {
     private enum DATE_FORMAT_TYPE { //날짜 형식 타입 정의
         WITH_SEPARATOR, //구분자 사용 (YY-MM-dd)
         WITHOUT_SEPARATOR //구분자 사용하지 않음 (YYMMdd)
+    }
+
+    private enum EMPTY_DATA_TYPE { //빈 데이터 타입 정의
+        /***
+         * 이름, 학명, 생물분류는 NOT NULL이므로 공백을 허용하지 않는다.
+         * 이름, 학명, 생물분류를 제외 한 형태, 분포, 서식지, 주의사항, 금지체장, 금지체중, 수심 등은 null일 경우 대체 문자열로 치환
+         ***/
+
+        SPECIAL_PROHIBIT_ADMIN_AREA, //특별 금지구역
+        SPECIAL_PROHIBIT_ADMIN_DATE //금지시작기간, 금지종료기간
     }
 
     private static final String DB_SERVER = "https://raw.githubusercontent.com/2021-KNU-Capstone-Team1/FishDic/master/DB/"; //DB 저장 된 서버 경로
@@ -344,7 +355,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         /***
          * 쿼리 결과에 대해 하나의 어류가 다수의 금지 행정정보를 가지고 있을 경우
-         * 어류_테이블과 생물분류_테이블의 데이터, 금어기_테이블의 금지체장, 금지체중, 수심은 중복되므로 최초 한 번만 결과에 추가
+         * 어류_테이블과 생물분류_테이블의 데이터는 중복되므로 최초 한 번만 결과에 추가
          * 어류 상세정보의 금지 행정정보를 동적으로 사용자에게 보여주기 위해 해당 어류의 모든 정보 반환
          * ---
          * 어류 테이블 : 이름, 학명, 이미지, 형태, 분포, 몸길이, 서식지, 주의사항
@@ -352,6 +363,7 @@ public class DBManager extends SQLiteOpenHelper {
          * 금어기 테이블 : 금지체장, 금지체중, 수심
          * 특별 금지행정 테이블 : 특별 금지행정 ID, 특별 금지구역, 금지시작기간, 금지종료기간
          ***/
+
         Bundle queryResult = new Bundle(); //키(문자열), 값 쌍의 최종 결과
 
         boolean duplicateDataAdded = false; //중복 데이터 추가 여부
@@ -367,15 +379,12 @@ public class DBManager extends SQLiteOpenHelper {
                 queryResult.putString(SCIENTIFIC_NAME, cursor.getString(scientificNameIndex));
                 queryResult.putString(BIO_CLASS, cursor.getString(bioClassIndex));
                 queryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
-                queryResult.putString(SHAPE, cursor.getString(shapeIndex));
-                queryResult.putString(DISTRIBUTION, cursor.getString(distributionIndex));
-                queryResult.putString(BODY_LENGTH, cursor.getString(bodyLengthIndex));
-                queryResult.putString(HABITAT, cursor.getString(habitatIndex));
-                queryResult.putString(WARNINGS, cursor.getString(warningsIndex));
+                queryResult.putString(SHAPE, replaceEmptyData(cursor.getString(shapeIndex), null));
+                queryResult.putString(DISTRIBUTION, replaceEmptyData(cursor.getString(distributionIndex), null));
+                queryResult.putString(BODY_LENGTH, replaceEmptyData(cursor.getString(bodyLengthIndex), null));
+                queryResult.putString(HABITAT, replaceEmptyData(cursor.getString(habitatIndex), null));
+                queryResult.putString(WARNINGS, replaceEmptyData(cursor.getString(warningsIndex), null));
 
-                queryResult.putString(DENIED_LENGTH, cursor.getString(deniedLengthIndex));
-                queryResult.putString(DENIED_WEIGHT, cursor.getString(deniedWeightIndex));
-                queryResult.putString(DENIED_WATER_DEPTH, cursor.getString(deniedWaterDepthIndex));
                 duplicateDataAdded = true;
             }
 
@@ -386,16 +395,25 @@ public class DBManager extends SQLiteOpenHelper {
                 continue;
 
             Bundle subQueryResult = new Bundle(); //queryResult 내부에 특별 금지행정을 각각 추가하기 위한 키(문자열), 값 쌍의 하위 결과
+
+            /***
+             * 금어기 정보 중 금지체장, 금지체중, 수심은 각 금지행정마다 변동 될 수 있으므로,
+             * 중복 데이터로 간주하여 처리하지 않고, 각각 추가한다.
+             ***/
+            subQueryResult.putString(DENIED_LENGTH, replaceEmptyData(cursor.getString(deniedLengthIndex), null));
+            subQueryResult.putString(DENIED_WEIGHT, replaceEmptyData(cursor.getString(deniedWeightIndex), null));
+            subQueryResult.putString(DENIED_WATER_DEPTH, replaceEmptyData(cursor.getString(deniedWaterDepthIndex), null));
+
             subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_ID, specialProhibitAdminID);
-            subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_AREA, cursor.getString(specialProhibitAdminAreaIndex));
-            subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_START_DATE, cursor.getString(specialProhibitAdminStartDateIndex));
-            subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_END_DATE, cursor.getString(specialProhibitAdminEndDateIndex));
+            subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_AREA, replaceEmptyData(cursor.getString(specialProhibitAdminAreaIndex), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_AREA));
+            subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_START_DATE, replaceEmptyData(cursor.getString(specialProhibitAdminStartDateIndex), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_DATE));
+            subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_END_DATE, replaceEmptyData(cursor.getString(specialProhibitAdminEndDateIndex), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_DATE));
 
             queryResult.putBundle(String.valueOf(specialProhibitAdminIndex), subQueryResult); //특별 금지행정의 인덱스를 키로하여 최종 결과에 추가
             specialProhibitAdminIndex++;
         }
 
-        Log.d("쿼리 된 금지행정의 수 :", String.valueOf(specialProhibitAdminIndex));
+        //Log.d("쿼리 된 금지행정의 수 :", String.valueOf(specialProhibitAdminIndex));
         queryResult.putInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE, specialProhibitAdminIndex); //전체 특별 금지행정의 수를 추가
 
         if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
@@ -410,8 +428,7 @@ public class DBManager extends SQLiteOpenHelper {
             Log.d("queryResult Key", key);
         }
 
-        for (int i = 0; i < queryResult.getInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); i++) { //debug
-            //금지행정이 2개라면, 0, 1 인덱스로 접근
+        for (int i = 0; i < queryResult.getInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); i++) {
             Bundle subQueryResult = queryResult.getBundle(String.valueOf(0));
 
             for (String key : subQueryResult.keySet()) {
@@ -420,98 +437,59 @@ public class DBManager extends SQLiteOpenHelper {
         }
 
         Log.d("---------------------", "queryResult Value");
-        String tmp;
 
         /*** 어류 테이블, 생물분류 테이블 ***/
-        tmp = queryResult.getString(NAME);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(NAME, tmp);
-
-        tmp = queryResult.getString(SCIENTIFIC_NAME);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(SCIENTIFIC_NAME, tmp);
-
-        tmp = queryResult.getString(BIO_CLASS);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(BIO_CLASS, tmp);
+        Log.d(NAME, queryResult.getString(NAME));
+        Log.d(SCIENTIFIC_NAME, queryResult.getString(SCIENTIFIC_NAME));
+        Log.d(BIO_CLASS, queryResult.getString(BIO_CLASS));
 
         byte[] image = queryResult.getByteArray(IMAGE);
         int imageLength = 0;
-        if(image != null)
+        if (image != null)
             imageLength = image.length;
         Log.d(IMAGE + " 크기", String.valueOf(imageLength));
 
-        tmp = queryResult.getString(SHAPE);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(SHAPE, tmp);
+        Log.d(SHAPE, replaceEmptyData(queryResult.getString(SHAPE), null));
+        Log.d(DISTRIBUTION, replaceEmptyData(queryResult.getString(DISTRIBUTION), null));
+        Log.d(BODY_LENGTH, replaceEmptyData(queryResult.getString(BODY_LENGTH), null));
+        Log.d(HABITAT, replaceEmptyData(queryResult.getString(HABITAT), null));
+        Log.d(WARNINGS, replaceEmptyData(queryResult.getString(WARNINGS), null));
 
-        tmp = queryResult.getString(DISTRIBUTION);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(DISTRIBUTION, tmp);
-
-        tmp = queryResult.getString(BODY_LENGTH);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(BODY_LENGTH, tmp);
-
-        tmp = queryResult.getString(HABITAT);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(HABITAT, tmp);
-
-        tmp = queryResult.getString(WARNINGS);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(WARNINGS, tmp);
-
-        /*** 금어기 테이블 ***/
-        tmp = queryResult.getString(DENIED_LENGTH);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(DENIED_LENGTH, tmp);
-
-        tmp = queryResult.getString(DENIED_WEIGHT);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(DENIED_WEIGHT, tmp);
-
-        tmp = queryResult.getString(DENIED_WATER_DEPTH);
-        if (tmp == null)
-            tmp = "null";
-        Log.d(DENIED_WATER_DEPTH, tmp);
-
-        /*** 특별 금지행정 테이블 ***/
+        /*** 금어기 테이블, 특별 금지행정 테이블 ***/
         Log.d("---------------------", "subQueryResult Value");
         int specialProhibitAdminCount = queryResult.getInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
         for (int specialProhibitAdminIndex = 0; specialProhibitAdminIndex < specialProhibitAdminCount; specialProhibitAdminIndex++) { //전체 금지행정의 수만큼
             Bundle subQueryResult = queryResult.getBundle(String.valueOf(specialProhibitAdminIndex)); //특별 금지행정의 인덱스를 키로하는 각 금지행정 정보
 
-            tmp = subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_ID);
-            if (tmp == null)
-                tmp = "null";
-            Log.d(SPECIAL_PROHIBIT_ADMIN_ID, tmp);
+            Log.d(DENIED_LENGTH, replaceEmptyData(subQueryResult.getString(DENIED_LENGTH), null));
+            Log.d(DENIED_WEIGHT, replaceEmptyData(subQueryResult.getString(DENIED_WEIGHT), null));
+            Log.d(DENIED_WATER_DEPTH, replaceEmptyData(subQueryResult.getString(DENIED_WATER_DEPTH), null));
 
-            tmp = subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_AREA);
-            if (tmp == null)
-                tmp = "null";
-            Log.d(SPECIAL_PROHIBIT_ADMIN_AREA, tmp);
+            Log.d(SPECIAL_PROHIBIT_ADMIN_ID, replaceEmptyData(subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_ID), null));
+            Log.d(SPECIAL_PROHIBIT_ADMIN_AREA, replaceEmptyData(subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_AREA), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_AREA));
+            Log.d(SPECIAL_PROHIBIT_ADMIN_START_DATE, replaceEmptyData(subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_START_DATE), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_DATE));
+            Log.d(SPECIAL_PROHIBIT_ADMIN_END_DATE, replaceEmptyData(subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_END_DATE), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_DATE));
+        }
+    }
 
-            tmp = subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_START_DATE);
-            if (tmp == null)
-                tmp = "null";
-            Log.d(SPECIAL_PROHIBIT_ADMIN_START_DATE, tmp);
+    private String replaceEmptyData(String data, EMPTY_DATA_TYPE emptyDataType) { //공백 데이터 존재 시 대체 문자열로 치환
+        if (data == null) { //공백 데이터일 경우 치환
+            if (emptyDataType == null) //이름, 학명, 생물분류 제외 (NOT NULL) 한 형태, 분포, 서식지, 주의사항, 금지체장, 금지체중, 수심 등
+                return FishDic.globalContext.getString(R.string.empty_info);
 
-            tmp = subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_END_DATE);
-            if (tmp == null)
-                tmp = "null";
-            Log.d(SPECIAL_PROHIBIT_ADMIN_END_DATE, tmp);
+            switch (emptyDataType) {
+                case SPECIAL_PROHIBIT_ADMIN_AREA: //특별 금지구역
+                    return FishDic.globalContext.getString(R.string.empty_area);
+
+                case SPECIAL_PROHIBIT_ADMIN_DATE: //금지시작기간, 금지종료기간
+                    return FishDic.globalContext.getString(R.string.empty_date);
+
+                default:
+                    throw new IllegalStateException("Unexpected value: " + emptyDataType);
+            }
         }
 
+        return data;
     }
 
     private String getCurrentDate(DATE_FORMAT_TYPE dateFormatType) //현재 날짜 반환

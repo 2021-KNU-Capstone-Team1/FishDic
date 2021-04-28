@@ -15,10 +15,10 @@ import androidx.fragment.app.Fragment;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.manager.DBManager;
+import com.knu.fishdic.utils.BitmapUtility;
 
 
 ////////////////////코드 정리 예정
-
 
 
 // 어류 상세 정보 페이지의 동적 화면(기본 정보 및 금지 행정 표) 추가 및 메인화면의 배너, 이용가이드를 위한 MyFragment 정의
@@ -43,7 +43,7 @@ public class MyFragment extends Fragment {
         HELP //이용가이드
     }
 
-    private int position; //Fragment의 위치 (금지 행정 표, 배너 혹은 이용가이드를 위함)
+    private int position; //Fragment의 위치
     private FRAGMENT_TYPE fragmentType; //현재 Fragment의 타입
 
     //private Bitmap image; //이미지
@@ -143,19 +143,16 @@ public class MyFragment extends Fragment {
                 TextView fishDetail_habitat_textView = view.findViewById(R.id.fishDetail_habitat_textView); //서식지
                 TextView fishDetail_warnings_textView = view.findViewById(R.id.fishDetail_warnings_textView); //주의사항
 
-                FishDic.globalDBManager.doParseFishDetailBundle(this.refQueryResult); //디버그
+                //FishDic.globalDBManager.doParseFishDetailBundle(this.refQueryResult); //디버그
 
                 fishDetail_name_textView.setText(this.refQueryResult.getString(DBManager.NAME));
 
-                byte[] image = this.refQueryResult.getByteArray(DBManager.IMAGE);
-                if (image != null && image.length > 0) { //이미지가 존재 할 경우만 이미지 설정
-                    int imageLength = image.length; //이미지 배열 길이
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, imageLength); //DB로부터 읽어들인 이미지를 Bitmap 형식으로 변환
+                /*** 이미지가 존재 할 경우 해당 이미지로 설정, 존재하지 않을 경우 대체 이미지 설정 ***/
+                Bitmap bitmap = BitmapUtility.decodeFromByteArray(this.refQueryResult.getByteArray(DBManager.IMAGE));
+                if (bitmap != null)
                     fishDetail_imageView.setImageBitmap(bitmap);
-
-                } else { //이미지가 존재하지 않은 어류를 위하여 리소스 설정
+                else
                     fishDetail_imageView.setImageResource(R.drawable.photo_coming_soon_600x600);
-                }
 
                 fishDetail_scientific_name_textView.setText(this.refQueryResult.getString(DBManager.SCIENTIFIC_NAME));
                 fishDetail_bio_class_textView.setText(this.refQueryResult.getString(DBManager.BIO_CLASS));

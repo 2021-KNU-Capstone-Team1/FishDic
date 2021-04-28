@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.knu.fishdic.R;
+import com.knu.fishdic.utils.BitmapUtility;
 
 import java.util.ArrayList;
 
@@ -130,12 +131,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         this.itemList.add(Item);
     }
 
-    public void resetRefItemList(){ //참조 목록에 대한 초기화
-      if(this.refItemList != this.itemList) { //기존의 원본 리스트를 참조하지 않을 경우 
-          this.refItemList = this.itemList; //기존의 원본 리스트를 참조
-          notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
-          System.gc(); //필터링 된 리스트에 대해 가비지 컬렉션 요청
-      }
+    public void resetRefItemList() { //참조 목록에 대한 초기화
+        if (this.refItemList != this.itemList) { //기존의 원본 리스트를 참조하지 않을 경우
+            this.refItemList = this.itemList; //기존의 원본 리스트를 참조
+            notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
+            System.gc(); //필터링 된 리스트에 대해 가비지 컬렉션 요청
+        }
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -170,7 +171,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
                 //int absoluteAdapterPosition = getAbsoluteAdapterPosition();
                 //Log.d("bindingPos : ", Integer.toString(bindingAdapterPosition));
                 //Log.d("absolutePos : ", Integer.toString(absoluteAdapterPosition));
-                
+
                 if (bindingAdapterPosition != RecyclerView.NO_POSITION && refItemClickListener != null) //클릭 된 아이템이 존재하며, 클릭 리스너가 참조되어 있으면
                     refItemClickListener.onItemClick(v, this.innerRecyclerView_title_textView.getText().toString()); //클릭 된 어류의 이름 전달
             });
@@ -180,13 +181,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             this.innerRecyclerView_title_textView.setText(recyclerViewItem.getTitle());
             this.innerRecyclerView_content_textView.setText(recyclerViewItem.getContent());
 
-            int imageLength = recyclerViewItem.getImageLength(); //이미지 배열 길이
-            if (imageLength > 0) { //이미지가 존재 할 경우만 이미지 설정
-                Bitmap bitmap = BitmapFactory.decodeByteArray(recyclerViewItem.getImage(), 0, imageLength); //DB로부터 읽어들인 이미지를 Bitmap 형식으로 변환
+            /*** 이미지가 존재 할 경우 해당 이미지로 설정, 존재하지 않을 경우 대체 이미지 설정 ***/
+            Bitmap bitmap = BitmapUtility.decodeFromByteArray(recyclerViewItem.getImage());
+            if (bitmap != null)
                 innerRecyclerView_imageView.setImageBitmap(bitmap);
-            } else { //사용자에 의한 검색 결과에 따른 뷰 재 바인딩 시 이미지가 존재하지 않은 어류를 위하여 리소스 설정
+            else
                 innerRecyclerView_imageView.setImageResource(R.drawable.photo_coming_soon_600x600);
-            }
         }
     }
 }
