@@ -396,10 +396,7 @@ public class DBManager extends SQLiteOpenHelper {
 
             Bundle subQueryResult = new Bundle(); //queryResult 내부에 특별 금지행정을 각각 추가하기 위한 키(문자열), 값 쌍의 하위 결과
 
-            /***
-             * 금어기 정보 중 금지체장, 금지체중, 수심은 각 금지행정마다 변동 될 수 있으므로,
-             * 중복 데이터로 간주하여 처리하지 않고, 각각 추가한다.
-             ***/
+            //금어기 정보 중 금지체장, 금지체중, 수심은 각 금지행정마다 각각 추가한다.
             subQueryResult.putString(DENIED_LENGTH, replaceEmptyData(cursor.getString(deniedLengthIndex), null));
             subQueryResult.putString(DENIED_WEIGHT, replaceEmptyData(cursor.getString(deniedWeightIndex), null));
             subQueryResult.putString(DENIED_WATER_DEPTH, replaceEmptyData(cursor.getString(deniedWaterDepthIndex), null));

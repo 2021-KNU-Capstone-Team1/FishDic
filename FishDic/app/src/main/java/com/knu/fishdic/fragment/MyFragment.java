@@ -31,10 +31,9 @@ import com.knu.fishdic.utils.BitmapUtility;
  ***/
 
 public class MyFragment extends Fragment {
-    public static String POSITION_KEY_VALUE = "position"; //position 키 값
-    public static String FRAGMENT_TYPE_KEY_VALUE = "fragment"; //Fragment의 타입 키 값
-    // public static String IMAGE_KEY_VALUE = "image"; //이미지의 키 값
-    // public static String FISH_DETAIL_DATA_KEY_VALUE = "fishDetailData"; //어류 상세정보의 키 값
+    public static String POSITION_KEY_VALUE = "positionKey"; //position 키 값
+    public static String FRAGMENT_TYPE_KEY_VALUE = "fragmentTypeKey"; //Fragment의 타입 키 값
+    public static String IMAGE_KEY_VALUE = "imageKey"; //이미지의 키 값
 
     public enum FRAGMENT_TYPE { //Fragment의 타입 정의
         BASIC_INFO, //어류 상세 정보 페이지의 기본 정보
@@ -46,8 +45,8 @@ public class MyFragment extends Fragment {
     private int position; //Fragment의 위치
     private FRAGMENT_TYPE fragmentType; //현재 Fragment의 타입
 
-    //private Bitmap image; //이미지
-    private Bundle refQueryResult; //어류 상세 정보 페이지의 기본 정보 및 금지 행정 정보를 Fragment에 바인딩 위해 DB로부터 읽어들인 데이터의 참조 변수
+    private Bitmap refImage; //이미지 참조 변수
+    private Bundle refQueryResult; //어류 상세 정보 페이지의 기본 정보 및 금지 행정 정보를 Fragment에 바인딩 위해 DB로부터 읽어들인 결과의 참조 변수
 
     public static MyFragment newInstance(FRAGMENT_TYPE fragmentType, int position, Bundle args) { //Fragment의 인스턴스 객체 생성
         /***
@@ -73,6 +72,7 @@ public class MyFragment extends Fragment {
 
             case BANNER: //메인화면의 배너
             case HELP: //이용가이드
+                fragment.refImage = args.getParcelable(IMAGE_KEY_VALUE); //파라미터로 받은 이미지 참조
                 break;
 
             default:
@@ -97,8 +97,6 @@ public class MyFragment extends Fragment {
         super.onCreate(savedInstanceState);
         this.position = getArguments().getInt(POSITION_KEY_VALUE, 0);
         this.fragmentType = (FRAGMENT_TYPE) getArguments().getSerializable(FRAGMENT_TYPE_KEY_VALUE);
-
-        //페이지 인덱스에 따라 내부 이미지 뷰의 이미지 변경하도록 수정 예정
     }
 
 
@@ -184,7 +182,7 @@ public class MyFragment extends Fragment {
             case BANNER: //메인화면의 배너
             case HELP: //이용가이드
                 ImageView viewPager_imageView = view.findViewById(R.id.viewPager_imageView);
-
+                viewPager_imageView.setImageBitmap(this.refImage);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + this.fragmentType);
