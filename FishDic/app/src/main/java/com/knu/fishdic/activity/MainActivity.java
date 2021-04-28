@@ -26,7 +26,7 @@ import java.io.InputStream;
 
 public class MainActivity extends Activity {
     public static int totalBannerImageCount; //전체 배너 이미지 수
-    Bitmap[] bannerImage; //배너 이미지
+    Bitmap[] bannerImages; //배너 이미지
 
     ImageButton main_dic_imageButton;                       //메인화면 하단부 도감 버튼
     ImageButton main_deniedFish_imageButton;                //메인화면 하단부 금어기 버튼
@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.bannerImage = null;
+        this.bannerImages = null;
         this.totalBannerImageCount = 0;
 
         /*** 초기화 작업 수행 ***/

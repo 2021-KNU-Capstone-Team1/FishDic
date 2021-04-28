@@ -17,7 +17,7 @@ import me.relex.circleindicator.CircleIndicator;
 
 public class HelpActivity extends AppCompatActivity {
     public static int totalHelpImageCount; //전체 이용가이드 이미지 수
-    Bitmap[] helpImage; //이용가이드 이미지
+    Bitmap[] helpImages; //이용가이드 이미지
 
     ImageButton help_back_imageButton; //뒤로 가기 버튼
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
@@ -25,7 +25,7 @@ public class HelpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.helpImage = null;
+        this.helpImages = null;
         this.totalHelpImageCount = 0;
 
         setTitle(R.string.app_name);
@@ -35,7 +35,7 @@ public class HelpActivity extends AppCompatActivity {
 
         /////코드 정리 예정
         ViewPager viewPager = findViewById(R.id.help_viewPager);
-        viewPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), totalHelpImageCount);
+        viewPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), totalHelpImageCount, this.helpImages);
         viewPager.setAdapter(viewPagerAdapter);
 
         CircleIndicator indicator = findViewById(R.id.help_circleIndicator);
