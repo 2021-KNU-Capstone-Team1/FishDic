@@ -10,12 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.manager.DBManager;
+
+
+////////////////////코드 정리 예정
+
+
 
 // 어류 상세 정보 페이지의 동적 화면(기본 정보 및 금지 행정 표) 추가 및 메인화면의 배너, 이용가이드를 위한 MyFragment 정의
 // https://developer.android.com/reference/androidx/fragment/app/Fragment.html
@@ -29,8 +33,8 @@ import com.knu.fishdic.manager.DBManager;
 public class MyFragment extends Fragment {
     public static String POSITION_KEY_VALUE = "position"; //position 키 값
     public static String FRAGMENT_TYPE_KEY_VALUE = "fragment"; //Fragment의 타입 키 값
-   // public static String IMAGE_KEY_VALUE = "image"; //이미지의 키 값
-   // public static String FISH_DETAIL_DATA_KEY_VALUE = "fishDetailData"; //어류 상세정보의 키 값
+    // public static String IMAGE_KEY_VALUE = "image"; //이미지의 키 값
+    // public static String FISH_DETAIL_DATA_KEY_VALUE = "fishDetailData"; //어류 상세정보의 키 값
 
     public enum FRAGMENT_TYPE { //Fragment의 타입 정의
         BASIC_INFO, //어류 상세 정보 페이지의 기본 정보
@@ -64,7 +68,7 @@ public class MyFragment extends Fragment {
                  * 금어기 테이블 : 금지체장, 금지체중, 수심
                  * 특별 금지행정 테이블 : 특별 금지행정 ID, 특별 금지구역, 금지시작기간, 금지종료기간
                  ***/
-                fragment.refQueryResult = args;
+                fragment.refQueryResult = args; //파라미터로 받은 쿼리 결과 참조
                 break;
 
             case BANNER: //메인화면의 배너
@@ -75,9 +79,10 @@ public class MyFragment extends Fragment {
                 throw new IllegalStateException("Unexpected value: " + fragmentType);
         }
 
-        fragment.refQueryResult.putInt(POSITION_KEY_VALUE, position);
-        fragment.refQueryResult.putSerializable(FRAGMENT_TYPE_KEY_VALUE, fragmentType);
-
+        Bundle subArgs = new Bundle();
+        subArgs.putInt(POSITION_KEY_VALUE, position);
+        subArgs.putSerializable(FRAGMENT_TYPE_KEY_VALUE, fragmentType);
+        fragment.setArguments(subArgs);
         return fragment;
     }
 
@@ -92,9 +97,6 @@ public class MyFragment extends Fragment {
         super.onCreate(savedInstanceState);
         this.position = getArguments().getInt(POSITION_KEY_VALUE, 0);
         this.fragmentType = (FRAGMENT_TYPE) getArguments().getSerializable(FRAGMENT_TYPE_KEY_VALUE);
-
-        // this.image = null;
-        this.refQueryResult = null;
 
         //페이지 인덱스에 따라 내부 이미지 뷰의 이미지 변경하도록 수정 예정
     }
@@ -141,13 +143,16 @@ public class MyFragment extends Fragment {
                 TextView fishDetail_habitat_textView = view.findViewById(R.id.fishDetail_habitat_textView); //서식지
                 TextView fishDetail_warnings_textView = view.findViewById(R.id.fishDetail_warnings_textView); //주의사항
 
+                FishDic.globalDBManager.doParseFishDetailBundle(this.refQueryResult); //디버그
+
                 fishDetail_name_textView.setText(this.refQueryResult.getString(DBManager.NAME));
 
                 byte[] image = this.refQueryResult.getByteArray(DBManager.IMAGE);
-                int imageLength = image.length; //이미지 배열 길이
-                if (imageLength > 0) { //이미지가 존재 할 경우만 이미지 설정
+                if (image != null && image.length > 0) { //이미지가 존재 할 경우만 이미지 설정
+                    int imageLength = image.length; //이미지 배열 길이
                     Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, imageLength); //DB로부터 읽어들인 이미지를 Bitmap 형식으로 변환
                     fishDetail_imageView.setImageBitmap(bitmap);
+
                 } else { //이미지가 존재하지 않은 어류를 위하여 리소스 설정
                     fishDetail_imageView.setImageResource(R.drawable.photo_coming_soon_600x600);
                 }
