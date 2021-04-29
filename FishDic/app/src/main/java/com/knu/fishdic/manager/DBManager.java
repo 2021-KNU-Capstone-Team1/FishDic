@@ -13,8 +13,6 @@ import androidx.annotation.RequiresApi;
 
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
-import com.knu.fishdic.recyclerview.RecyclerAdapter;
-import com.knu.fishdic.recyclerview.RecyclerViewItem;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +24,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class DBManager extends SQLiteOpenHelper {
+    public static final String TOTAL_FISH_COUNT_KEY_VALUE = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
+    public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
+
+    public enum FISH_DATA_TYPE { //어류 데이터 타입 정의
+        ALL_FISH, //모든 어류
+        DENIED_FISH //이달의 금어기
+    }
+
     private enum DB_STATE { //DB 상태 정의
         INIT, //초기 상태
         OUT_DATED, //구 버전
@@ -84,10 +90,6 @@ public class DBManager extends SQLiteOpenHelper {
     public static final String SPECIAL_PROHIBIT_ADMIN_AREA = "특별_금지구역";
     public static final String SPECIAL_PROHIBIT_ADMIN_START_DATE = "금지시작기간";
     public static final String SPECIAL_PROHIBIT_ADMIN_END_DATE = "금지종료기간";
-
-    ///!!!!!!!!!수정예정:DBManager와 RecyclerAdapter간의 클래스 결합도를 낮추기 위해 DBManager에서 Bundle반환 후 초기 모든 어류 혹은 이달의 금어기 바인딩을 RecyclerAdapter에서 수행
-    public static final String QUERY_RESULT_COUNT_KEY_VALUE = "queryResultCountKey"; //쿼리 결과 수를 위한 키 값
-    public static final String SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE = "specialProhibitAdminCountKey"; //특별 금지행정의 수를 위한 키 값
 
     /***
      * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
@@ -251,67 +253,69 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public void doBindingAllFishData(RecyclerAdapter recyclerAdapter) //모든 어류 정보 바인딩 작업 수행
-    {
-        String sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
-                " FROM " + FISH_TABLE +
-                " INNER JOIN " + BIO_CLASS_TABLE +
-                " ON " + FISH_TABLE + "." + NAME + " = " + BIO_CLASS_TABLE + "." + NAME;
+    public Bundle getSimpleFishBundle(FISH_DATA_TYPE fishDataType) { //간략화된 어류 정보 반환
+        String sqlQuery;
+        String currentDate;
 
-        Log.d("모든 어류 Query : ", sqlQuery);
+        switch (fishDataType) { //어류 데이터 타입에 따라서 쿼리문 설정
+            case ALL_FISH: //모든 어류
+                sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
+                        " FROM " + FISH_TABLE +
+                        " INNER JOIN " + BIO_CLASS_TABLE +
+                        " ON " + FISH_TABLE + "." + NAME + " = " + BIO_CLASS_TABLE + "." + NAME;
+                Log.d("모든 어류 Query : ", sqlQuery);
+                break;
+
+            case DENIED_FISH: //이달의 금어기
+                currentDate = this.getCurrentDate(DATE_FORMAT_TYPE.WITH_SEPARATOR); //현재 "년-달-일"
+                sqlQuery = "SELECT DISTINCT " + DENIED_FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
+                        " FROM " + DENIED_FISH_TABLE +
+                        " INNER JOIN " + BIO_CLASS_TABLE +
+                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + BIO_CLASS_TABLE + "." + NAME +
+                        " INNER JOIN " + FISH_TABLE +
+                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + FISH_TABLE + "." + NAME +
+                        " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE +
+                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
+                        " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
+                        " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
+                        " WHERE " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + '"' + currentDate + '"' +
+                        " AND " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + '"' + currentDate + '"';
+                Log.d("이달의 금어기 Query : ", sqlQuery);
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + fishDataType);
+        }
+
         Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
 
         int nameIndex = cursor.getColumnIndex(NAME);
         int imageIndex = cursor.getColumnIndex(IMAGE);
         int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
 
-        while (cursor.moveToNext()) { //쿼리 된 내용에 대하여 바인딩 작업 수행
-            RecyclerViewItem recyclerViewItem = new RecyclerViewItem();
+        Bundle queryResult = new Bundle(); //키(문자열), 값 쌍의 최종 결과
 
-            recyclerViewItem.setTitle(cursor.getString(nameIndex)); //어류 이름
-            recyclerViewItem.setImage(cursor.getBlob(imageIndex)); //어류 이미지
-            recyclerViewItem.setContent("생물분류 : " + cursor.getString(bioClassIndex)); //생물 분류
+        boolean queryResultExist = false; //쿼리 결과 존재 여부
+        int fishIndex = 0; //어류 인덱스
 
-            recyclerAdapter.addItem(recyclerViewItem);
+        while (cursor.moveToNext()) {
+            if (!queryResultExist)
+                queryResultExist = true;
+
+            Bundle subQueryResult = new Bundle(); //queryResult 내부에 각 어류 정보를 추가하기 위한 키(문자열), 값 쌍의 하위 결과
+            subQueryResult.putString(NAME, cursor.getString(nameIndex));
+            subQueryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
+            subQueryResult.putString(BIO_CLASS, cursor.getString(bioClassIndex));
+
+            queryResult.putBundle(String.valueOf(fishIndex), subQueryResult); //각 어류의 인덱스를 키로하여 어류 정보를 queryResult 내부에 추가
+            fishIndex++;
         }
+        queryResult.putInt(TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 어류 접근 위해 전체 어류 수를 추가
 
-        cursor.close();
-    }
-
-    public void doBindingAllDeniedFishData(RecyclerAdapter recyclerAdapter) //모든 이달의 금어기 정보 바인딩 작업 수행
-    {
-        String currentDate = this.getCurrentDate(DATE_FORMAT_TYPE.WITH_SEPARATOR); //현재 "년-달-일"
-        String sqlQuery = "SELECT DISTINCT " + DENIED_FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
-                " FROM " + DENIED_FISH_TABLE +
-                " INNER JOIN " + BIO_CLASS_TABLE +
-                " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + BIO_CLASS_TABLE + "." + NAME +
-                " INNER JOIN " + FISH_TABLE +
-                " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + FISH_TABLE + "." + NAME +
-                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE +
-                " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
-                " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
-                " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
-                " WHERE " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + '"' + currentDate + '"' +
-                " AND " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + '"' + currentDate + '"';
-
-        Log.d("금어기 Query : ", sqlQuery);
-        Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
-
-        int nameIndex = cursor.getColumnIndex(NAME);
-        int imageIndex = cursor.getColumnIndex(IMAGE);
-        int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
-
-        while (cursor.moveToNext()) { //쿼리 된 내용에 대하여 바인딩 작업 수행
-            RecyclerViewItem recyclerViewItem = new RecyclerViewItem();
-
-            recyclerViewItem.setTitle(cursor.getString(nameIndex)); //금어기 이름
-            recyclerViewItem.setImage(cursor.getBlob(imageIndex)); //어류 이미지
-            recyclerViewItem.setContent("생물분류 : " + cursor.getString(bioClassIndex)); //생물 분류
-
-            recyclerAdapter.addItem(recyclerViewItem);
-        }
-
-        cursor.close();
+        if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
+            return queryResult;
+        else //쿼리 결과가 존재하지 않으면
+            return null;
     }
 
     public Bundle getFishDetailBundle(String fishName) { //특정 어류의 상세정보 반환
@@ -396,7 +400,13 @@ public class DBManager extends SQLiteOpenHelper {
 
             Bundle subQueryResult = new Bundle(); //queryResult 내부에 특별 금지행정을 각각 추가하기 위한 키(문자열), 값 쌍의 하위 결과
 
-            //금어기 정보 중 금지체장, 금지체중, 수심은 각 금지행정마다 각각 추가한다.
+            /***
+             * 현재 DB에는 금지체장, 금지체중, 수심 정보가 각 금지행정마다 변동사항이 없는 것으로 판단하여
+             * 금어기 테이블의 필드로 들어가있지만, 만약 어떤 한 어류에 대하여 금지행정이 새로 추가되었는데
+             * 기존의 금지체장, 금지체중, 수심과 다르다면 금지체장, 금지체중, 수심을 특별 금지 행정 테이블로 옮길 것
+             * ---
+             * 금어기 정보 중 금지체장, 금지체중, 수심은 각 금지행정마다 사용자에게 보여주기 위해 각각 추가한다.
+             ***/
             subQueryResult.putString(DENIED_LENGTH, replaceEmptyData(cursor.getString(deniedLengthIndex), null));
             subQueryResult.putString(DENIED_WEIGHT, replaceEmptyData(cursor.getString(deniedWeightIndex), null));
             subQueryResult.putString(DENIED_WATER_DEPTH, replaceEmptyData(cursor.getString(deniedWaterDepthIndex), null));
@@ -411,7 +421,7 @@ public class DBManager extends SQLiteOpenHelper {
         }
 
         //Log.d("쿼리 된 금지행정의 수 :", String.valueOf(specialProhibitAdminIndex));
-        queryResult.putInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE, specialProhibitAdminIndex); //전체 특별 금지행정의 수를 추가
+        queryResult.putInt(TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE, specialProhibitAdminIndex); //인덱스로 각 특별 금지행정 접근 위해 전체 특별 금지행정의 수를 추가
 
         if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
             return queryResult;
@@ -425,7 +435,7 @@ public class DBManager extends SQLiteOpenHelper {
             Log.d("queryResult Key", key);
         }
 
-        for (int i = 0; i < queryResult.getInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); i++) {
+        for (int i = 0; i < queryResult.getInt(TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); i++) {
             Bundle subQueryResult = queryResult.getBundle(String.valueOf(0));
 
             for (String key : subQueryResult.keySet()) {
@@ -454,7 +464,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         /*** 금어기 테이블, 특별 금지행정 테이블 ***/
         Log.d("---------------------", "subQueryResult Value");
-        int specialProhibitAdminCount = queryResult.getInt(SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
+        int specialProhibitAdminCount = queryResult.getInt(TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
         for (int specialProhibitAdminIndex = 0; specialProhibitAdminIndex < specialProhibitAdminCount; specialProhibitAdminIndex++) { //전체 금지행정의 수만큼
             Bundle subQueryResult = queryResult.getBundle(String.valueOf(specialProhibitAdminIndex)); //특별 금지행정의 인덱스를 키로하는 각 금지행정 정보
 

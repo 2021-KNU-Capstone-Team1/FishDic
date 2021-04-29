@@ -1,7 +1,7 @@
 package com.knu.fishdic.recyclerview;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.knu.fishdic.R;
-import com.knu.fishdic.utils.BitmapUtility;
+import com.knu.fishdic.manager.DBManager;
+import com.knu.fishdic.utils.ImageUtility;
 
 import java.util.ArrayList;
 
@@ -131,6 +132,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         this.itemList.add(Item);
     }
 
+    public void addItemFromBudle(Bundle queryResult) { //외부에서 전체 목록 (원본)에 Bundle로부터 요소 추가
+        int totalFishCount = queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY_VALUE); //전체 어류의 수
+
+        for (int fishIndex = 0; fishIndex < totalFishCount; fishIndex++) { //전체 어류의 수만큼 각각 전체 목록 (원본)에 요소 추가
+            Bundle subQueryResult = queryResult.getBundle(String.valueOf(fishIndex)); //각 어류의 인덱스로 접근하여 하위 결과 추출
+            RecyclerViewItem recyclerViewItem = new RecyclerViewItem();
+
+            recyclerViewItem.setTitle(subQueryResult.getString(DBManager.NAME)); //어류 이름
+            recyclerViewItem.setImage(subQueryResult.getByteArray(DBManager.IMAGE)); //어류 이미지
+            recyclerViewItem.setContent("생물분류 : " + subQueryResult.getString(DBManager.BIO_CLASS)); //생물 분류
+
+            this.addItem(recyclerViewItem);
+        }
+    }
+
     public void resetRefItemList() { //참조 목록에 대한 초기화
         if (this.refItemList != this.itemList) { //기존의 원본 리스트를 참조하지 않을 경우
             this.refItemList = this.itemList; //기존의 원본 리스트를 참조
@@ -182,7 +198,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             this.innerRecyclerView_content_textView.setText(recyclerViewItem.getContent());
 
             /*** 이미지가 존재 할 경우 해당 이미지로 설정, 존재하지 않을 경우 대체 이미지 설정 ***/
-            Bitmap bitmap = BitmapUtility.decodeFromByteArray(recyclerViewItem.getImage());
+            Bitmap bitmap = ImageUtility.decodeFromByteArray(recyclerViewItem.getImage());
             if (bitmap != null)
                 innerRecyclerView_imageView.setImageBitmap(bitmap);
             else

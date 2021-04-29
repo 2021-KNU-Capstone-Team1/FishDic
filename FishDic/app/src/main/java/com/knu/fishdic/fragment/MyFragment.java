@@ -1,7 +1,6 @@
 package com.knu.fishdic.fragment;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +11,9 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.manager.DBManager;
-import com.knu.fishdic.utils.BitmapUtility;
+import com.knu.fishdic.utils.ImageUtility;
 
 
 ////////////////////코드 정리 예정
@@ -146,7 +144,7 @@ public class MyFragment extends Fragment {
                 fishDetail_name_textView.setText(this.refQueryResult.getString(DBManager.NAME));
 
                 /*** 이미지가 존재 할 경우 해당 이미지로 설정, 존재하지 않을 경우 대체 이미지 설정 ***/
-                Bitmap bitmap = BitmapUtility.decodeFromByteArray(this.refQueryResult.getByteArray(DBManager.IMAGE));
+                Bitmap bitmap = ImageUtility.decodeFromByteArray(this.refQueryResult.getByteArray(DBManager.IMAGE));
                 if (bitmap != null)
                     fishDetail_imageView.setImageBitmap(bitmap);
                 else

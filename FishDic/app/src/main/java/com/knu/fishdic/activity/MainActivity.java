@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
         this.totalBannerImageCount = 0;
 
         /*** 초기화 작업 수행 ***/
-        InitManager.doDataBindingJob(); //도감 및 이달의 금어기를 위한 바인딩 작업 수행
+        InitManager.doBindForRecylerAdapter(); //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
 
         setTitle(R.string.app_name);
         setTheme(R.style.AppTheme); //초기화 적업 완료 후 스플래시 테마에서 기존 앱 테마로 변경

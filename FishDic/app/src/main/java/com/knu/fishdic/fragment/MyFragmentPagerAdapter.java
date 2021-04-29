@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.knu.fishdic.utils.BitmapUtility;
-
 ////////////////////코드 정리 예정
 //배너에서 사용하기 위해 시간마다 자동으로 넘어가는 기능 추가해야함 https://salix97.tistory.com/90
 

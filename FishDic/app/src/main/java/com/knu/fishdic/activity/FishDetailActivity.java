@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -39,7 +40,7 @@ public class FishDetailActivity extends AppCompatActivity {
         String fishName = args.getString(DBManager.NAME); //전달 받은 어류 이름
         Log.d("Target 어류 이름 : ", fishName);
         this.doDataBindingJob(fishName);
-        this.fishDetail_title_textView.setText(fishName); //어류 이름으로 타이틀 텍스트 뷰 설정
+        this.fishDetail_title_textView.setText(fishName); //성공적으로 바인딩 완료 시 어류 이름으로 타이틀 텍스트 뷰 설정
     }
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
@@ -61,7 +62,21 @@ public class FishDetailActivity extends AppCompatActivity {
          *      3-1)
          ***/
         Bundle queryResult = FishDic.globalDBManager.getFishDetailBundle(fishName);
-        int specialProhibitAdminCount = queryResult.getInt(DBManager.SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
+        if (queryResult == null) { //해당 어류가 존재하지 않을 경우
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false); //사용자가 뒤로가기 혹은 다른 위치를 클릭해서 건너뛰는 것을 방지
+            builder.setIcon(R.drawable.error_64x64);
+            builder.setTitle(R.string.not_exist_fish_title);
+            builder.setMessage(R.string.not_exist_fish_message);
+            builder.setPositiveButton(R.string.not_exist_fish_button, (dialog, which) -> onBackPressed()); //현재 액티비티 종료
+            builder.create().show();
+        }
+
+        /***
+         * 해당 어류의 전체 금지행정의 수만큼 queryResult 내부에 0부터 순차적으로 Key값을 가지므로
+         * 각 상세 금지행정인 subQueryResult를 해당 Key값으로 분리한다.
+         ***/
+        int specialProhibitAdminCount = queryResult.getInt(DBManager.TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
 
         /*** Fragment를 Activity의 ViewGroup(innerFishDetail_linearLayout)에 추가 ***/
         FragmentManager fragmentManager = getSupportFragmentManager();
