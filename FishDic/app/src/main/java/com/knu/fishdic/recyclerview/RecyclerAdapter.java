@@ -132,7 +132,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         this.itemList.add(Item);
     }
 
-    public void addItemFromBudle(Bundle queryResult) { //외부에서 전체 목록 (원본)에 Bundle로부터 요소 추가
+    public void addItemFromBundle(Bundle queryResult) { //외부에서 전체 목록 (원본)에 Bundle로부터 요소 추가
+        if (queryResult == null)
+            return;
+
         int totalFishCount = queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY_VALUE); //전체 어류의 수
 
         for (int fishIndex = 0; fishIndex < totalFishCount; fishIndex++) { //전체 어류의 수만큼 각각 전체 목록 (원본)에 요소 추가

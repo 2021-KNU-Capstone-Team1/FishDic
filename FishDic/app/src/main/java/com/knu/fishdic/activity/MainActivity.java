@@ -25,9 +25,6 @@ import java.io.InputStream;
 // 메인 화면 액티비티 정의
 
 public class MainActivity extends Activity {
-    public static int totalBannerImageCount; //전체 배너 이미지 수
-    Bitmap[] bannerImages; //배너 이미지
-
     ImageButton main_dic_imageButton;                       //메인화면 하단부 도감 버튼
     ImageButton main_deniedFish_imageButton;                //메인화면 하단부 금어기 버튼
     ImageButton main_fishIdentification_imageButton;        //메인화면 하단부 카메라 버튼
@@ -42,11 +39,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.bannerImages = null;
-        this.totalBannerImageCount = 0;
 
         /*** 초기화 작업 수행 ***/
         InitManager.doBindForRecylerAdapter(); //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
+        InitManager.debugBannerTest(); //배너 이미지 테스트
+        InitManager.debugHelpTest(); //이용가이드 이미지 테스트
 
         setTitle(R.string.app_name);
         setTheme(R.style.AppTheme); //초기화 적업 완료 후 스플래시 테마에서 기존 앱 테마로 변경
@@ -57,8 +54,7 @@ public class MainActivity extends Activity {
 
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             //권한 모두 승인 되어 있음
-        }
-        else {
+        } else {
             //권한 다시 승인 요청
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
@@ -108,35 +104,34 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){        //카메라 결과 전송
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {        //카메라 결과 전송
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode) {
+        switch (requestCode) {
             case TAKE_PICTURE:          // 카메라 사진 찍은 상황이면
-                if(resultCode == RESULT_OK && data.hasExtra("data")){       //결과랑 데이터가 있는지 확인하고
+                if (resultCode == RESULT_OK && data.hasExtra("data")) {       //결과랑 데이터가 있는지 확인하고
                     Bitmap bm = (Bitmap) data.getExtras().get("data");              //비트맵에 저장 한다.
                     //나중에 여기다가 얻은 사진 조정해서 서버로 전송하도록 작성.
                 }
                 break;
             case GET_FROM_GALLERY:
-                if(resultCode == RESULT_OK){
-                    try{
+                if (resultCode == RESULT_OK) {
+                    try {
                         InputStream is = getContentResolver().openInputStream(data.getData());
                         Bitmap bm = BitmapFactory.decodeStream(is);
                         is.close();
                         //나중에 여기다가 갤러리에서 얻은 사진 서버로 전송하도록 작성.
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
-                else if(resultCode == RESULT_CANCELED){
+                } else if (resultCode == RESULT_CANCELED) {
                     Toast.makeText(this, "취소하였습니다.", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
     }
 
-    private void getBannerImages(){
+    private void getBannerImages() {
 
     }
 }

@@ -19,17 +19,16 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
      * https://github.com/ongakuer/CircleIndicator
      * https://webnautes.tistory.com/1013
      ***/
+
+    private MyFragment.FRAGMENT_TYPE fragmentType; //현재 Fragment의 타입
     private int totalItemCount; //전체 항목의 수
     private Bitmap[] refImages; //전체 이미지 참조 변수
 
-    public MyFragmentPagerAdapter(FragmentManager fragmentManager, int totalItemCount, Bitmap[] images) {
+    public MyFragmentPagerAdapter(FragmentManager fragmentManager, MyFragment.FRAGMENT_TYPE fragmentType, Bitmap[] images) {
         super(fragmentManager);
 
-        if (totalItemCount < 0)
-            this.totalItemCount = 0;
-        else
-            this.totalItemCount = totalItemCount;
-
+        this.fragmentType = fragmentType;
+        this.totalItemCount = images.length;
         this.refImages = images;
     }
 
@@ -44,6 +43,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
         Bundle args = new Bundle();
         args.putParcelable(MyFragment.IMAGE_KEY_VALUE, this.refImages[position]);
+        args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, this.fragmentType);
         return MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.HELP, position, args); //해당 위치(position)의 이미지를 전달하여 새로운 Fragment 개체 생성
     }
 }

@@ -182,6 +182,7 @@ public class MyFragment extends Fragment {
                 ImageView viewPager_imageView = view.findViewById(R.id.viewPager_imageView);
                 viewPager_imageView.setImageBitmap(this.refImage);
                 break;
+
             default:
                 throw new IllegalStateException("Unexpected value: " + this.fragmentType);
         }
