@@ -82,11 +82,17 @@ public class FishDetailActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.BASIC_INFO, 0, queryResult)); //기본 정보에 해당하는 Fragment 인스턴스 생성 및 추가
+        Bundle args = new Bundle();
+        args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, MyFragment.FRAGMENT_TYPE.BASIC_INFO);
+        args.putBundle(DBManager.QUERY_RESULT_KEY_VALUE, queryResult);
+        fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(0, args)); //기본 정보에 해당하는 Fragment 인스턴스 생성 및 추가
 
         for (int specialProhibitAdminIndex = 0; specialProhibitAdminIndex < specialProhibitAdminCount; specialProhibitAdminIndex++) { //전체 금지행정의 수만큼 금지행정 정보 추가
             Bundle subQueryResult = queryResult.getBundle(String.valueOf(specialProhibitAdminIndex)); //특별 금지행정의 인덱스를 키로하는 각 금지행정 정보
-            fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(MyFragment.FRAGMENT_TYPE.DENIED_INFO, specialProhibitAdminIndex, subQueryResult)); //금지 행정정보에 해당하는 Fragment 인스턴스 생성 및 추가
+            Bundle subArgs = new Bundle();
+            subArgs.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, MyFragment.FRAGMENT_TYPE.DENIED_INFO);
+            subArgs.putBundle(DBManager.QUERY_RESULT_KEY_VALUE, subQueryResult);
+            fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(specialProhibitAdminIndex, subArgs)); //금지 행정정보에 해당하는 Fragment 인스턴스 생성 및 추가
         }
 
         fragmentTransaction.commit();

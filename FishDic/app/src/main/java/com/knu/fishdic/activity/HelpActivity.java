@@ -1,6 +1,7 @@
 package com.knu.fishdic.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,9 @@ import com.knu.fishdic.R;
 import com.knu.fishdic.fragment.MyFragment;
 import com.knu.fishdic.fragment.MyFragmentPagerAdapter;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import me.relex.circleindicator.CircleIndicator;
 
 // 이용가이드 액티비티 정의
@@ -19,6 +23,12 @@ import me.relex.circleindicator.CircleIndicator;
 public class HelpActivity extends AppCompatActivity {
     ImageButton help_back_imageButton; //뒤로 가기 버튼
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
+
+    Timer timer;
+    int currentPage = 0;
+    final long DELAY_MS = 500; //작업이 실행 되기 전 딜레이 (MS)
+    final long PERIOD_MS = 3000; //작업 실행 간의 딜레이 (MS)
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +38,6 @@ public class HelpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_help);
 
         this.setComponentsInteraction();
-
-        /////코드 정리 예정
-        ViewPager viewPager = findViewById(R.id.help_viewPager);
-        viewPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), MyFragment.FRAGMENT_TYPE.HELP, FishDic.bannerImages);
-        viewPager.setAdapter(viewPagerAdapter);
-
-        CircleIndicator indicator = findViewById(R.id.help_circleIndicator);
-        indicator.setViewPager(viewPager);
     }
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
@@ -46,7 +48,33 @@ public class HelpActivity extends AppCompatActivity {
                 onBackPressed());
     }
 
-    private void getHelpImages() {
+    private void set() {
+        ViewPager viewPager = findViewById(R.id.help_viewPager);
 
+        Bundle args = new Bundle();
+        args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, MyFragment.FRAGMENT_TYPE.HELP);
+        args.putParcelableArray(MyFragment.IMAGE_KEY_VALUE, FishDic.bannerImages);
+
+        viewPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), args);
+        viewPager.setAdapter(viewPagerAdapter);
+
+        CircleIndicator indicator = findViewById(R.id.help_circleIndicator);
+        indicator.setViewPager(viewPager);
+
+        final Handler handler = new Handler();
+        final Runnable Update = () -> {
+            if (currentPage == FishDic.helpImages.length) {
+                currentPage = 0;
+            }
+            viewPager.setCurrentItem(currentPage++, true);
+        };
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, DELAY_MS, PERIOD_MS);
     }
 }

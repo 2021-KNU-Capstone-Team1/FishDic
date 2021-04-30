@@ -15,10 +15,6 @@ import com.knu.fishdic.R;
 import com.knu.fishdic.manager.DBManager;
 import com.knu.fishdic.utils.ImageUtility;
 
-
-////////////////////코드 정리 예정
-
-
 // 어류 상세 정보 페이지의 동적 화면(기본 정보 및 금지 행정 표) 추가 및 메인화면의 배너, 이용가이드를 위한 MyFragment 정의
 // https://developer.android.com/reference/androidx/fragment/app/Fragment.html
 
@@ -29,8 +25,8 @@ import com.knu.fishdic.utils.ImageUtility;
  ***/
 
 public class MyFragment extends Fragment {
-    public static String POSITION_KEY_VALUE = "positionKey"; //position 키 값
     public static String FRAGMENT_TYPE_KEY_VALUE = "fragmentTypeKey"; //Fragment의 타입 키 값
+    public static String POSITION_KEY_VALUE = "positionKey"; //position 키 값
     public static String IMAGE_KEY_VALUE = "imageKey"; //이미지의 키 값
 
     public enum FRAGMENT_TYPE { //Fragment의 타입 정의
@@ -46,16 +42,16 @@ public class MyFragment extends Fragment {
     private Bitmap refImage; //이미지 참조 변수
     private Bundle refQueryResult; //어류 상세 정보 페이지의 기본 정보 및 금지 행정 정보를 Fragment에 바인딩 위해 DB로부터 읽어들인 결과의 참조 변수
 
-    public static MyFragment newInstance(FRAGMENT_TYPE fragmentType, int position, Bundle args) { //Fragment의 인스턴스 객체 생성
+    public static MyFragment newInstance(int position, Bundle args) { //Fragment의 인스턴스 객체 생성
         /***
          * fragmentType : 인스턴스 객체 생성을 위한 Fragment의 타입
          * position : 인스턴스 객체 생성을 위한 Fragment의 위치
-         * args : 인스턴스 객체 생성을 위한 이미지, 어류 상세정보를 포함하고 있는 키(문자열), 값 쌍의 데이터
+         * args : 인스턴스 객체 생성을 위한 타입, 이미지, 어류 상세정보를 포함하고 있는 키(문자열), 값 쌍의 데이터 등
          ***/
 
         MyFragment fragment = new MyFragment();
-        Bundle bundle = new Bundle();
 
+        FRAGMENT_TYPE fragmentType = (FRAGMENT_TYPE) args.getSerializable(FRAGMENT_TYPE_KEY_VALUE);
         switch (fragmentType) { //Fragment의 타입에 따라 Fragment의 인스턴스 객체 생성을 위한 데이터 설정
             case BASIC_INFO: //어류 상세 정보 페이지의 기본 정보
             case DENIED_INFO: //어류 상세 정보 페이지의 금지행정 정보
@@ -65,7 +61,7 @@ public class MyFragment extends Fragment {
                  * 금어기 테이블 : 금지체장, 금지체중, 수심
                  * 특별 금지행정 테이블 : 특별 금지행정 ID, 특별 금지구역, 금지시작기간, 금지종료기간
                  ***/
-                fragment.refQueryResult = args; //파라미터로 받은 쿼리 결과 참조
+                fragment.refQueryResult = args.getBundle(DBManager.QUERY_RESULT_KEY_VALUE); //파라미터로 받은 쿼리 결과 참조
                 break;
 
             case BANNER: //메인화면의 배너
@@ -81,6 +77,7 @@ public class MyFragment extends Fragment {
         subArgs.putInt(POSITION_KEY_VALUE, position);
         subArgs.putSerializable(FRAGMENT_TYPE_KEY_VALUE, fragmentType);
         fragment.setArguments(subArgs);
+
         return fragment;
     }
 
@@ -139,8 +136,6 @@ public class MyFragment extends Fragment {
                 TextView fishDetail_habitat_textView = view.findViewById(R.id.fishDetail_habitat_textView); //서식지
                 TextView fishDetail_warnings_textView = view.findViewById(R.id.fishDetail_warnings_textView); //주의사항
 
-                //FishDic.globalDBManager.doParseFishDetailBundle(this.refQueryResult); //디버그
-
                 fishDetail_name_textView.setText(this.refQueryResult.getString(DBManager.NAME));
 
                 /*** 이미지가 존재 할 경우 해당 이미지로 설정, 존재하지 않을 경우 대체 이미지 설정 ***/
@@ -157,7 +152,6 @@ public class MyFragment extends Fragment {
                 fishDetail_body_length_textView.setText(this.refQueryResult.getString(DBManager.BODY_LENGTH));
                 fishDetail_habitat_textView.setText(this.refQueryResult.getString(DBManager.HABITAT));
                 fishDetail_warnings_textView.setText(this.refQueryResult.getString(DBManager.WARNINGS));
-
                 break;
 
             case DENIED_INFO: //어류 상세 정보 페이지의 금지행정 정보
@@ -174,7 +168,6 @@ public class MyFragment extends Fragment {
                 fishDetail_special_prohibit_admin_area_textView.setText(this.refQueryResult.getString(DBManager.SPECIAL_PROHIBIT_ADMIN_AREA));
                 fishDetail_special_prohibit_admin_start_date_textView.setText(this.refQueryResult.getString(DBManager.SPECIAL_PROHIBIT_ADMIN_START_DATE));
                 fishDetail_special_prohibit_admin_end_date_textView.setText(this.refQueryResult.getString(DBManager.SPECIAL_PROHIBIT_ADMIN_END_DATE));
-
                 break;
 
             case BANNER: //메인화면의 배너

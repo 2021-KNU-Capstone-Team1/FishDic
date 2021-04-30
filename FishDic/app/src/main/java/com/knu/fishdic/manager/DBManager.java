@@ -26,6 +26,7 @@ import java.util.Calendar;
 public class DBManager extends SQLiteOpenHelper {
     public static final String TOTAL_FISH_COUNT_KEY_VALUE = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
     public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
+    public static final String QUERY_RESULT_KEY_VALUE = "queryResultKey"; //쿼리 결과를 위한 키 값
 
     public enum FISH_DATA_TYPE { //어류 데이터 타입 정의
         ALL_FISH, //모든 어류
@@ -334,6 +335,7 @@ public class DBManager extends SQLiteOpenHelper {
                 " ON " + FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
                 " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
                 " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
+                // " WHERE " + FISH_TABLE + "." + NAME + "=" + '"' + fishName + '"';
                 " WHERE " + FISH_TABLE + "." + NAME + "=" + '"' + fishName + '"';
 
         Log.d("어류 상세정보 Query : ", sqlQuery);
@@ -420,7 +422,6 @@ public class DBManager extends SQLiteOpenHelper {
             specialProhibitAdminIndex++;
         }
 
-        //Log.d("쿼리 된 금지행정의 수 :", String.valueOf(specialProhibitAdminIndex));
         queryResult.putInt(TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE, specialProhibitAdminIndex); //인덱스로 각 특별 금지행정 접근 위해 전체 특별 금지행정의 수를 추가
 
         if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
@@ -429,53 +430,30 @@ public class DBManager extends SQLiteOpenHelper {
             return null;
     }
 
-    public void doParseFishDetailBundle(Bundle queryResult) { //디버그를 위해 어류 상세정보 Bundle 구조 파싱 수행
-        Log.d("---------------------", "Parsing queryResult");
+    public static void doParseQueryResultBundle(Bundle queryResult) { //디버그를 위해 쿼리 결과 구조 파싱 수행
+        int index = 0;
+        int subIndex = 0;
+
+        StackTraceElement[] stacks = new Throwable().getStackTrace();
+        Log.d("Stack Trace Start", String.valueOf(stacks.length));
+        for (StackTraceElement element : stacks) {
+            Log.d("클래스 명", element.getMethodName());
+            Log.d("메소드 명", element.getMethodName());
+        }
+
         for (String key : queryResult.keySet()) {
-            Log.d("queryResult Key", key);
-        }
+            Log.d("Index " + Integer.toString(index), key);
+            index++;
 
-        for (int i = 0; i < queryResult.getInt(TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); i++) {
-            Bundle subQueryResult = queryResult.getBundle(String.valueOf(0));
-
-            for (String key : subQueryResult.keySet()) {
-                Log.d("subQueryResult Key", key);
+            if (queryResult.get(key) instanceof Bundle) { //하위 결과가 존재하면 (Bundle 타입일 경우만)
+                Log.d("SubIndex " + Integer.toString(subIndex), key + "의 내부 하위 결과");
+                Bundle subQueryResult = queryResult.getBundle(key);
+                for (String subKey : subQueryResult.keySet()) {
+                    Log.d("SubIndex " + Integer.toString(subIndex), subKey);
+                    subIndex++;
+                }
             }
-        }
-
-        Log.d("---------------------", "queryResult Value");
-
-        /*** 어류 테이블, 생물분류 테이블 ***/
-        Log.d(NAME, queryResult.getString(NAME));
-        Log.d(SCIENTIFIC_NAME, queryResult.getString(SCIENTIFIC_NAME));
-        Log.d(BIO_CLASS, queryResult.getString(BIO_CLASS));
-
-        byte[] image = queryResult.getByteArray(IMAGE);
-        int imageLength = 0;
-        if (image != null)
-            imageLength = image.length;
-        Log.d(IMAGE + " 크기", String.valueOf(imageLength));
-
-        Log.d(SHAPE, replaceEmptyData(queryResult.getString(SHAPE), null));
-        Log.d(DISTRIBUTION, replaceEmptyData(queryResult.getString(DISTRIBUTION), null));
-        Log.d(BODY_LENGTH, replaceEmptyData(queryResult.getString(BODY_LENGTH), null));
-        Log.d(HABITAT, replaceEmptyData(queryResult.getString(HABITAT), null));
-        Log.d(WARNINGS, replaceEmptyData(queryResult.getString(WARNINGS), null));
-
-        /*** 금어기 테이블, 특별 금지행정 테이블 ***/
-        Log.d("---------------------", "subQueryResult Value");
-        int specialProhibitAdminCount = queryResult.getInt(TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
-        for (int specialProhibitAdminIndex = 0; specialProhibitAdminIndex < specialProhibitAdminCount; specialProhibitAdminIndex++) { //전체 금지행정의 수만큼
-            Bundle subQueryResult = queryResult.getBundle(String.valueOf(specialProhibitAdminIndex)); //특별 금지행정의 인덱스를 키로하는 각 금지행정 정보
-
-            Log.d(DENIED_LENGTH, replaceEmptyData(subQueryResult.getString(DENIED_LENGTH), null));
-            Log.d(DENIED_WEIGHT, replaceEmptyData(subQueryResult.getString(DENIED_WEIGHT), null));
-            Log.d(DENIED_WATER_DEPTH, replaceEmptyData(subQueryResult.getString(DENIED_WATER_DEPTH), null));
-
-            Log.d(SPECIAL_PROHIBIT_ADMIN_ID, replaceEmptyData(subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_ID), null));
-            Log.d(SPECIAL_PROHIBIT_ADMIN_AREA, replaceEmptyData(subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_AREA), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_AREA));
-            Log.d(SPECIAL_PROHIBIT_ADMIN_START_DATE, replaceEmptyData(subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_START_DATE), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_DATE));
-            Log.d(SPECIAL_PROHIBIT_ADMIN_END_DATE, replaceEmptyData(subQueryResult.getString(SPECIAL_PROHIBIT_ADMIN_END_DATE), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_DATE));
+            subIndex = 0;
         }
     }
 
