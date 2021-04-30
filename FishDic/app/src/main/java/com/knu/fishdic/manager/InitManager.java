@@ -36,10 +36,10 @@ public class InitManager {
     public static void debugBannerTest() {
         //https://developer.android.com/reference/android/content/res/Resources
         //https://developer.android.com/reference/android/content/res/AssetManager
-        //테스트 이미지 12개
+        //테스트 이미지 3개
 
         AssetManager assetManager = FishDic.globalContext.getAssets();
-        FishDic.bannerImages = new Bitmap[12];
+        FishDic.bannerImages = new Bitmap[3];
 
         try {
             File folder = new File(FishDic.BANNER_IMAGES_PATH);
@@ -47,9 +47,9 @@ public class InitManager {
                 folder.mkdir();
             }
 
-            for (int index = 1; index <= 12; index++) {
+            for (int index = 1; index <= 3; index++) {
                 String fileName = "sample_" + index + ".jpg";
-                InputStream inputStream = assetManager.open("test/" + fileName);
+                InputStream inputStream = assetManager.open("test2/" + fileName);
                 String outFileName = FishDic.BANNER_IMAGES_PATH + fileName;
                 OutputStream outputStream = new FileOutputStream(outFileName);
 

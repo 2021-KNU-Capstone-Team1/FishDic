@@ -95,7 +95,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
          * RecyclerView는 ViewHolder를 새로 만들어야 할 때마다 이 메서드를 호출한다.
          * 이 메서드는 ViewHolder와 그에 연결된 View를 생성하고 초기화하지만 ViewHolder가 아직 특정 데이터에 바인딩된 상태가 아니기 때문에, 뷰의 콘텐츠를 채우지는 않는다.
          ***/
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.itemview_recyclerview, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_itemview, parent, false);
         return new ItemViewHolder(view);
     }
 

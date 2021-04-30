@@ -430,30 +430,33 @@ public class DBManager extends SQLiteOpenHelper {
             return null;
     }
 
-    public static void doParseQueryResultBundle(Bundle queryResult) { //디버그를 위해 쿼리 결과 구조 파싱 수행
-        int index = 0;
-        int subIndex = 0;
-
+    public static void doParseQueryResultBundle(Bundle queryResult, int subIndex, boolean isInitialCall) { //디버그를 위해 쿼리 결과 구조 파싱 수행
+        int index = subIndex;
+        
+        /*
         StackTraceElement[] stacks = new Throwable().getStackTrace();
         Log.d("Stack Trace Start", String.valueOf(stacks.length));
         for (StackTraceElement element : stacks) {
             Log.d("클래스 명", element.getMethodName());
             Log.d("메소드 명", element.getMethodName());
         }
+        */
+
+        if(isInitialCall)
+            Log.d("초기 탐색 시작", "------------------------------------");
 
         for (String key : queryResult.keySet()) {
             Log.d("Index " + Integer.toString(index), key);
             index++;
 
             if (queryResult.get(key) instanceof Bundle) { //하위 결과가 존재하면 (Bundle 타입일 경우만)
-                Log.d("SubIndex " + Integer.toString(subIndex), key + "의 내부 하위 결과");
+                Log.d("Index " + Integer.toString(index), key + "의 내부 하위 결과");
                 Bundle subQueryResult = queryResult.getBundle(key);
-                for (String subKey : subQueryResult.keySet()) {
-                    Log.d("SubIndex " + Integer.toString(subIndex), subKey);
-                    subIndex++;
-                }
+
+                Log.d("하위 결과 탐색 시작", key + " ------------------------------------");
+                doParseQueryResultBundle(subQueryResult, 0, false); //하위 결과에 대하여 계속 탐색
+                Log.d("하위 결과 탐색 완료", key + " ------------------------------------");
             }
-            subIndex = 0;
         }
     }
 

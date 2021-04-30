@@ -1,35 +1,53 @@
 package com.knu.fishdic.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
+import com.knu.fishdic.fragment.MyFragment;
+import com.knu.fishdic.fragment.MyFragmentPagerAdapter;
 import com.knu.fishdic.manager.InitManager;
 
 import java.io.InputStream;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import me.relex.circleindicator.CircleIndicator;
 
 // 메인 화면 액티비티 정의
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     ImageButton main_dic_imageButton;                       //메인화면 하단부 도감 버튼
     ImageButton main_deniedFish_imageButton;                //메인화면 하단부 금어기 버튼
     ImageButton main_fishIdentification_imageButton;        //메인화면 하단부 카메라 버튼
     ImageButton main_gallery_imageButton;                  //메인화면 하단부 갤러리 버튼
     ImageButton main_help_imageButton;                      //메인화면 하단부 도움 버튼
+
+    ViewPager viewPager;
+    FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
+    CircleIndicator indicator;
+
+    private Timer timer;
+    private int currentPosition = 0; //현재 이미지의 위치
+    private final long DELAY_MS = 500; //작업이 실행 되기 전 딜레이 (MS)
+    private final long PERIOD_MS = 3000; //작업 실행 간의 딜레이 (MS)
 
     private static final int GET_FROM_GALLERY = 101;
     final static int TAKE_PICTURE = 1;      //카메라 어플 열 때 전달 될 키값 상수
@@ -49,7 +67,7 @@ public class MainActivity extends Activity {
         setTheme(R.style.AppTheme); //초기화 적업 완료 후 스플래시 테마에서 기존 앱 테마로 변경
         setContentView(R.layout.activity_main);
         this.setComponentsInteraction();
-
+        this.initViewPager();
         //checkSelfPermission();
 
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -68,6 +86,8 @@ public class MainActivity extends Activity {
         this.main_fishIdentification_imageButton = findViewById(R.id.main_fishIdentification_imageButton);
         this.main_gallery_imageButton = findViewById(R.id.main_gallery_imageButton);
         this.main_help_imageButton = findViewById(R.id.main_help_imageButton);
+        this.viewPager = findViewById(R.id.banner_viewPager);
+        this.indicator = findViewById(R.id.banner_circleIndicator);
 
         //도감 화면으로 넘어가는 클릭 리스너
         this.main_dic_imageButton.setOnClickListener(v -> {
@@ -131,7 +151,31 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void getBannerImages() {
+    private void initViewPager() { //ViewPager 초기화
+        Bundle args = new Bundle();
+        args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, MyFragment.FRAGMENT_TYPE.BANNER);
+        args.putParcelableArray(MyFragment.IMAGE_KEY_VALUE, FishDic.bannerImages);
 
+        /*** ViewPager 어댑터 생성 및 할당, 원형 인디케이터 ViewPager에 할당 ***/
+        this.viewPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), args);
+        this.viewPager.setAdapter(viewPagerAdapter);
+        this.indicator.setViewPager(viewPager);
+
+        /*** 일정 시간 간격으로 자동으로 다음 이미지로 이동 ***/
+        final Handler handler = new Handler();
+        final Runnable Update = () -> {
+            if (currentPosition == FishDic.bannerImages.length) {
+                currentPosition = 0;
+            }
+            viewPager.setCurrentItem(currentPosition++, true);
+        };
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, DELAY_MS, PERIOD_MS);
     }
 }

@@ -77,20 +77,21 @@
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/help_viewPager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <me.relex.circleindicator.CircleIndicator
                     android:id="@+id/help_circleIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    app:ci_drawable="@drawable/black_radius"
+                    app:ci_drawable="@drawable/indicator_radius"
                     app:ci_height="7dp"
                     app:ci_margin="4dp"
                     app:ci_width="7dp"
                     app:layout_constraintBottom_toBottomOf="@+id/help_viewPager" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>>
             <!-- 메인화면하고 다른 화면 2~3장 정도 사용해서 어둡게하고 그위에 화살표로 설명 들어가 있는 형태 이미지로 출력. 끝나면 메인트오 돌아갈 수 있게 한다. -->
 
         </TableRow>
