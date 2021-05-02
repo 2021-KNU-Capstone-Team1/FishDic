@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/nav_first_fragment"
+            android:icon="@drawable/settings_40x40"
+            android:title="설정" />
+    </group>
+</menu>

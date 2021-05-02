@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- 메인화면 레이아웃 정의 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -94,7 +95,7 @@
             <LinearLayout
                 android:id="@+id/innerMain_bottomTable_linearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
@@ -107,7 +108,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bottom_button_style"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:scaleType="center"
                     android:src="@drawable/icon_40x40" />
 
@@ -118,7 +119,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bottom_button_style"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:scaleType="center"
                     android:src="@drawable/denied_fish_40x40" />
 
@@ -129,7 +130,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bottom_button_style"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:scaleType="center"
                     android:src="@drawable/camera_40x40" />
 
@@ -140,7 +141,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bottom_button_style"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:scaleType="center"
                     android:src="@drawable/gallery_40x40" />
 
@@ -150,7 +151,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/bottom_button_style"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:scaleType="center"
                     android:src="@drawable/help_40x40" />
             </LinearLayout>
@@ -158,4 +159,14 @@
         </TableRow>
 
     </TableLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 상단 왼쪽의 메뉴 클릭 시 보여질 네비게이션 메뉴 -->
+    <!-- Note that `android:layout_gravity` needs to be set to 'start' -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/main_navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white"
+        app:menu="@navigation/drawer_view" />
+</androidx.drawerlayout.widget.DrawerLayout>

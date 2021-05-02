@@ -335,7 +335,6 @@ public class DBManager extends SQLiteOpenHelper {
                 " ON " + FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
                 " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
                 " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
-                // " WHERE " + FISH_TABLE + "." + NAME + "=" + '"' + fishName + '"';
                 " WHERE " + FISH_TABLE + "." + NAME + "=" + '"' + fishName + '"';
 
         Log.d("어류 상세정보 Query : ", sqlQuery);

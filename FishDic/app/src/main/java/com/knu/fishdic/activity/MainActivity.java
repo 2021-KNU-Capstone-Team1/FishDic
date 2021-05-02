@@ -44,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
     CircleIndicator indicator;
 
+  //  DrawerLayout drawerLayout;
+    //NavigationView navigationView;
+
+
     private Timer timer;
     private int currentPosition = 0; //현재 이미지의 위치
     private final long DELAY_MS = 500; //작업이 실행 되기 전 딜레이 (MS)
