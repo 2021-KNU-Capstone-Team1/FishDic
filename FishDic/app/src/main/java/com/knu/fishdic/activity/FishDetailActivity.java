@@ -37,10 +37,20 @@ public class FishDetailActivity extends AppCompatActivity {
         this.setComponentsInteraction();
 
         Bundle args = getIntent().getExtras(); //현재 액티비티 생성 시 전달받은 키(문자열), 값 쌍
-        String fishName = args.getString(DBManager.NAME); //전달 받은 어류 이름
-        Log.d("Target 어류 이름 : ", fishName);
-        this.doDataBindingJob(fishName);
-        this.fishDetail_title_textView.setText(fishName); //성공적으로 바인딩 완료 시 어류 이름으로 타이틀 텍스트 뷰 설정
+        
+        String name = null;
+        if(args.containsKey(DBManager.NAME)){ //이름 존재 시
+            name = args.getString(DBManager.NAME); //전달 받은 어류 이름
+        }else if(args.containsKey(DBManager.SCIENTIFIC_NAME)){ //학명 존재 시
+            name=args.getString(DBManager.SCIENTIFIC_NAME);
+        }else{
+            //todo : alertdialog 클래스로 따로 분리 후 오류 출력 위해 호출
+        }
+        
+        Log.d("Target 어류 : ", name);
+        this.doDataBindJob(name);
+        //todo : 학명으로 전달 시 해당 어류 이름을 받아와 타이틅 텍스트 뷰 설정할것
+        // this.fishDetail_title_textView.setText(fishName); //성공적으로 바인딩 완료 시 어류 이름으로 타이틀 텍스트 뷰 설정
     }
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
@@ -52,14 +62,14 @@ public class FishDetailActivity extends AppCompatActivity {
                 onBackPressed());
     }
 
-    private void doDataBindingJob(String fishName) {
+    private void doDataBindJob(String fishName) {
         /*** 
          * 1) DB로부터 해당 어류의 상세정보를 받아온다. 
          * 2) 해당 어류의 상세정보가 존재 할 경우
-         *      2-1)
+         *      2-1) 어류의 기본 정보에 해당하는 Fragment 인스턴스 생성 및 추가 (Activity의 ViewGroup(innerFishDetail_linearLayout))
          *
          * 3) 해당 어류의 금지행정이 존재할 경우
-         *      3-1)
+         *      3-1) 어류의 금지 행정정보에 해당하는 Fragment 인스턴스 생성 및 추가 (쿼리 된 전체 금지행정 수만큼)
          ***/
         Bundle queryResult = FishDic.globalDBManager.getFishDetailBundle(fishName);
         if (queryResult == null) { //해당 어류가 존재하지 않을 경우
@@ -91,10 +101,10 @@ public class FishDetailActivity extends AppCompatActivity {
             Bundle subQueryResult = queryResult.getBundle(String.valueOf(specialProhibitAdminIndex)); //특별 금지행정의 인덱스를 키로하는 각 금지행정 정보
             Bundle subArgs = new Bundle();
             subArgs.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, MyFragment.FRAGMENT_TYPE.DENIED_INFO);
-            subArgs.putBundle(DBManager.QUERY_RESULT_KEY_VALUE, subQueryResult);
+            subArgs.putBundle(DBManager.QUERY_RESULT_KEY_VALUE, subQueryResult); //금지행정 정보를 전달위해 추가
             fragmentTransaction.add(R.id.innerFishDetail_linearLayout, MyFragment.newInstance(specialProhibitAdminIndex, subArgs)); //금지 행정정보에 해당하는 Fragment 인스턴스 생성 및 추가
         }
 
-        fragmentTransaction.commit();
+        fragmentTransaction.commit(); //변경사항 반영
     }
 }

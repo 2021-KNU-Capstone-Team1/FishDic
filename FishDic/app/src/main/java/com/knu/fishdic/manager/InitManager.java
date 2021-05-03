@@ -21,7 +21,7 @@ import java.io.OutputStream;
 
 public class InitManager {
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void doBindForRecylerAdapter() { //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
+    public static void doDataBindJobForRecylerAdapter() { //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
         if (FishDic.globalDBManager != null || FishDic.globalDicRecyclerAdapter != null || FishDic.globalDeniedFishRecyclerAdapter != null)
             return;
 

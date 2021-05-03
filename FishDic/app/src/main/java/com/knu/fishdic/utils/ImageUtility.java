@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
 
+// 이미지 처리 작업을 위한 ImageUtility 정의
+
 public class ImageUtility {
     public static Bitmap decodeFromByteArray(byte[] target) { //byte[] 이미지를 Bitmap 형식으로 변환
         if (target != null) { //이미지가 존재 할 경우

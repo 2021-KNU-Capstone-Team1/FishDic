@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Timer timer;
     private int currentPosition = 0; //현재 이미지의 위치
-    private final long DELAY_MS = 500; //작업이 실행 되기 전 딜레이 (MS)
+    private final long DELAY_MS = 1000; //작업이 실행 되기 전 딜레이 (MS)
     private final long PERIOD_MS = 3000; //작업 실행 간의 딜레이 (MS)
 
     private static final int GET_FROM_GALLERY = 101;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         /*** 초기화 작업 수행 ***/
-        InitManager.doBindForRecylerAdapter(); //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
+        InitManager.doDataBindJobForRecylerAdapter(); //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
         InitManager.debugBannerTest(); //배너 이미지 테스트
         InitManager.debugHelpTest(); //이용가이드 이미지 테스트
 
@@ -167,11 +167,11 @@ public class MainActivity extends AppCompatActivity {
 
         /*** 일정 시간 간격으로 자동으로 다음 이미지로 이동 ***/
         final Handler handler = new Handler();
-        final Runnable Update = () -> {
+        final Runnable Update = () -> { //다음 이미지로 이동
             if (currentPosition == FishDic.bannerImages.length) {
                 currentPosition = 0;
             }
-            viewPager.setCurrentItem(currentPosition++, true);
+            viewPager.setCurrentItem(currentPosition++, true); //다음 이미지를 보여주기 위한 viewPager의 현재 아이템 위치 설정
         };
 
         timer = new Timer();
