@@ -21,7 +21,7 @@ public class ImageUtility {
         return null; //이미지가 존재하지 않거나, 크기가 0일 경우
     }
 
-    public static byte[] encodeFromBitmap(Bitmap target, Bitmap.CompressFormat compressFormat, int compressQuality){ //Bitmap 이미지를 압축하여 byte[] 형식으로 변환
+    public static byte[] encodeFromBitmap(Bitmap target, Bitmap.CompressFormat compressFormat, int compressQuality) { //Bitmap 이미지를 압축하여 byte[] 형식으로 변환
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         target.compress(compressFormat, compressQuality, byteArrayOutputStream); //압축 형식, 압축 품질에 따라 압축
         return byteArrayOutputStream.toByteArray();

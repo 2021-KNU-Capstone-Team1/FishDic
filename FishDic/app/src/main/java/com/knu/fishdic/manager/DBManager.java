@@ -1,7 +1,5 @@
 package com.knu.fishdic.manager;
 
-// 이달의 금어기, 도감 관련 모든 기능을 위한 DBManager 정의
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -22,6 +20,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+// 이달의 금어기, 도감 관련 모든 기능을 위한 DBManager 정의
 
 public class DBManager extends SQLiteOpenHelper {
     public static final String TOTAL_FISH_COUNT_KEY_VALUE = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
@@ -319,9 +319,13 @@ public class DBManager extends SQLiteOpenHelper {
             return null;
     }
 
-    public Bundle getFishDetailBundle(String fishName) { //특정 어류의 상세정보 반환
-        if (fishName.isEmpty()) //입력 받은 어류 이름이 없을 경우
-            return null;
+    public Bundle getFishDetailBundle(Bundle args) { //특정 어류의 상세정보 반환
+        boolean argsContainsName = args.containsKey(NAME);
+        boolean argsContainsScientificName = args.containsKey(SCIENTIFIC_NAME);
+
+        if(!argsContainsName && !argsContainsScientificName){ //이름, 학명 키 값에 해당하는 데이터가 모두 없을경우
+           return null;
+        }
 
         String sqlQuery = "SELECT " + FISH_TABLE + "." + ALL + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS + ", " +
                 DENIED_FISH_TABLE + "." + DENIED_LENGTH + ", " + DENIED_FISH_TABLE + "." + DENIED_WEIGHT + ", " + DENIED_FISH_TABLE + "." + DENIED_WATER_DEPTH + ", " +
@@ -335,7 +339,12 @@ public class DBManager extends SQLiteOpenHelper {
                 " ON " + FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
                 " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
                 " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
-                " WHERE " + FISH_TABLE + "." + NAME + "=" + '"' + fishName + '"';
+                " WHERE " + FISH_TABLE;
+
+        if(argsContainsName) //이름으로 검색
+            sqlQuery += "." + NAME + "=" + '"' + args.getString(NAME) + '"';
+        else //학명으로 검색
+            sqlQuery += "." + NAME + "=" + '"' + args.getString(SCIENTIFIC_NAME) + '"';
 
         Log.d("어류 상세정보 Query : ", sqlQuery);
         Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
@@ -442,7 +451,7 @@ public class DBManager extends SQLiteOpenHelper {
         */
 
         if(isInitialCall)
-            Log.d("초기 탐색 시작", "------------------------------------");
+            Log.d("초기 탐색 시작", "---");
 
         for (String key : queryResult.keySet()) {
             Log.d("Index " + Integer.toString(index), key);
@@ -452,9 +461,9 @@ public class DBManager extends SQLiteOpenHelper {
                 Log.d("Index " + Integer.toString(index), key + "의 내부 하위 결과");
                 Bundle subQueryResult = queryResult.getBundle(key);
 
-                Log.d("하위 결과 탐색 시작", key + " ------------------------------------");
+                Log.d("하위 결과 탐색 시작", key + " ---");
                 doParseQueryResultBundle(subQueryResult, 0, false); //하위 결과에 대하여 계속 탐색
-                Log.d("하위 결과 탐색 완료", key + " ------------------------------------");
+                Log.d("하위 결과 탐색 완료", key + " ---");
             }
         }
     }

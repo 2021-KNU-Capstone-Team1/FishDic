@@ -1,7 +1,5 @@
 package com.knu.fishdic.manager;
 
-// 앱 초기화를 위한 InitManager 정의
-
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -18,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+// 앱 초기화를 위한 InitManager 정의
 
 public class InitManager {
     @RequiresApi(api = Build.VERSION_CODES.N)

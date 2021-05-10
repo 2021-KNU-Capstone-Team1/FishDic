@@ -1,8 +1,5 @@
 package com.knu.fishdic.utils;
 
-// DB 갱신, 배너 다운로드를 위한 AsyncDownloader 정의
-// https://developer.android.com/reference/android/os/AsyncTask
-
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
@@ -17,6 +14,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+// DB 갱신, 배너 다운로드를 위한 AsyncDownloader 정의
+// https://developer.android.com/reference/android/os/AsyncTask
 
 public class AsyncDownloader extends AsyncTask<String, Integer, String> { //비동기 다운로더
     public enum DOWNLOAD_MODE { //비동기 다운로더 (AsyncDownloader)의 다운로드 모드 정의
