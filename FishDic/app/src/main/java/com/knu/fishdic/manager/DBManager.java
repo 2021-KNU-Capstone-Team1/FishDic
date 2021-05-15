@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi;
 
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
+import com.knu.fishdic.utils.AsyncDownloader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -154,13 +155,15 @@ public class DBManager extends SQLiteOpenHelper {
         File currentDBFile = new File(DB_PATH + DB_NAME); //현재 로컬 DB
         File currentDBVersionFile = new File(DB_PATH + DB_VERSION_FILE_NAME); //로컬 DB 버전
 
-        return DB_STATE.INIT;
+        //return DB_STATE.INIT;
 
         //if (!currentDBVersionFile.exists() || !currentDBFile.exists()) { //기존 DB가 존재하지 않거나, 버전 관리 파일이 존재하지 않을 경우
         //}
 
-        //AsyncDownloader asyncDownloader = new AsyncDownloader(DB_SERVER + DB_VERSION_FILE_NAME, null, buffer); //(String targetUrl, String outputPath, byte[] outputBuffer)
-        //asyncDownloader.execute();
+        AsyncDownloader asyncDownloader = new AsyncDownloader(null, buffer);
+        asyncDownloader.execute(DB_SERVER + DB_VERSION_FILE_NAME);
+
+        return DB_STATE.INIT;//temp
 
         /*삭제 예정 : UI 스레드가 아닌 백그라운드 작업으로 돌려야 함
         try { //서버의 DB 버전과 로컬 DB 버전 비교
