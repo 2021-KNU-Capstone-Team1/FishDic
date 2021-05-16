@@ -2,10 +2,7 @@ package com.knu.fishdic.manager;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
@@ -20,7 +17,6 @@ import java.io.OutputStream;
 // 앱 초기화를 위한 InitManager 정의
 
 public class InitManager {
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void doDataBindJobForRecylerAdapter() { //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
         if (FishDic.globalDBManager != null || FishDic.globalDicRecyclerAdapter != null || FishDic.globalDeniedFishRecyclerAdapter != null)
             return;
@@ -80,7 +76,7 @@ public class InitManager {
         }
     }
 
-    public static void debugHelpTest() {
+    public static void debugHelpTest() { //나중에 삭제하고 Assets에 이미지 넣을 것
         AssetManager assetManager = FishDic.globalContext.getAssets();
         FishDic.helpImages = new Bitmap[12];
 

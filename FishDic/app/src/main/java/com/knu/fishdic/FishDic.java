@@ -3,7 +3,9 @@ package com.knu.fishdic;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.StrictMode;
 
+import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
@@ -11,6 +13,15 @@ import com.knu.fishdic.recyclerview.RecyclerAdapter;
 // https://developer.android.com/reference/android/app/Application
 
 public class FishDic extends Application {
+    public static String CACHE_PATH = ""; //임시폴더 경로
+
+    public static final String DEBUG_BANNER_SERVER = "https://tests2131.000webhostapp.com/Banner/";
+    public static final String DEBUG_DB_SERVER = "https://tests2131.000webhostapp.com/DB/";
+    //public static final String DB_SERVER = "https://raw.githubusercontent.com/2021-KNU-Capstone-Team1/FishDic/master/DB/"; //DB 저장 된 서버 경로
+    public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
+    public static final String LISTS_FILE_NAME = "lists"; //서버의 파일 목록 관리 파일 이름
+    //public static final int DB_VERSION_FILE_SIZE = 8; //DB 버전 관리 파일 크기 (바이트 단위)
+
     public static String BANNER_IMAGES_PATH; //배너 이미지 경로
     public static String HELP_IMAGES_PATH; //이용가이드 이미지 경로
 
@@ -31,9 +42,14 @@ public class FishDic extends Application {
         globalDBManager = null;
         globalDicRecyclerAdapter = globalDeniedFishRecyclerAdapter = null;
 
+        CACHE_PATH = globalContext.getCacheDir().toString() + "/";
         BANNER_IMAGES_PATH = "/data/data/" + globalContext.getPackageName() + "/banner/"; //배너 이미지 경로 "/data/data/앱 이름/banner/"
         HELP_IMAGES_PATH = "/data/data/" + globalContext.getPackageName() + "/help/"; //이용가이드 이미지 경로 "/data/data/앱 이름/help/"
         bannerImages = helpImages = null;
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy); //UI 스레드에서 동기 작업을 위한 네트워크 연결 허용하도록 설정
+        AndroidNetworking.initialize(globalContext); //네트워킹 작업을 위한 Fast-Android-Networking 초기화
     }
 
     @Override
