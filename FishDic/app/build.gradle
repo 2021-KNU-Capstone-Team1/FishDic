@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.knu.fishdic"
-        minSdkVersion 23 //최소 실행 SDK 버전     (21에서 23으로 수정하였음)
+        minSdkVersion 26 //최소 실행 SDK 버전
         targetSdkVersion 30 //타겟 SDK 버전
         versionCode 1
         versionName "1.0" //앱 버전
@@ -29,6 +29,7 @@ android {
 }
 
 dependencies { //의존성
+    implementation 'com.github.cdreamplayer:ProgressDialog:1.0.0' //Deprecated 된 기존 ProgressDialog 대체
     implementation 'com.amitshekhar.android:android-networking:1.0.2' //네트워킹 작업을 위한 Fast-Android-Networking
     implementation 'me.relex:circleindicator:1.3.2' //배너 및 이용가이드를 위한 원형 인디케이터
     implementation 'androidx.appcompat:appcompat:1.2.0'

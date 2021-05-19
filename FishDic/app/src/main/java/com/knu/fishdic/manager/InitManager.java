@@ -29,11 +29,7 @@ public class InitManager {
         FishDic.globalDeniedFishRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.DENIED_FISH));
     }
 
-    public static void debugBannerTest() {
-        //https://developer.android.com/reference/android/content/res/Resources
-        //https://developer.android.com/reference/android/content/res/AssetManager
-        //테스트 이미지 3개
-
+    public static void debugBannerTest() { //디버그용 서버로부터 받아와야함
         AssetManager assetManager = FishDic.globalContext.getAssets();
         FishDic.bannerImages = new Bitmap[3];
 
@@ -45,7 +41,7 @@ public class InitManager {
 
             for (int index = 1; index <= 3; index++) {
                 String fileName = "sample_" + index + ".jpg";
-                InputStream inputStream = assetManager.open("test2/" + fileName);
+                InputStream inputStream = assetManager.open("debugbanner/" + fileName);
                 String outFileName = FishDic.BANNER_IMAGES_PATH + fileName;
                 OutputStream outputStream = new FileOutputStream(outFileName);
 
@@ -76,41 +72,24 @@ public class InitManager {
         }
     }
 
-    public static void debugHelpTest() { //나중에 삭제하고 Assets에 이미지 넣을 것
+    public static void initHelpImages() { //이용가이드 초기 작업 수행
         AssetManager assetManager = FishDic.globalContext.getAssets();
-        FishDic.helpImages = new Bitmap[12];
+        InputStream inputStream;
 
         try {
-            File folder = new File(FishDic.HELP_IMAGES_PATH);
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
+            String[] helpImagesList = assetManager.list("help/"); //이용가이드 이미지 리스트
+            int helpImagesCount = helpImagesList.length; //이용가이드 이미지 수
 
-            for (int index = 1; index <= 12; index++) {
-                String fileName = "sample_" + index + ".jpg";
-                InputStream inputStream = assetManager.open("test/" + fileName);
-                String outFileName = FishDic.HELP_IMAGES_PATH + fileName;
-                OutputStream outputStream = new FileOutputStream(outFileName);
+            FishDic.helpImages = new Bitmap[helpImagesCount];
 
-                byte[] buffer = new byte[1024];
-                byte[] image = null;
-                int length = 0;
-                int totalLength = 0;
+            for (int index = 0; index < helpImagesCount; index++) {
+                inputStream = assetManager.open("help/" + helpImagesList[index]);
 
-                while ((length = inputStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, length);
-                    totalLength += length;
-                }
+                Log.d("이용가이드 크기", String.valueOf(inputStream.available()));
+                byte[] buffer = new byte[inputStream.available()];
+                inputStream.read(buffer);
 
-                //이용가이드 할당 테스트
-                image = new byte[totalLength]; //해당 이미지의 크기
-                Log.d("이용가이드 크기", String.valueOf(totalLength));
-                inputStream.reset();
-                inputStream.read(image);
-                FishDic.helpImages[index - 1] = ImageUtility.decodeFromByteArray(image);
-
-                outputStream.flush();
-                outputStream.close();
+                FishDic.helpImages[index] = ImageUtility.decodeFromByteArray(buffer); //비트맵 이미지 할당
                 inputStream.close();
             }
 

@@ -2,7 +2,6 @@ package com.knu.fishdic.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +50,7 @@ public class MyFragment extends Fragment {
 
         MyFragment fragment = new MyFragment();
 
-        DBManager.doParseQueryResultBundle(args, 0, true);
-
+        //디버그용 DBManager.doParseQueryResultBundle(args, 0, true);
         FRAGMENT_TYPE fragmentType = (FRAGMENT_TYPE) args.getSerializable(FRAGMENT_TYPE_KEY_VALUE);
         switch (fragmentType) { //Fragment의 타입에 따라 Fragment의 인스턴스 객체 생성을 위한 데이터 설정
             case BASIC_INFO: //어류 상세 정보 페이지의 기본 정보
@@ -106,7 +104,7 @@ public class MyFragment extends Fragment {
          ***/
 
         View view;
-        Log.d("currentFragmentType :", this.fragmentType.toString());
+        //디버그용 Log.d("currentFragmentType", this.fragmentType.toString());
 
         switch (this.fragmentType) { //뷰 설정
             case BASIC_INFO: //어류 상세 정보 페이지의 기본 정보

@@ -17,10 +17,8 @@ public class FishDic extends Application {
 
     public static final String DEBUG_BANNER_SERVER = "https://tests2131.000webhostapp.com/Banner/";
     public static final String DEBUG_DB_SERVER = "https://tests2131.000webhostapp.com/DB/";
-    //public static final String DB_SERVER = "https://raw.githubusercontent.com/2021-KNU-Capstone-Team1/FishDic/master/DB/"; //DB 저장 된 서버 경로
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
     public static final String LISTS_FILE_NAME = "lists"; //서버의 파일 목록 관리 파일 이름
-    //public static final int DB_VERSION_FILE_SIZE = 8; //DB 버전 관리 파일 크기 (바이트 단위)
 
     public static String BANNER_IMAGES_PATH; //배너 이미지 경로
     public static String HELP_IMAGES_PATH; //이용가이드 이미지 경로

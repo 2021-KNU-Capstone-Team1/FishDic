@@ -1,6 +1,7 @@
 package com.knu.fishdic.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -44,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
   //  DrawerLayout drawerLayout;
     //NavigationView navigationView;
-
-
+    
     private Timer timer;
     private int currentPosition = 0; //현재 이미지의 위치
     private final long DELAY_MS = 1000; //작업이 실행 되기 전 딜레이 (MS)
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     final static int TAKE_PICTURE = 1;      //카메라 어플 열 때 전달 될 키값 상수
     // ImageView camera_picture; 나중에 찍은 사진 저장할 용도
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         /*** 초기화 작업 수행 ***/
         InitManager.doDataBindJobForRecylerAdapter(); //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
         InitManager.debugBannerTest(); //배너 이미지 테스트
-        InitManager.debugHelpTest(); //이용가이드 이미지 테스트
+        InitManager.initHelpImages(); //이용가이드 초기 작업 수행
 
         setTitle(R.string.app_name);
         setTheme(R.style.AppTheme); //초기화 적업 완료 후 스플래시 테마에서 기존 앱 테마로 변경
