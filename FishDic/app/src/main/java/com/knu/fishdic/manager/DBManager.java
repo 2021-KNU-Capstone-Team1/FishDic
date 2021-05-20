@@ -232,7 +232,7 @@ public class DBManager extends SQLiteOpenHelper {
             Response okHttpResponse = response.getOkHttpResponse();
             Log.d("Server DB Download", "headers : " + okHttpResponse.headers().toString());
 
-            File serverDBVersionFile = new File(FishDic.CACHE_PATH + FishDic.VERSION_FILE_NAME);
+            File serverDBVersionFile = new File(DB_PATH + FishDic.VERSION_FILE_NAME);
 
             if (!serverDBVersionFile.exists())
                 try {
