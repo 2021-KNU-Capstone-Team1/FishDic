@@ -17,9 +17,9 @@ import com.knu.fishdic.recyclerview.RecyclerAdapter;
 public class FishDic extends Application {
     public static String CACHE_PATH = ""; //임시폴더 경로
 
-    //TODO : 디버그 서버 밴 당하였으므로 변경, 다운로드 진행상황 표시
-    public static final String DEBUG_BANNER_SERVER = "https://tests2131.000webhostapp.com/Banner/";
-    public static final String DEBUG_DB_SERVER = "https://tests2131.000webhostapp.com/DB/";
+    //TODO : 다운로드 진행상황 표시
+    public static final String DEBUG_BANNER_SERVER = "http://fishdic-debug-server.infinityfreeapp.com/Banner/";
+    public static final String DEBUG_DB_SERVER = "http://fishdic-debug-server.infinityfreeapp.com/DB/";
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
     //TODO : 삭제 예정 서버 php스크립트 실행으로 받아옴 public static final String LISTS_FILE_NAME = "lists"; //서버의 파일 목록 관리 파일 이름
 

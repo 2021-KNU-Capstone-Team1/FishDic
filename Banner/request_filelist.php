@@ -3,7 +3,7 @@
     $path = realpath('./');
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename)
         if (strpos($filename,'.jpeg') || strpos($filename,'.jpg') //이미지들만 출력
-        || strpos($filename,'.bmp') || strpos($filename,'.gif') || strpos($filename,'.bmp'))
+        || strpos($filename,'.bmp') || strpos($filename,'.gif'))
             $list = $list.basename($filename)."\r\n";
     echo $list;
 ?>
