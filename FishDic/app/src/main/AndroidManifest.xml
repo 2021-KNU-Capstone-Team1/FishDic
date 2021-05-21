@@ -20,7 +20,8 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@drawable/icon_96x96"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"> <!-- 서버에 http 프로토콜로도 접속 허용하기 위함 -->
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
