@@ -148,7 +148,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         final File currentDBFile = new File(DB_PATH + DB_NAME); //현재 로컬 DB 파일
         final File currentDBVersionFile = new File(DB_PATH + FishDic.VERSION_FILE_NAME); //로컬 DB 버전 파일
-        boolean currentDBExists = currentDBFile.exists() && currentDBVersionFile.exists(); //로컬 DB 존재 여부 (DB 파일 혹은 버전 파일 하나라도 존재 하지 않을 시 무결성이 깨진 걸로 간주)
+        boolean currentDBExists = currentDBFile.exists() & currentDBVersionFile.exists(); //로컬 DB 존재 여부 (DB 파일 혹은 버전 파일 하나라도 존재 하지 않을 시 무결성이 깨진 걸로 간주)
 
         int currentDBVersion = -1; //로컬 DB 버전
         int serverDBVersion = -1; //서버 DB 버전
@@ -216,15 +216,10 @@ public class DBManager extends SQLiteOpenHelper {
             dir.mkdir();
         }
 
-       //BlackProgressDialog dialog = new BlackProgressDialog(FishDic.globalContext, "test");
-        //dialog.show();
-
         ANRequest request = AndroidNetworking
                 .download(FishDic.DEBUG_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
                 .build()
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
-                    long current = bytesDownloaded / 1024;
-                    long total = totalBytes / 1024;
                 });
         ANResponse<String> response = request.executeForDownload();
 

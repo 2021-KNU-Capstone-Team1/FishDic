@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.StrictMode;
 
+import androidx.core.app.NotificationManagerCompat;
+
 import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
@@ -15,10 +17,11 @@ import com.knu.fishdic.recyclerview.RecyclerAdapter;
 public class FishDic extends Application {
     public static String CACHE_PATH = ""; //임시폴더 경로
 
+    //TODO : 디버그 서버 밴 당하였으므로 변경, 다운로드 진행상황 표시
     public static final String DEBUG_BANNER_SERVER = "https://tests2131.000webhostapp.com/Banner/";
     public static final String DEBUG_DB_SERVER = "https://tests2131.000webhostapp.com/DB/";
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
-    public static final String LISTS_FILE_NAME = "lists"; //서버의 파일 목록 관리 파일 이름
+    //TODO : 삭제 예정 서버 php스크립트 실행으로 받아옴 public static final String LISTS_FILE_NAME = "lists"; //서버의 파일 목록 관리 파일 이름
 
     public static String BANNER_IMAGES_PATH; //배너 이미지 경로
     public static String HELP_IMAGES_PATH; //이용가이드 이미지 경로
@@ -32,6 +35,13 @@ public class FishDic extends Application {
 
     public static Bitmap[] bannerImages; //배너 이미지
     public static Bitmap[] helpImages; //이용가이드 이미지
+
+    NotificationManagerCompat notificationManager; //알림 관리자
+
+    public enum NOTIFICATION_TYPE { //알림 타입
+        DOWNLOAD
+    }
+
 
     @Override
     public void onCreate() { //최초 앱 가동 시
@@ -48,6 +58,8 @@ public class FishDic extends Application {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy); //UI 스레드에서 동기 작업을 위한 네트워크 연결 허용하도록 설정
         AndroidNetworking.initialize(globalContext); //네트워킹 작업을 위한 Fast-Android-Networking 초기화
+
+        NotificationManagerCompat.from(globalContext);
     }
 
     @Override

@@ -10,6 +10,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.knu.fishdic.R;
 
+import java.util.Objects;
+
 // 사용자 정의 대화상자를 위한 MyDialogFragment 정의
 // https://developer.android.com/reference/android/app/DialogFragment
 
@@ -34,7 +36,7 @@ public class MyDialogFragment extends DialogFragment {
          * The default implementation simply instantiates and returns a Dialog class.
          ***/
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext()); //getContext() : 현재 Fragment와 얀관 된 Context 이용
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext())); //getContext() : 현재 Fragment와 얀관 된 Context 이용
         DIALOG_TYPE currentDialogType = (DIALOG_TYPE) getArguments().getSerializable(DIALOG_TYPE_KEY);
         switch (currentDialogType) {
             case FISH_DETAIL_ERR: //어류 상세정보 오류 메시지 창

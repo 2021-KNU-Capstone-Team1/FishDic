@@ -188,8 +188,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
                  ***/
                 int bindingAdapterPosition = getBindingAdapterPosition();
                 //int absoluteAdapterPosition = getAbsoluteAdapterPosition();
-                //Log.d("bindingPos : ", Integer.toString(bindingAdapterPosition));
-                //Log.d("absolutePos : ", Integer.toString(absoluteAdapterPosition));
+                //Log.d("bindingPos", Integer.toString(bindingAdapterPosition));
+                //Log.d("absolutePos", Integer.toString(absoluteAdapterPosition));
 
                 if (bindingAdapterPosition != RecyclerView.NO_POSITION && refItemClickListener != null) //클릭 된 아이템이 존재하며, 클릭 리스너가 참조되어 있으면
                     refItemClickListener.onItemClick(v, this.innerRecyclerView_title_textView.getText().toString()); //클릭 된 어류의 이름 전달
