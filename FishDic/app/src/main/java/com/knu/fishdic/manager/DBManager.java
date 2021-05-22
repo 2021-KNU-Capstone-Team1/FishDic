@@ -155,7 +155,8 @@ public class DBManager extends SQLiteOpenHelper {
 
         /*** 서버와 로컬 DB 버전 비교 ***/
         ANRequest request = AndroidNetworking
-                .download(FishDic.DEBUG_DB_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
+                .download( FishDic.PUBLIC_DB_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
+                .doNotCacheResponse()
                 .build()
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
                 });
@@ -217,7 +218,8 @@ public class DBManager extends SQLiteOpenHelper {
         }
 
         ANRequest request = AndroidNetworking
-                .download(FishDic.DEBUG_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
+                .download( FishDic.PUBLIC_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
+                .doNotCacheResponse()
                 .build()
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
                 });
