@@ -18,9 +18,9 @@ public class FishDic extends Application {
     public static String CACHE_PATH = ""; //임시폴더 경로
 
     //TODO : 다운로드 진행상황 표시
-    public static boolean useDebugServer = false; //디버그 서버 사용 여부
-    public static final String DEBUG_BANNER_SERVER = "http://fishdic-debug-server.infinityfreeapp.com/Banner/";
-    public static final String DEBUG_DB_SERVER = "http://fishdic-debug-server.infinityfreeapp.com/DB/";
+    public static boolean useDebugServer = false; //배너 및 DB 갱신 위한 디버그 서버 사용 여부
+    public static final String DEBUG_BANNER_SERVER = "http://hyung8789.hyperphp.com/Banner/";
+    public static final String DEBUG_DB_SERVER = "http://hyung8789.hyperphp.com/DB/";
     public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/Banner/";
     public static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
 
