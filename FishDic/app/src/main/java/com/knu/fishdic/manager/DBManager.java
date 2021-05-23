@@ -159,19 +159,16 @@ public class DBManager extends SQLiteOpenHelper {
         int serverDBVersion = -1; //서버 DB 버전
 
         /*** 서버와 로컬 DB 버전 비교 ***/
+        Log.d("Checking newest DB Version", "---");
         ANRequest request = AndroidNetworking
                 .download(FishDic.PUBLIC_DB_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
                 .doNotCacheResponse()
                 .build()
-                .setAnalyticsListener(new AnalyticsListener() {
-                    @Override
-                    public void onReceived(long timeTakenInMillis, long bytesSent,
-                                           long bytesReceived, boolean isFromCache) {
-                        Log.d("1", " timeTakenInMillis : " + timeTakenInMillis);
-                        Log.d("2", " bytesSent : " + bytesSent);
-                        Log.d("3", " bytesReceived : " + bytesReceived);
-                        Log.d("4", " isFromCache : " + isFromCache);
-                    }
+                .setAnalyticsListener((timeTakenInMillis, bytesSent, bytesReceived, isFromCache) -> {
+                    Log.i("DB", " timeTakenInMillis : " + timeTakenInMillis);
+                    Log.i("DB", " bytesSent : " + bytesSent);
+                    Log.i("DB", " bytesReceived : " + bytesReceived);
+                    Log.i("DB", " isFromCache : " + isFromCache);
                 })
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
                 });
@@ -179,9 +176,9 @@ public class DBManager extends SQLiteOpenHelper {
 
         if (response.isSuccess()) {
             Response okHttpResponse = response.getOkHttpResponse();
-            Log.d("Server DB Version Check", "headers : \n" + okHttpResponse.headers().toString());
-            Log.d("Server DB Version Check", "body : \n" + okHttpResponse.body().toString());
-            Log.d("Server DB Version Check", "HTTP Status Code : \n" + okHttpResponse.code());
+            Log.d("Server DB Version Check", "headers :" + okHttpResponse.headers().toString());
+            Log.d("Server DB Version Check", "body :" + okHttpResponse.body().toString());
+            Log.d("Server DB Version Check", "HTTP Status Code :" + okHttpResponse.code());
 
             File serverDBVersionFile = new File(FishDic.CACHE_PATH + FishDic.VERSION_FILE_NAME);
 
@@ -203,8 +200,8 @@ public class DBManager extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
 
-            Log.d("로컬 DB 버전", String.valueOf(currentDBVersion));
-            Log.d("서버 DB 버전", String.valueOf(serverDBVersion));
+            Log.i("로컬 DB 버전", String.valueOf(currentDBVersion));
+            Log.i("서버 DB 버전", String.valueOf(serverDBVersion));
 
         } else { //서버 접속 오류 시
             ANError error = response.getError();
@@ -234,19 +231,16 @@ public class DBManager extends SQLiteOpenHelper {
             dir.mkdir();
         }
 
+        Log.d("Downloading newest DB From Server", "---");
         ANRequest request = AndroidNetworking
                 .download(FishDic.PUBLIC_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
                 .doNotCacheResponse()
                 .build()
-                .setAnalyticsListener(new AnalyticsListener() {
-                    @Override
-                    public void onReceived(long timeTakenInMillis, long bytesSent,
-                                           long bytesReceived, boolean isFromCache) {
-                        Log.d("1", " timeTakenInMillis : " + timeTakenInMillis);
-                        Log.d("2", " bytesSent : " + bytesSent);
-                        Log.d("3", " bytesReceived : " + bytesReceived);
-                        Log.d("4", " isFromCache : " + isFromCache);
-                    }
+                .setAnalyticsListener((timeTakenInMillis, bytesSent, bytesReceived, isFromCache) -> {
+                    Log.i("DB", " timeTakenInMillis : " + timeTakenInMillis);
+                    Log.i("DB", " bytesSent : " + bytesSent);
+                    Log.i("DB", " bytesReceived : " + bytesReceived);
+                    Log.i("DB", " isFromCache : " + isFromCache);
                 })
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
                 });
@@ -254,9 +248,9 @@ public class DBManager extends SQLiteOpenHelper {
 
         if (response.isSuccess()) {
             Response okHttpResponse = response.getOkHttpResponse();
-            Log.d("Server DB Download", "headers : \n" + okHttpResponse.headers().toString());
-            Log.d("Server DB Download", "body : \n" + okHttpResponse.body().toString());
-            Log.d("Server DB Download", "HTTP Status Code : \n" + okHttpResponse.code());
+            Log.d("Server DB Download", "headers : " + okHttpResponse.headers().toString());
+            Log.d("Server DB Download", "body : " + okHttpResponse.body().toString());
+            Log.d("Server DB Download", "HTTP Status Code : " + okHttpResponse.code());
 
             File serverDBVersionFile = new File(DB_PATH + FishDic.VERSION_FILE_NAME);
 

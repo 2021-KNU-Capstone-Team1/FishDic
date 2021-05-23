@@ -16,8 +16,11 @@ import com.knu.fishdic.utils.ImageUtility;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,6 +52,9 @@ public class InitManager {
     }
 
     public static void initBannerImages() { //배너 이미지 초기화 작업 수행
+        if (FishDic.bannerImages != null)
+            return;
+
         switch (getCurrentBannerState()) { //기존 배너 상태 확인
             case INIT: //초기 상태일 경우
             case OUT_DATED: //구 버전일 경우
@@ -60,12 +66,42 @@ public class InitManager {
 
             case FAILURE: //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
                 debugBannerImages();
+                return;
         }
-//TODO : 디버그 코드 수정 및 다운로드 받은 배너 이미지 할당 수행해야함
 
+        /*** 배너 이미지 할당 ***/
+        File dir = new File(FishDic.BANNER_IMAGES_PATH);
+        if (!dir.exists()) { //위에서 이미 배너 이미지 디렉토리가 할당 되었어야 함
+            try {
+                throw new Exception("Banner Integrity ERR");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-        debugBannerImages();
+        File[] bannerImagesList = dir.listFiles((dir1, name) -> {
+            if (name.matches("version")) //버전 관리 파일 제외한 모든 파일만 허용
+                return false;
+            return true;
+        }); //배너 이미지 목록
 
+        int bannerImagesCount = bannerImagesList.length; //배너 이미지 수
+        FishDic.bannerImages = new Bitmap[bannerImagesCount];
+        for (int index = 0; index < bannerImagesCount; index++) {
+
+            FileInputStream fileInputStream = null;
+            try {
+                fileInputStream = new FileInputStream(bannerImagesList[index]);
+                byte[] buffer = new byte[fileInputStream.available()];
+                fileInputStream.read(buffer);
+
+                FishDic.bannerImages[index] = ImageUtility.decodeFromByteArray(buffer); //비트맵 이미지 할당
+                fileInputStream.close();
+
+            } catch (IOException fileNotFoundException) {
+                fileNotFoundException.printStackTrace();
+            }
+        }
     }
 
     private static BANNER_STATE getCurrentBannerState() { //현재 배너 상태 반환
@@ -93,25 +129,15 @@ public class InitManager {
                 .download(FishDic.PUBLIC_BANNER_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
                 .doNotCacheResponse()
                 .build()
-                .setAnalyticsListener(new AnalyticsListener() {
-                    @Override
-                    public void onReceived(long timeTakenInMillis, long bytesSent,
-                                           long bytesReceived, boolean isFromCache) {
-                        Log.d("1", " timeTakenInMillis : " + timeTakenInMillis);
-                        Log.d("2", " bytesSent : " + bytesSent);
-                        Log.d("3", " bytesReceived : " + bytesReceived);
-                        Log.d("4", " isFromCache : " + isFromCache);
-                    }
-                })
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
                 });
         ANResponse<String> response = request.executeForDownload();
 
         if (response.isSuccess()) {
             Response okHttpResponse = response.getOkHttpResponse();
-            Log.d("Server Banner Version Check", "headers : \n" + okHttpResponse.headers().toString());
-            Log.d("Server Banner Version Check", "body : \n" + okHttpResponse.body().toString());
-            Log.d("Server Banner Version Check", "HTTP Status Code : \n" + okHttpResponse.code());
+            Log.d("Server Banner Version Check", "headers : " + okHttpResponse.headers().toString());
+            Log.d("Server Banner Version Check", "body : " + okHttpResponse.body().toString());
+            Log.d("Server Banner Version Check", "HTTP Status Code : " + okHttpResponse.code());
 
             File serverBannerVersionFile = new File(FishDic.CACHE_PATH + FishDic.VERSION_FILE_NAME);
 
@@ -133,8 +159,8 @@ public class InitManager {
                 e.printStackTrace();
             }
 
-            Log.d("로컬 Banner 버전", String.valueOf(currentBannerVersion));
-            Log.d("서버 Banner 버전", String.valueOf(serverBannerVersion));
+            Log.i("로컬 Banner 버전", String.valueOf(currentBannerVersion));
+            Log.i("서버 Banner 버전", String.valueOf(serverBannerVersion));
 
         } else { //서버 접속 오류 시
             ANError error = response.getError();
@@ -164,90 +190,59 @@ public class InitManager {
             dir.mkdir();
         }
 
-        AndroidNetworking.post(FishDic.PUBLIC_BANNER_SERVER + "request_bannerlist.php") //서버의 최신 배너 이미지 리스트 확인
-                .build()
-                .getAsString(new StringRequestListener() {
-                    @Override
-                    public void onResponse(String response) {
-                        String[] bannerImagesList = response.split("\n"); //줄바꿈 문자로 분리
+        ANRequest request = AndroidNetworking.get(FishDic.PUBLIC_BANNER_SERVER + "request_bannerlist.php") //서버의 최신 배너 이미지 리스트 확인
+                .doNotCacheResponse()
+                .build();
 
-                        for (int i = 0; i < bannerImagesList.length; i++) {
-                            Log.d("bannerImageList[" + i + "]", bannerImagesList[i]);
+        ANResponse<String> response = request.executeForString();
+        if (response.isSuccess()) {
+            String[] bannerImagesList = response.getResult().split("\n"); //줄바꿈 문자로 분리
 
-                            ANRequest subRequest = AndroidNetworking //서버로투버 최신 배너 이미지들 다운로드
-                                    .download(FishDic.PUBLIC_BANNER_SERVER + bannerImagesList[i], FishDic.BANNER_IMAGES_PATH, bannerImagesList[i])
-                                    .doNotCacheResponse()
-                                    .build()
-                                    .setAnalyticsListener(new AnalyticsListener() {
-                                        @Override
-                                        public void onReceived(long timeTakenInMillis, long bytesSent,
-                                                               long bytesReceived, boolean isFromCache) {
-                                            Log.d("1", " timeTakenInMillis : " + timeTakenInMillis);
-                                            Log.d("2", " bytesSent : " + bytesSent);
-                                            Log.d("3", " bytesReceived : " + bytesReceived);
-                                            Log.d("4", " isFromCache : " + isFromCache);
-                                        }
-                                    })
-                                    .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
-                                    });
-                            ANResponse<String> subResponse = subRequest.executeForDownload();
+            for (int index = 0; index < bannerImagesList.length; index++) {
+                Log.d("bannerImageList[" + index + "]", bannerImagesList[index]);
 
-                            if (subResponse.isSuccess()) {
-                                Response okHttpResponse = subResponse.getOkHttpResponse();
-                                Log.d("Server Banner Download", "headers : \n" + okHttpResponse.headers().toString());
-                                Log.d("Server Banner Download", "body : \n" + okHttpResponse.body().toString());
-                                Log.d("Server Banner Download", "HTTP Status Code : \n" + okHttpResponse.code());
+                ANRequest subRequest = AndroidNetworking //서버로투버 최신 배너 이미지들 다운로드
+                        .download(FishDic.PUBLIC_BANNER_SERVER + bannerImagesList[index], FishDic.BANNER_IMAGES_PATH, bannerImagesList[index])
+                        .doNotCacheResponse()
+                        .build()
+                        .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
+                        });
+                ANResponse<String> subResponse = subRequest.executeForDownload();
 
-                            } else { //다운로드 오류 시
-                                ANError error = subResponse.getError();
-                                Log.d("Server Banner Download ERR", error.getMessage());
-                            }
-                        }
+                if (subResponse.isSuccess()) {
+                    Response okHttpResponse = subResponse.getOkHttpResponse();
+                    Log.d("Server Banner Download", "headers : " + okHttpResponse.headers().toString());
+                    Log.d("Server Banner Download", "body : " + okHttpResponse.body().toString());
+                    Log.d("Server Banner Download", "HTTP Status Code : " + okHttpResponse.code());
 
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        Log.e("Request Banner List ERR", anError.getMessage());
-                    }
-                });
+                } else { //다운로드 오류 시
+                    ANError error = subResponse.getError();
+                    Log.e("Server Banner Download ERR", error.getMessage());
+                }
+            }
+        } else {
+            ANError error = response.getError();
+            Log.e("Request Banner List ERR", error.getMessage());
+        }
     }
 
     private static void debugBannerImages() { //테스트용 배너 이미지 초기화 작업 수행 (대체 흐름)
         AssetManager assetManager = FishDic.globalContext.getAssets();
-        FishDic.bannerImages = new Bitmap[3]; //테스트용 배너 이미지는 assets/debugbanner의 3개의 샘플 이미지들
+        InputStream inputStream;
 
         try {
-            File folder = new File(FishDic.BANNER_IMAGES_PATH);
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
+            String[] bannerImagesList = assetManager.list("debugbanner/"); //테스트용 배너 이미지 리스트
+            int bannerImagesCount = bannerImagesList.length; //배너 이미지 수
 
-            for (int index = 1; index <= 3; index++) {
-                String fileName = "sample_" + index + ".jpg";
-                InputStream inputStream = assetManager.open("debugbanner/" + fileName);
-                String outFileName = FishDic.BANNER_IMAGES_PATH + fileName;
-                OutputStream outputStream = new FileOutputStream(outFileName);
+            FishDic.bannerImages = new Bitmap[bannerImagesCount];
 
-                byte[] buffer = new byte[1024];
-                byte[] image = null;
-                int length = 0;
-                int totalLength = 0;
+            for (int index = 0; index < bannerImagesCount; index++) {
+                inputStream = assetManager.open("debugbanner/" + bannerImagesList[index]);
 
-                while ((length = inputStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, length);
-                    totalLength += length;
-                }
+                byte[] buffer = new byte[inputStream.available()];
+                inputStream.read(buffer);
 
-                //배너 할당 테스트
-                image = new byte[totalLength]; //해당 이미지의 크기
-                Log.d("배너 크기", String.valueOf(totalLength));
-                inputStream.reset();
-                inputStream.read(image);
-                FishDic.bannerImages[index - 1] = ImageUtility.decodeFromByteArray(image);
-
-                outputStream.flush();
-                outputStream.close();
+                FishDic.bannerImages[index] = ImageUtility.decodeFromByteArray(buffer); //비트맵 이미지 할당
                 inputStream.close();
             }
 
@@ -269,7 +264,6 @@ public class InitManager {
             for (int index = 0; index < helpImagesCount; index++) {
                 inputStream = assetManager.open("help/" + helpImagesList[index]);
 
-                Log.d("이용가이드 크기", String.valueOf(inputStream.available()));
                 byte[] buffer = new byte[inputStream.available()];
                 inputStream.read(buffer);
 

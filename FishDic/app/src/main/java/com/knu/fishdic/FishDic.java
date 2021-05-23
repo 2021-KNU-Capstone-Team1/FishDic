@@ -17,7 +17,6 @@ import com.knu.fishdic.recyclerview.RecyclerAdapter;
 public class FishDic extends Application {
     public static String CACHE_PATH = ""; //임시폴더 경로
 
-    //TODO : 다운로드 진행상황 표시
     public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/Banner/";
     public static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
@@ -35,8 +34,8 @@ public class FishDic extends Application {
     public static Bitmap[] bannerImages; //배너 이미지
     public static Bitmap[] helpImages; //이용가이드 이미지
 
+    //TODO : 다운로드 진행상황 표시 (상단 알림쪽에)
     NotificationManagerCompat notificationManager; //알림 관리자
-
     public enum NOTIFICATION_TYPE { //알림 타입
         DOWNLOAD
     }

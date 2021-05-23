@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private final long PERIOD_MS = 3000; //작업 실행 간의 딜레이 (MS)
 
     private static final int GET_FROM_GALLERY = 101;
-    final static int TAKE_PICTURE = 1;      //카메라 어플 열 때 전달 될 키값 상수
+    final static int TAKE_PICTURE = 1;      //카메라 어플 열 때 전달 될 키 값 상수
     // ImageView camera_picture; 나중에 찍은 사진 저장할 용도
 
     @SuppressLint("UseCompatLoadingForDrawables")
