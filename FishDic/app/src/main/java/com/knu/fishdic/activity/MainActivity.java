@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*** 초기화 작업 수행 ***/
         InitManager.doDataBindJobForRecylerAdapter(); //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
-        InitManager.debugBannerTest(); //배너 이미지 테스트
+        InitManager.initBannerImages(); //배너 이미지 초기 작업 수행
         InitManager.initHelpImages(); //이용가이드 초기 작업 수행
 
         setTitle(R.string.app_name);

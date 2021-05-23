@@ -18,14 +18,9 @@ public class FishDic extends Application {
     public static String CACHE_PATH = ""; //임시폴더 경로
 
     //TODO : 다운로드 진행상황 표시
-    public static boolean useDebugServer = false; //배너 및 DB 갱신 위한 디버그 서버 사용 여부
-    public static final String DEBUG_BANNER_SERVER = "http://hyung8789.hyperphp.com/Banner/";
-    public static final String DEBUG_DB_SERVER = "http://hyung8789.hyperphp.com/DB/";
     public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/Banner/";
     public static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
-
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
-    //TODO : 삭제 예정 서버 php스크립트 실행으로 받아옴 public static final String LISTS_FILE_NAME = "lists"; //서버의 파일 목록 관리 파일 이름
 
     public static String BANNER_IMAGES_PATH; //배너 이미지 경로
     public static String HELP_IMAGES_PATH; //이용가이드 이미지 경로

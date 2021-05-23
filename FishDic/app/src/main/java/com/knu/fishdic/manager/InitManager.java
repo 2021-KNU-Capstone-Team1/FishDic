@@ -4,19 +4,38 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.ANRequest;
+import com.androidnetworking.common.ANResponse;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.AnalyticsListener;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 import com.knu.fishdic.utils.ImageUtility;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import okhttp3.Response;
 
 // 앱 초기화를 위한 InitManager 정의
 
 public class InitManager {
+    private enum BANNER_STATE { //배너 상태 정의
+        INIT, //초기 상태
+        OUT_DATED, //구 버전
+        UPDATED,//갱신 된 버전
+        FAILURE //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
+    }
+
     public static void doDataBindJobForRecylerAdapter() { //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
         if (FishDic.globalDBManager != null || FishDic.globalDicRecyclerAdapter != null || FishDic.globalDeniedFishRecyclerAdapter != null)
             return;
@@ -29,9 +48,174 @@ public class InitManager {
         FishDic.globalDeniedFishRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.DENIED_FISH));
     }
 
-    public static void debugBannerTest() { //디버그용 서버로부터 받아와야함
+    public static void initBannerImages() { //배너 이미지 초기화 작업 수행
+        switch (getCurrentBannerState()) { //기존 배너 상태 확인
+            case INIT: //초기 상태일 경우
+            case OUT_DATED: //구 버전일 경우
+                updateBannerFromServer();
+                break;
+
+            case UPDATED: //최신 버전일 경우
+                break;
+
+            case FAILURE: //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
+                debugBannerImages();
+        }
+//TODO : 디버그 코드 수정 및 다운로드 받은 배너 이미지 할당 수행해야함
+
+
+        debugBannerImages();
+
+    }
+
+    private static BANNER_STATE getCurrentBannerState() { //현재 배너 상태 반환
+        /***
+         * 1) 로컬 배너 이미지와 로컬 배너 버전 관리 파일이 존재하지 않을 경우 서버로부터의 갱신을 위한 초기 상태 반환
+         * 2) 로컬 배너 이미지와 로컬 배너 버전 관리 파일이 존재할 경우 서버와 로컬 배너 버전을 비교하여
+         *  2-1) 로컬 배너 버전 < 서버 배너 버전일 경우 : 구 버전 상태 반환
+         *  2-2) 로컬 배너 버전 == 서버 배너 버전일 경우 : 최신 버전 상태 반환
+         *  2-3) 로컬 배너 버전 > 서버 배너 버전일 경우 : 무결성 오류
+         ***/
+
+        File dir = new File(FishDic.BANNER_IMAGES_PATH);
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+
+        final File currentBannerVersionFile = new File(FishDic.BANNER_IMAGES_PATH + FishDic.VERSION_FILE_NAME); //로컬 배너 버전 파일
+        boolean currentBannerExists = dir.listFiles().length > 1 & currentBannerVersionFile.exists(); //로컬 배너 존재 여부 (디렉토리 내의 버전 파일을 제외한 파일 수가 1개 이상 혹은 버전 파일 존재 모두 만족 않을 시 무결성이 깨진 걸로 간주)
+
+        int currentBannerVersion = -1; //로컬 배너 버전
+        int serverBannerVersion = -1; //서버 배너 버전
+
+        /*** 서버의 배너 버전 확인 ***/
+        ANRequest request = AndroidNetworking
+                .download(FishDic.PUBLIC_BANNER_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
+                .doNotCacheResponse()
+                .build()
+                .setAnalyticsListener(new AnalyticsListener() {
+                    @Override
+                    public void onReceived(long timeTakenInMillis, long bytesSent,
+                                           long bytesReceived, boolean isFromCache) {
+                        Log.d("1", " timeTakenInMillis : " + timeTakenInMillis);
+                        Log.d("2", " bytesSent : " + bytesSent);
+                        Log.d("3", " bytesReceived : " + bytesReceived);
+                        Log.d("4", " isFromCache : " + isFromCache);
+                    }
+                })
+                .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
+                });
+        ANResponse<String> response = request.executeForDownload();
+
+        if (response.isSuccess()) {
+            Response okHttpResponse = response.getOkHttpResponse();
+            Log.d("Server Banner Version Check", "headers : \n" + okHttpResponse.headers().toString());
+            Log.d("Server Banner Version Check", "body : \n" + okHttpResponse.body().toString());
+            Log.d("Server Banner Version Check", "HTTP Status Code : \n" + okHttpResponse.code());
+
+            File serverBannerVersionFile = new File(FishDic.CACHE_PATH + FishDic.VERSION_FILE_NAME);
+
+            try {
+                BufferedReader serverBannerVersionReader = new BufferedReader(new FileReader(serverBannerVersionFile));
+                serverBannerVersion = Integer.parseInt(serverBannerVersionReader.readLine());
+                serverBannerVersionReader.close();
+
+                if (currentBannerExists) { //로컬 Banner 존재 시 버전 읽어오기
+                    BufferedReader currentBannerVersionReader = new BufferedReader(new FileReader(currentBannerVersionFile));
+                    currentBannerVersion = Integer.parseInt(currentBannerVersionReader.readLine());
+                    currentBannerVersionReader.close();
+                } else { //로컬 Banner가 존재하지 않을 시 다운로드 받은 서버의 Banner 버전 파일을 로컬 Banner의 버전 파일로 이동 및 초기 상태 반환
+                    Files.move(serverBannerVersionFile.toPath(), Paths.get(FishDic.BANNER_IMAGES_PATH + FishDic.VERSION_FILE_NAME));
+                    return BANNER_STATE.INIT;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("로컬 Banner 버전", String.valueOf(currentBannerVersion));
+            Log.d("서버 Banner 버전", String.valueOf(serverBannerVersion));
+
+        } else { //서버 접속 오류 시
+            ANError error = response.getError();
+            Log.d("Server Banner Version Check ERR", error.getMessage());
+
+            return BANNER_STATE.FAILURE;
+        }
+
+        if (currentBannerVersion < serverBannerVersion) { //로컬 Banner 버전 < 서버 Banner 버전일 경우 : 구 버전 상태 반환
+            return BANNER_STATE.OUT_DATED;
+        } else if (currentBannerVersion == serverBannerVersion) { //로컬 Banner 버전 == 서버 Banner 버전일 경우 : 최신 버전 상태 반환
+            return BANNER_STATE.UPDATED;
+        } else { //로컬 Banner 버전 > 서버 Banner 버전일 경우 : 무결성 오류
+            try {
+                throw new Exception("Banner Integrity ERR");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return BANNER_STATE.FAILURE;
+    }
+
+    private static void updateBannerFromServer() { //서버로부터 최신 배너 이미지 갱신
+        File dir = new File(FishDic.BANNER_IMAGES_PATH);
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+
+        AndroidNetworking.post(FishDic.PUBLIC_BANNER_SERVER + "request_bannerlist.php") //서버의 최신 배너 이미지 리스트 확인
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        String[] bannerImagesList = response.split("\n"); //줄바꿈 문자로 분리
+
+                        for (int i = 0; i < bannerImagesList.length; i++) {
+                            Log.d("bannerImageList[" + i + "]", bannerImagesList[i]);
+
+                            ANRequest subRequest = AndroidNetworking //서버로투버 최신 배너 이미지들 다운로드
+                                    .download(FishDic.PUBLIC_BANNER_SERVER + bannerImagesList[i], FishDic.BANNER_IMAGES_PATH, bannerImagesList[i])
+                                    .doNotCacheResponse()
+                                    .build()
+                                    .setAnalyticsListener(new AnalyticsListener() {
+                                        @Override
+                                        public void onReceived(long timeTakenInMillis, long bytesSent,
+                                                               long bytesReceived, boolean isFromCache) {
+                                            Log.d("1", " timeTakenInMillis : " + timeTakenInMillis);
+                                            Log.d("2", " bytesSent : " + bytesSent);
+                                            Log.d("3", " bytesReceived : " + bytesReceived);
+                                            Log.d("4", " isFromCache : " + isFromCache);
+                                        }
+                                    })
+                                    .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
+                                    });
+                            ANResponse<String> subResponse = subRequest.executeForDownload();
+
+                            if (subResponse.isSuccess()) {
+                                Response okHttpResponse = subResponse.getOkHttpResponse();
+                                Log.d("Server Banner Download", "headers : \n" + okHttpResponse.headers().toString());
+                                Log.d("Server Banner Download", "body : \n" + okHttpResponse.body().toString());
+                                Log.d("Server Banner Download", "HTTP Status Code : \n" + okHttpResponse.code());
+
+                            } else { //다운로드 오류 시
+                                ANError error = subResponse.getError();
+                                Log.d("Server Banner Download ERR", error.getMessage());
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e("Request Banner List ERR", anError.getMessage());
+                    }
+                });
+    }
+
+    private static void debugBannerImages() { //테스트용 배너 이미지 초기화 작업 수행 (대체 흐름)
         AssetManager assetManager = FishDic.globalContext.getAssets();
-        FishDic.bannerImages = new Bitmap[3];
+        FishDic.bannerImages = new Bitmap[3]; //테스트용 배너 이미지는 assets/debugbanner의 3개의 샘플 이미지들
 
         try {
             File folder = new File(FishDic.BANNER_IMAGES_PATH);

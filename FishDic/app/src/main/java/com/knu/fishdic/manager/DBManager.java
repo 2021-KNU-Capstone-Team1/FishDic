@@ -10,6 +10,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.AnalyticsListener;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 
@@ -42,7 +43,8 @@ public class DBManager extends SQLiteOpenHelper {
     private enum DB_STATE { //DB 상태 정의
         INIT, //초기 상태
         OUT_DATED, //구 버전
-        UPDATED //갱신 된 버전
+        UPDATED,//갱신 된 버전
+        FAILURE //DB 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
     }
 
     private enum DATE_FORMAT_TYPE { //날짜 형식 타입 정의
@@ -105,6 +107,9 @@ public class DBManager extends SQLiteOpenHelper {
 
             case UPDATED: //최신 버전일 경우
                 break;
+
+            case FAILURE: //DB 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
+                this.copyDB();
         }
 
         this.sqlDB = this.getReadableDatabase(); //읽기 전용 DB 로드
@@ -155,16 +160,28 @@ public class DBManager extends SQLiteOpenHelper {
 
         /*** 서버와 로컬 DB 버전 비교 ***/
         ANRequest request = AndroidNetworking
-                .download( FishDic.useDebugServer ? FishDic.DEBUG_DB_SERVER : FishDic.PUBLIC_DB_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
+                .download(FishDic.PUBLIC_DB_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
                 .doNotCacheResponse()
                 .build()
+                .setAnalyticsListener(new AnalyticsListener() {
+                    @Override
+                    public void onReceived(long timeTakenInMillis, long bytesSent,
+                                           long bytesReceived, boolean isFromCache) {
+                        Log.d("1", " timeTakenInMillis : " + timeTakenInMillis);
+                        Log.d("2", " bytesSent : " + bytesSent);
+                        Log.d("3", " bytesReceived : " + bytesReceived);
+                        Log.d("4", " isFromCache : " + isFromCache);
+                    }
+                })
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
                 });
         ANResponse<String> response = request.executeForDownload();
 
         if (response.isSuccess()) {
             Response okHttpResponse = response.getOkHttpResponse();
-            Log.d("Server Version Check", "headers : " + okHttpResponse.headers().toString());
+            Log.d("Server DB Version Check", "headers : \n" + okHttpResponse.headers().toString());
+            Log.d("Server DB Version Check", "body : \n" + okHttpResponse.body().toString());
+            Log.d("Server DB Version Check", "HTTP Status Code : \n" + okHttpResponse.code());
 
             File serverDBVersionFile = new File(FishDic.CACHE_PATH + FishDic.VERSION_FILE_NAME);
 
@@ -189,17 +206,17 @@ public class DBManager extends SQLiteOpenHelper {
             Log.d("로컬 DB 버전", String.valueOf(currentDBVersion));
             Log.d("서버 DB 버전", String.valueOf(serverDBVersion));
 
-        } else {
+        } else { //서버 접속 오류 시
             ANError error = response.getError();
-            Log.d("Server Version Check ERR", "headers : " + error.getMessage());
+            Log.d("Server DB Version Check ERR", error.getMessage());
+
+            return DB_STATE.FAILURE;
         }
 
         if (currentDBVersion < serverDBVersion) { //로컬 DB 버전 < 서버 DB 버전일 경우 : 구 버전 상태 반환
             return DB_STATE.OUT_DATED;
         } else if (currentDBVersion == serverDBVersion) { //로컬 DB 버전 == 서버 DB 버전일 경우 : 최신 버전 상태 반환
-            //return DB_STATE.UPDATED;
-
-            return DB_STATE.INIT;
+            return DB_STATE.UPDATED;
         } else { //로컬 DB 버전 > 서버 DB 버전일 경우 : 무결성 오류
             try {
                 throw new Exception("DB Integrity ERR");
@@ -208,7 +225,7 @@ public class DBManager extends SQLiteOpenHelper {
             }
         }
 
-        return null;
+        return DB_STATE.FAILURE;
     }
 
     private void updateDBFromServer() { //서버로부터 최신 DB 갱신
@@ -218,16 +235,28 @@ public class DBManager extends SQLiteOpenHelper {
         }
 
         ANRequest request = AndroidNetworking
-                .download( FishDic.useDebugServer ? FishDic.DEBUG_DB_SERVER : FishDic.PUBLIC_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
+                .download(FishDic.PUBLIC_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
                 .doNotCacheResponse()
                 .build()
+                .setAnalyticsListener(new AnalyticsListener() {
+                    @Override
+                    public void onReceived(long timeTakenInMillis, long bytesSent,
+                                           long bytesReceived, boolean isFromCache) {
+                        Log.d("1", " timeTakenInMillis : " + timeTakenInMillis);
+                        Log.d("2", " bytesSent : " + bytesSent);
+                        Log.d("3", " bytesReceived : " + bytesReceived);
+                        Log.d("4", " isFromCache : " + isFromCache);
+                    }
+                })
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
                 });
         ANResponse<String> response = request.executeForDownload();
 
         if (response.isSuccess()) {
             Response okHttpResponse = response.getOkHttpResponse();
-            Log.d("Server DB Download", "headers : " + okHttpResponse.headers().toString());
+            Log.d("Server DB Download", "headers : \n" + okHttpResponse.headers().toString());
+            Log.d("Server DB Download", "body : \n" + okHttpResponse.body().toString());
+            Log.d("Server DB Download", "HTTP Status Code : \n" + okHttpResponse.code());
 
             File serverDBVersionFile = new File(DB_PATH + FishDic.VERSION_FILE_NAME);
 
@@ -237,14 +266,14 @@ public class DBManager extends SQLiteOpenHelper {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-        } else {
+        } else { //다운로드 오류 시
             ANError error = response.getError();
-            Log.d("Server DB Download ERR", "headers : " + error.getMessage());
+            Log.d("Server DB Download ERR", error.getMessage());
         }
     }
 
-    private void copyDB() { //임시 : assets으로부터 시스템으로 DB 복사
+    private void copyDB() { //assets으로부터 시스템으로 DB 복사
+        //서버로부터 DB 다운로드 실패 시 대체 흐름 수행
         try {
             File folder = new File(DB_PATH);
             if (!folder.exists()) {
