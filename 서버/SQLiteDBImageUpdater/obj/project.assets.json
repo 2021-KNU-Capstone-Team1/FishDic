@@ -1158,11 +1158,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\FishDic\\SQLiteDBImageUpdater\\SQLiteDBImageUpdater.csproj",
+      "projectUniqueName": "D:\\FishDic\\서버\\SQLiteDBImageUpdater\\SQLiteDBImageUpdater.csproj",
       "projectName": "SQLiteDBImageUpdater",
-      "projectPath": "D:\\FishDic\\SQLiteDBImageUpdater\\SQLiteDBImageUpdater.csproj",
+      "projectPath": "D:\\FishDic\\서버\\SQLiteDBImageUpdater\\SQLiteDBImageUpdater.csproj",
       "packagesPath": "C:\\Users\\김형준\\.nuget\\packages\\",
-      "outputPath": "D:\\FishDic\\SQLiteDBImageUpdater\\obj\\",
+      "outputPath": "D:\\FishDic\\서버\\SQLiteDBImageUpdater\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\김형준\\AppData\\Roaming\\NuGet\\NuGet.Config",

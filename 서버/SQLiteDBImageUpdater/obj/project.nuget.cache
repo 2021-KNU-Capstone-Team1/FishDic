@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dMdDxf7CsrTREb4V1KlH+PQXwm8YT43VZNR1QSCVG7HQ+KC9UY+UNMNmkY3jltRLulsitiayEfJ3SWjP6H6aUA==",
+  "dgSpecHash": "7uBrVjlGA5KwYHFPY9v93PkisSeMzsZ73ITTjmVl6tQOPRJk9fmF+WEm8AFbpO5kTL/hhQYNtffTQhclWoKnCw==",
   "success": true,
-  "projectFilePath": "D:\\FishDic\\SQLiteDBImageUpdater\\SQLiteDBImageUpdater.csproj",
+  "projectFilePath": "D:\\FishDic\\서버\\SQLiteDBImageUpdater\\SQLiteDBImageUpdater.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\김형준\\.nuget\\packages\\entityframework\\6.3.0\\entityframework.6.3.0.nupkg.sha512",
     "C:\\Users\\김형준\\.nuget\\packages\\microsoft.csharp\\4.6.0\\microsoft.csharp.4.6.0.nupkg.sha512",
