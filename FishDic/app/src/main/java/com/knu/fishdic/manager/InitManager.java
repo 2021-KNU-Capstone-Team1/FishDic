@@ -8,8 +8,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.AnalyticsListener;
-import com.androidnetworking.interfaces.StringRequestListener;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 import com.knu.fishdic.utils.ImageUtility;
@@ -17,13 +15,9 @@ import com.knu.fishdic.utils.ImageUtility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -196,7 +190,7 @@ public class InitManager {
 
         ANResponse<String> response = request.executeForString();
         if (response.isSuccess()) {
-            String[] bannerImagesList = response.getResult().split("\n"); //줄바꿈 문자로 분리
+            String[] bannerImagesList = response.getResult().split("\r\n"); //줄바꿈 문자로 분리
 
             for (int index = 0; index < bannerImagesList.length; index++) {
                 Log.d("bannerImageList[" + index + "]", bannerImagesList[index]);
@@ -231,13 +225,13 @@ public class InitManager {
         InputStream inputStream;
 
         try {
-            String[] bannerImagesList = assetManager.list("debugbanner/"); //테스트용 배너 이미지 리스트
+            String[] bannerImagesList = assetManager.list("banner/"); //테스트용 배너 이미지 리스트
             int bannerImagesCount = bannerImagesList.length; //배너 이미지 수
 
             FishDic.bannerImages = new Bitmap[bannerImagesCount];
 
             for (int index = 0; index < bannerImagesCount; index++) {
-                inputStream = assetManager.open("debugbanner/" + bannerImagesList[index]);
+                inputStream = assetManager.open("banner/" + bannerImagesList[index]);
 
                 byte[] buffer = new byte[inputStream.available()];
                 inputStream.read(buffer);

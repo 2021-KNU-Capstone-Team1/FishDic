@@ -17,7 +17,7 @@ import com.knu.fishdic.recyclerview.RecyclerAdapter;
 public class FishDic extends Application {
     public static String CACHE_PATH = ""; //임시폴더 경로
 
-    public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/Banner/";
+    public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
     public static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
 

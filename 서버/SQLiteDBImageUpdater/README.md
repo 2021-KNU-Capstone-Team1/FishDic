@@ -1,5 +1,5 @@
 # SQLiteDBImageUpdater
-<b>(FishDic을 위한 DB 이미지 갱신기)</b><br>
+<b>(어류 DB 이미지 갱신기)</b><br>
 
 ---
 ## < 사용법 >

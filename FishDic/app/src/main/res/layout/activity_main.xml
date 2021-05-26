@@ -47,6 +47,8 @@
                         android:background="@color/logo"
                         android:src="@drawable/menu_40x40"
                         android:visibility="visible"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="7dp"
                         tools:visibility="visible" />
 
                 </androidx.appcompat.widget.Toolbar>

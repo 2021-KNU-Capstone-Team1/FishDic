@@ -10,7 +10,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.AnalyticsListener;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 
@@ -267,17 +266,18 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     private void copyDB() { //assets으로부터 시스템으로 DB 복사
-        //서버로부터 DB 다운로드 실패 시 대체 흐름 수행
+        /*** 서버로부터 DB 다운로드 실패 시 내장 DB를 이용한 대체 흐름 수행 ***/
+
         try {
             File folder = new File(DB_PATH);
             if (!folder.exists()) {
                 folder.mkdir();
             }
 
-            InputStream inputStream = FishDic.globalContext.getAssets().open(DB_NAME);
+            InputStream inputStream = FishDic.globalContext.getAssets().open("DB/" + DB_NAME);
             String outFileName = DB_PATH + DB_NAME;
-            OutputStream outputStream = new FileOutputStream(outFileName);
 
+            OutputStream outputStream = new FileOutputStream(outFileName);
             byte[] buffer = new byte[1024];
             int length;
 
@@ -286,6 +286,7 @@ public class DBManager extends SQLiteOpenHelper {
             }
             outputStream.flush();
             outputStream.close();
+
             inputStream.close();
 
         } catch (IOException e) {
