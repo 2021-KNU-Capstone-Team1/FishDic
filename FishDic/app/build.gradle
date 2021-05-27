@@ -5,7 +5,9 @@ plugins {
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2" //Failed to find Build Tools revision 오류가 날 경우 이 부분을 SDKManager에 들어가서 현재 설치 된 Build-Tools 버전으로 변경하거나, 해당 버전에 맞는 Build-Tools을 설치해야 함
-
+    aaptOptions {
+        noCompress "tflite" //텐서플로우 라이트 모델 파일 압축하지 않도록 설정
+    }
     defaultConfig {
         applicationId "com.knu.fishdic"
         minSdkVersion 26 //최소 실행 SDK 버전
@@ -29,6 +31,9 @@ android {
 }
 
 dependencies { //의존성
+    implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
+    implementation('org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly') { changing = true }
+    implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
     implementation 'com.amitshekhar.android:android-networking:1.0.2' //네트워킹 작업을 위한 Fast-Android-Networking
     implementation 'me.relex:circleindicator:1.3.2' //배너 및 이용가이드를 위한 원형 인디케이터
     implementation 'androidx.appcompat:appcompat:1.2.0'
