@@ -12,6 +12,8 @@
     <string name="enter_name">이름 입력</string>
     <string name="fish_detail">어류 상세 정보</string>
     <string name="parasite_detail">기생충 상세 정보</string>
+    <string name="fish_identification_result">판별 결과</string>
+    <string name="fish_identification_message">총 %d건의 유사 어류가 판별되었습니다.</string>
 
     <!-- 어류 상세 정보에서 사용 할 문자열 -->
     <string name="basic_info">기본 정보</string>

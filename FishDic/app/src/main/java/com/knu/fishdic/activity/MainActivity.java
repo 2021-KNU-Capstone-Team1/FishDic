@@ -43,11 +43,11 @@ public class MainActivity extends AppCompatActivity {
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
     CircleIndicator indicator;
 
-  //  DrawerLayout drawerLayout;
+    //  DrawerLayout drawerLayout;
     //NavigationView navigationView;
-    
+
     private Timer timer;
-    private int currentPosition = 0; //현재 이미지의 위치
+    private int currentPosition = 0; //현재 배너 이미지의 위치
     private final long DELAY_MS = 1000; //작업이 실행 되기 전 딜레이 (MS)
     private final long PERIOD_MS = 3000; //작업 실행 간의 딜레이 (MS)
 
@@ -72,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
         this.initViewPager();
         //checkSelfPermission();
 
-        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             //권한 모두 승인 되어 있음
         } else {
             //권한 다시 승인 요청
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     //나중에 여기다가 얻은 사진 조정해서 서버로 전송하도록 작성.
                 }
                 break;
+
             case GET_FROM_GALLERY:
                 if (resultCode == RESULT_OK) {
                     try {

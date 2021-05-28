@@ -1,0 +1,44 @@
+Amphioctopus fangsiao
+Arctica islandica
+Arctoscopus japonicus
+Atrina
+Branchiostegus
+Cerastoderma edule
+Chionoecetes japonicus
+Chionoecetes opilio
+Cleisthenes pinetorum
+Clupea pallasii
+Conger myriaster
+Corbicula japonica
+Cynoglossus robustus
+Dentex tumifrons
+Enteroctopus dofleini
+Fenneropenaeus chinensis
+Gadus chalcogrammus
+Glyptocephalus stelleri
+Haliotidae
+Hexagrammos otakii
+Holothuroidea
+Konosirus punctatus
+Larimichthys polyactis
+Lateolabrax japonicus
+Miichthys miiuy
+Muraenesox cinereus
+Octopus minor
+Okhotsk snailfish
+Oncorhynchus keta
+Oplegnathus fasciatus
+Pagrus major
+Panulirus japonicus
+Paralichthys olivaceus
+Pectinidae
+Pleuronectes herzensteini
+Pleuronectes yokohamae
+Scomber japonicus
+Scomberomorus niphonius
+Sebastes
+Sebastes inermis
+Seriola quinqueradiata
+Sulculus diversicolor
+Takifugu obscurus
+Trichiurus lepturus

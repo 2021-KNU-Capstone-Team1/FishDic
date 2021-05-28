@@ -1,24 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 수정 예정 -->
-<!-- 도감 레이아웃 정의 -->
+<?xml version="1.0" encoding="utf-8"?><!-- 판별 결과 레이아웃 정의 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.DicActivity">
+    tools:context=".activity.FishIdentificationActivity">
 
-    <!-- 도감 외부 테이블 레이아웃 -->
+    <!-- 판별 결과 외부 테이블 레이아웃 -->
     <TableLayout
-        android:id="@+id/outerDic_tableLayout"
+        android:id="@+id/outerFishIdentification_tableLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
         tools:visibility="visible">
 
-        <!-- 도감 외부 테이블 레이아웃 : 상단 테이블 -->
+        <!-- 판별 결과 외부 테이블 레이아웃 : 상단 테이블 -->
         <TableRow
-            android:id="@+id/outerDic_topTable"
+            android:id="@+id/outerFishIdentification_topTable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -29,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <!-- 도감 내부 ConstraintLayout 1 -->
+                <!-- 판별 결과 내부 ConstraintLayout 1 -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -37,7 +35,7 @@
 
                     <!-- 상단 툴바 1 -->
                     <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/outerDic_toolBar1"
+                        android:id="@+id/outerFishIdentification_toolBar1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -45,7 +43,7 @@
                         tools:visibility="visible">
 
                         <ImageButton
-                            android:id="@+id/dic_back_imageButton"
+                            android:id="@+id/fishIdentification_back_imageButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/logo"
@@ -54,11 +52,11 @@
                             tools:visibility="visible" />
 
                         <TextView
-                            android:id="@+id/dic_title_textView"
+                            android:id="@+id/fishIdentification_title_textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="15dp"
-                            android:text="@string/dic"
+                            android:text="@string/fish_identification_result"
                             android:textColor="@color/white"
                             android:textSize="20sp"
                             android:visibility="visible"
@@ -66,7 +64,7 @@
                     </androidx.appcompat.widget.Toolbar>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <!-- 도감 내부 ConstraintLayout 2 -->
+                <!-- 판별 결과 내부 ConstraintLayout 2 -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -74,7 +72,7 @@
 
                     <!-- 상단 툴바 2 -->
                     <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/outerDic_toolBar2"
+                        android:id="@+id/outerFishIdentification_toolBar2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -82,27 +80,23 @@
                         tools:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/dic_search_imageView"
+                            android:id="@+id/fishIdentification_search_imageView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:src="@drawable/search_40x40"
+                            android:src="@drawable/deeplearning_40x40"
                             android:visibility="visible"
                             tools:visibility="visible" />
 
-                        <EditText
-                            android:id="@+id/dic_search_editText"
+                        <TextView
+                            android:id="@+id/fishIdentification_message_textView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:ems="20"
-                            android:hint="@string/enter_name"
-                            android:importantForAutofill="no"
-                            android:inputType="textPersonName"
                             android:padding="20dp"
+                            android:text="@string/fish_identification_message"
                             android:textAlignment="center"
-                            android:textAllCaps="false"
                             android:textColor="@color/white"
-                            android:textColorHint="@color/white"
                             android:textSize="14sp"
                             android:visibility="visible"
                             tools:visibility="visible" />
@@ -113,15 +107,15 @@
             </LinearLayout>
         </TableRow>
 
-        <!-- 도감 외부 테이블 레이아웃 : 가운데 테이블 -->
+        <!-- 판별 결과 외부 테이블 레이아웃 : 가운데 테이블 -->
         <TableRow
-            android:id="@+id/outerDic_centerTable"
+            android:id="@+id/outerFishIdentification_centerTable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="99">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/dic_recyclerView"
+                android:id="@+id/fishIdentification_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
