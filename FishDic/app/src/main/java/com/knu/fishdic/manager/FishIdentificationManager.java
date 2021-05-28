@@ -54,7 +54,7 @@ public class FishIdentificationManager {
     private static final int FILTER_STAGES = 3;
     private static final float FILTER_FACTOR = 0.4f;
 
-    private PriorityQueue<Map.Entry<String, Float>> sortedLabels = new PriorityQueue<>((o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
+    private PriorityQueue<Map.Entry<String, Float>> sortedLabels = new PriorityQueue<>((o1, o2) -> (o1.getValue()).compareTo(o2.getValue())); //정렬 된 분류 큐
 
     FishIdentificationManager(Activity activity) throws IOException {
         tflite = new Interpreter(loadModelFile(activity));
@@ -192,5 +192,4 @@ public class FishIdentificationManager {
         }
         return textToShow;
     }
-
 }

@@ -8,12 +8,14 @@
     <string name="parasite">기생충 정보</string>
     <string name="help">이용가이드</string>
 
-    <!-- 액티비티에서 사용 할 문자열 -->
+    <!-- 도감 및 어류 상세 정보에서 사용 할 문자열 -->
     <string name="enter_name">이름 입력</string>
     <string name="fish_detail">어류 상세 정보</string>
     <string name="parasite_detail">기생충 상세 정보</string>
-    <string name="fish_identification_result">판별 결과</string>
-    <string name="fish_identification_message">총 %d건의 유사 어류가 판별되었습니다.</string>
+
+    <!-- 메세지 다이얼로그 공용 문자열 -->
+    <string name="error_title">오류</string>
+    <string name="ok_message">확인</string>
 
     <!-- 어류 상세 정보에서 사용 할 문자열 -->
     <string name="basic_info">기본 정보</string>
@@ -35,7 +37,10 @@
     <string name="empty_info">등록 된 정보가 없습니다.</string> <!-- NULL 허용 된 필드에 대해 입력 된 데이터가 없을 경우 -->
     <string name="empty_area">전 지역을 대상으로 포획을 금지한다.</string> <!-- NULL 허용 된 특별 금지구역 필드에 대해 입력 된 데이터가 없을 경우 -->
     <string name="empty_date">별도의 행정명령 시까지 포획을 금지한다.</string>  <!-- NULL 허용 된 금지기간에 대해 입력 된 데이터가 없을 경우 -->
-    <string name="not_exist_fish_title">오류</string>
     <string name="not_exist_fish_message">존재하지 않은 어류입니다.</string>
-    <string name="not_exist_fish_button">확인</string>
+
+    <!-- 어류 판별에서 사용 할 문자열 -->
+    <string name="fish_identification_result_message">판별 결과</string>
+    <string name="fish_identification_info_message">총 %d건의 유사 어류가 판별되었습니다.</string>
+    <string name="fish_identification_fail_message">판별 실패 : 등록되지 않은 어류이거나, 인식 할 수 없는 이미지입니다.</string>
 </resources>

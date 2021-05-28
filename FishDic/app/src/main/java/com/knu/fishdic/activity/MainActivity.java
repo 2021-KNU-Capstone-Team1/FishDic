@@ -68,9 +68,6 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.app_name);
         setTheme(R.style.AppTheme); //초기화 적업 완료 후 스플래시 테마에서 기존 앱 테마로 변경
         setContentView(R.layout.activity_main);
-        this.setComponentsInteraction();
-        this.initViewPager();
-        //checkSelfPermission();
 
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
@@ -81,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
 
+        this.setComponentsInteraction();
+        this.initViewPager();
     }
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정

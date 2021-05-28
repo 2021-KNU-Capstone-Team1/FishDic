@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.StrictMode;
 
-import androidx.core.app.NotificationManagerCompat;
-
 import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
@@ -15,7 +13,7 @@ import com.knu.fishdic.recyclerview.RecyclerAdapter;
 // https://developer.android.com/reference/android/app/Application
 
 public class FishDic extends Application {
-    public static String CACHE_PATH = ""; //임시폴더 경로
+    public static String CACHE_PATH = ""; //임시 폴더 경로
 
     public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
     public static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
@@ -34,8 +32,8 @@ public class FishDic extends Application {
     public static Bitmap[] bannerImages; //배너 이미지
     public static Bitmap[] helpImages; //이용가이드 이미지
 
-    //TODO : 다운로드 진행상황 표시 (상단 알림쪽에)
-    NotificationManagerCompat notificationManager; //알림 관리자
+    //TODO : 다운로드 진행상황 표시 (상단 알림쪽에) 보류
+    //NotificationManagerCompat notificationManager; //알림 관리자
     public enum NOTIFICATION_TYPE { //알림 타입
         DOWNLOAD
     }
@@ -57,7 +55,7 @@ public class FishDic extends Application {
         StrictMode.setThreadPolicy(policy); //UI 스레드에서 동기 작업을 위한 네트워크 연결 허용하도록 설정
         AndroidNetworking.initialize(globalContext); //네트워킹 작업을 위한 Fast-Android-Networking 초기화
 
-        NotificationManagerCompat.from(globalContext);
+        //NotificationManagerCompat.from(globalContext);
     }
 
     @Override
