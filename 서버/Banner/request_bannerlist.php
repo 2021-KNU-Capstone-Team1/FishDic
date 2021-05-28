@@ -5,5 +5,5 @@
         if (strpos($filename,'.jpeg') || strpos($filename,'.jpg') //이미지들만 출력
         || strpos($filename,'.bmp') || strpos($filename,'.gif'))
             $list = $list.basename($filename)."\r\n";
-    echo $list;
+    echo htmlentities($list); //XSS 방지
 ?>
