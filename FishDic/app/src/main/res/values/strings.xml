@@ -40,7 +40,8 @@
     <string name="not_exist_fish_message">존재하지 않은 어류입니다.</string>
 
     <!-- 어류 판별에서 사용 할 문자열 -->
+    <string name="fish_identification_process_message">인식을 위해 사각형 안에 들어가게 조절하세요.</string>
     <string name="fish_identification_result_message">판별 결과</string>
     <string name="fish_identification_info_message">총 %d건의 유사 어류가 판별되었습니다.</string>
-    <string name="fish_identification_fail_message">판별 실패 : 등록되지 않은 어류이거나, 인식 할 수 없는 이미지입니다.</string>
+    <string name="fish_identification_fail_message">등록되지 않은 어류이거나, 인식 할 수 없는 이미지입니다.</string>
 </resources>

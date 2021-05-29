@@ -1,18 +1,12 @@
 package com.knu.fishdic.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -24,7 +18,6 @@ import com.knu.fishdic.fragment.MyFragment;
 import com.knu.fishdic.fragment.MyFragmentPagerAdapter;
 import com.knu.fishdic.manager.InitManager;
 
-import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,26 +29,17 @@ public class MainActivity extends AppCompatActivity {
     ImageButton main_dic_imageButton;                       //메인화면 하단부 도감 버튼
     ImageButton main_deniedFish_imageButton;                //메인화면 하단부 금어기 버튼
     ImageButton main_fishIdentification_imageButton;        //메인화면 하단부 카메라 버튼
-    ImageButton main_gallery_imageButton;                  //메인화면 하단부 갤러리 버튼
     ImageButton main_help_imageButton;                      //메인화면 하단부 도움 버튼
 
     ViewPager viewPager;
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
     CircleIndicator indicator;
 
-    //  DrawerLayout drawerLayout;
-    //NavigationView navigationView;
-
     private Timer timer;
     private int currentPosition = 0; //현재 배너 이미지의 위치
     private final long DELAY_MS = 1000; //작업이 실행 되기 전 딜레이 (MS)
     private final long PERIOD_MS = 3000; //작업 실행 간의 딜레이 (MS)
 
-    private static final int GET_FROM_GALLERY = 101;
-    final static int TAKE_PICTURE = 1;      //카메라 어플 열 때 전달 될 키 값 상수
-    // ImageView camera_picture; 나중에 찍은 사진 저장할 용도
-
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         this.main_dic_imageButton = findViewById(R.id.main_dic_imageButton);
         this.main_deniedFish_imageButton = findViewById(R.id.main_deniedFish_imageButton);
         this.main_fishIdentification_imageButton = findViewById(R.id.main_fishIdentification_imageButton);
-        this.main_gallery_imageButton = findViewById(R.id.main_gallery_imageButton);
         this.main_help_imageButton = findViewById(R.id.main_help_imageButton);
         this.viewPager = findViewById(R.id.banner_viewPager);
         this.indicator = findViewById(R.id.banner_circleIndicator);
@@ -104,19 +87,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        //카메라 촬영으로 넘어가는 클릭 리스너
+        //카메라 사진 촬영으로 어류 판별 위한 화면으로 넘어가는 클릭 리스너
         this.main_fishIdentification_imageButton.setOnClickListener(v -> {
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, TAKE_PICTURE);
-        });
-
-        //갤러리 사진 선택으로 넘어가는 클릭 리스너
-        this.main_gallery_imageButton.setOnClickListener(v -> {
-            Intent galleryIntent = new Intent();
-            galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(galleryIntent, GET_FROM_GALLERY);
-
+            Intent intent = new Intent(FishDic.globalContext, FishIdentificationActivity.class);
+            intent.putExtra(FishIdentificationActivity.FISH_IDENTIFICATION_METHOD_KEY_VALUE, FishIdentificationActivity.TAKE_PICTURE);
+            startActivity(intent);
         });
 
         //도움 화면으로 넘어가는 클릭 리스너
@@ -126,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {        //카메라 결과 전송
         super.onActivityResult(requestCode, resultCode, data);
@@ -154,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
+    */
     private void initViewPager() { //ViewPager 초기화
         Bundle args = new Bundle();
         args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, MyFragment.FRAGMENT_TYPE.BANNER);

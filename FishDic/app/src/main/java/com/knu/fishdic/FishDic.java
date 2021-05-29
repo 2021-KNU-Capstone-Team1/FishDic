@@ -9,6 +9,10 @@ import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+
 // 전역 앱 상태 관리, 공용 컴포넌트 사용을 위한 FishDic 정의
 // https://developer.android.com/reference/android/app/Application
 
@@ -53,7 +57,11 @@ public class FishDic extends Application {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy); //UI 스레드에서 동기 작업을 위한 네트워크 연결 허용하도록 설정
-        AndroidNetworking.initialize(globalContext); //네트워킹 작업을 위한 Fast-Android-Networking 초기화
+
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .connectTimeout(2, TimeUnit.SECONDS) //연결 제한시간
+                .build();
+        AndroidNetworking.initialize(globalContext, okHttpClient); //네트워킹 작업을 위한 Fast-Android-Networking 초기화
 
         //NotificationManagerCompat.from(globalContext);
     }
