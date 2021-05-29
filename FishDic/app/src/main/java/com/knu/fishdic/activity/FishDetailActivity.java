@@ -16,6 +16,7 @@ import com.knu.fishdic.fragment.MyFragment;
 import com.knu.fishdic.manager.DBManager;
 
 // 어류 상세정보 화면 액티비티 정의
+// https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html
 
 public class FishDetailActivity extends AppCompatActivity {
     ImageButton fishDetail_back_imageButton; //뒤로 가기 버튼
@@ -67,7 +68,6 @@ public class FishDetailActivity extends AppCompatActivity {
         int specialProhibitAdminCount = queryResult.getInt(DBManager.TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE); //해당 어류의 전체 금지행정의 수
 
         /*** Fragment를 Activity의 ViewGroup(innerFishDetail_linearLayout)에 추가 ***/
-        // https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 

@@ -1,14 +1,11 @@
 package com.knu.fishdic.activity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -45,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         /*** 초기화 작업 수행 ***/
-        InitManager.doDataBindJobForRecylerAdapter(); //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
+        InitManager.initGlobalRecyclerAdapter();//전역 RecyclerAdapter 초기화
+        InitManager.doDataBindJobForDic(); //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
+        InitManager.doDataBindJobForDeniedFish(); //이달의 금어기를 위한 데이터 바인딩 작업 수행
         InitManager.initBannerImages(); //배너 이미지 초기 작업 수행
         InitManager.initHelpImages(); //이용가이드 초기 작업 수행
 
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme); //초기화 적업 완료 후 스플래시 테마에서 기존 앱 테마로 변경
         setContentView(R.layout.activity_main);
 
+        /*
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             //권한 다시 승인 요청
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
-
+*/
         this.setComponentsInteraction();
         this.initViewPager();
     }
@@ -87,10 +87,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        //카메라 사진 촬영으로 어류 판별 위한 화면으로 넘어가는 클릭 리스너
+        //어류 판별 위한 화면으로 넘어가는 클릭 리스너
         this.main_fishIdentification_imageButton.setOnClickListener(v -> {
             Intent intent = new Intent(FishDic.globalContext, FishIdentificationActivity.class);
-            intent.putExtra(FishIdentificationActivity.FISH_IDENTIFICATION_METHOD_KEY_VALUE, FishIdentificationActivity.TAKE_PICTURE);
             startActivity(intent);
         });
 

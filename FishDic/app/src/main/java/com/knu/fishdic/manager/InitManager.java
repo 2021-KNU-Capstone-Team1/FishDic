@@ -33,15 +33,23 @@ public class InitManager {
         FAILURE //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
     }
 
-    public static void doDataBindJobForRecylerAdapter() { //도감 및 이달의 금어기를 위한 데이터 바인딩 작업 수행
-        if (FishDic.globalDBManager != null || FishDic.globalDicRecyclerAdapter != null || FishDic.globalDeniedFishRecyclerAdapter != null)
-            return;
-
-        FishDic.globalDBManager = new DBManager();
+    public static void initGlobalRecyclerAdapter() { //전역 RecyclerAdapter 초기화
         FishDic.globalDicRecyclerAdapter = new RecyclerAdapter();
         FishDic.globalDeniedFishRecyclerAdapter = new RecyclerAdapter();
+        FishDic.globalFishIdentificationRecyclerAdapter = new RecyclerAdapter();
+    }
+
+    public static void doDataBindJobForDic() { //도감을 위한 데이터 바인딩 작업 수행
+        if(FishDic.globalDicRecyclerAdapter == null)
+            return;
 
         FishDic.globalDicRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.ALL_FISH));
+    }
+
+    public static void doDataBindJobForDeniedFish() { //이달의 금어기를 위한 데이터 바인딩 작업 수행
+        if(FishDic.globalDeniedFishRecyclerAdapter == null)
+            return;
+
         FishDic.globalDeniedFishRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.DENIED_FISH));
     }
 

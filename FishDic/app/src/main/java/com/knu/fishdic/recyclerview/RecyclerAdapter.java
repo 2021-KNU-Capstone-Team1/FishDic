@@ -150,12 +150,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         }
     }
 
-    public void resetRefItemList() { //참조 목록에 대한 초기화
+    public void deallocateRefItemList() { //참조 목록에 대한 메모리 해제
         if (this.refItemList != this.itemList) { //기존의 원본 리스트를 참조하지 않을 경우
             this.refItemList = this.itemList; //기존의 원본 리스트를 참조
             notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
             System.gc(); //필터링 된 리스트에 대해 가비지 컬렉션 요청
         }
+    }
+
+    public void deallocateAllItemList() { //원본 목록 및 참조 목록 모두 메모리 해제
+        if (this.refItemList != null)
+            this.refItemList = null;
+
+        if (this.itemList != null)
+            this.itemList = null;
+
+        notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
+        System.gc(); //할당 해제 된 모든 목록에 대하여 가비지 컬렉션 요청
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

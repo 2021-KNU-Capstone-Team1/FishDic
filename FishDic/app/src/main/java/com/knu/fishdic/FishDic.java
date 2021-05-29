@@ -7,6 +7,7 @@ import android.os.StrictMode;
 
 import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
+import com.knu.fishdic.manager.FishIdentificationManager;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
 import java.util.concurrent.TimeUnit;
@@ -28,10 +29,12 @@ public class FishDic extends Application {
 
     public static Context globalContext; //전역 앱 Context (앱 실행 후 종료 시 까지 유지)
     public static DBManager globalDBManager; //전역 DBManager
+    public static FishIdentificationManager globalFishIdentificationManager;
 
-    //앱 로딩 시점에 DB로부터 바인딩 작업 수행 위한 도감, 이달의 금어기 RecyclerAdapter
+    /*** 앱 로딩 시점에 DB로부터 바인딩 작업 수행 위한 도감, 이달의 금어기 RecyclerAdapter ***/
     public static RecyclerAdapter globalDicRecyclerAdapter;
     public static RecyclerAdapter globalDeniedFishRecyclerAdapter;
+    public static RecyclerAdapter globalFishIdentificationRecyclerAdapter; //어류 판별 결과를 보여주기 위한 RecyclerAdapter
 
     public static Bitmap[] bannerImages; //배너 이미지
     public static Bitmap[] helpImages; //이용가이드 이미지
@@ -48,7 +51,8 @@ public class FishDic extends Application {
         super.onCreate();
         globalContext = getApplicationContext();
         globalDBManager = null;
-        globalDicRecyclerAdapter = globalDeniedFishRecyclerAdapter = null;
+        globalFishIdentificationManager = null;
+        globalDicRecyclerAdapter = globalDeniedFishRecyclerAdapter = globalFishIdentificationRecyclerAdapter = null;
 
         CACHE_PATH = globalContext.getCacheDir().toString() + "/";
         BANNER_IMAGES_PATH = "/data/data/" + globalContext.getPackageName() + "/banner/"; //배너 이미지 경로 "/data/data/앱 이름/banner/"
@@ -59,11 +63,12 @@ public class FishDic extends Application {
         StrictMode.setThreadPolicy(policy); //UI 스레드에서 동기 작업을 위한 네트워크 연결 허용하도록 설정
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(2, TimeUnit.SECONDS) //연결 제한시간
+                .connectTimeout(2, TimeUnit.SECONDS) //서버 연결 제한시간 설정
                 .build();
         AndroidNetworking.initialize(globalContext, okHttpClient); //네트워킹 작업을 위한 Fast-Android-Networking 초기화
 
         //NotificationManagerCompat.from(globalContext);
+        FishDic.globalDBManager = new DBManager();
     }
 
     @Override

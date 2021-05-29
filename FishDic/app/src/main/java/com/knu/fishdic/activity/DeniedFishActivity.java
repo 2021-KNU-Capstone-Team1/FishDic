@@ -36,7 +36,7 @@ public class DeniedFishActivity extends Activity {
 
     @Override
     public void onBackPressed() { //하드웨어, 소프트웨어 back 키와 앱 내의 뒤로 가기 버튼을 위하여 현재 액티비티 종료 시 수행 할 작업 설정
-        FishDic.globalDeniedFishRecyclerAdapter.resetRefItemList(); //참조 목록 초기화 및 가비지 컬렉션 요청
+        FishDic.globalDeniedFishRecyclerAdapter.deallocateRefItemList(); //참조 목록 초기화 및 가비지 컬렉션 요청
         super.onBackPressed();
     }
 
