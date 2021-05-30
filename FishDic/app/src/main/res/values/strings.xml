@@ -9,6 +9,7 @@
     <string name="help">이용가이드</string>
 
     <!-- 도감 및 어류 상세 정보에서 사용 할 문자열 -->
+    <string name="bio_class_info">생물분류 : </string>
     <string name="enter_name">이름 입력</string>
     <string name="fish_detail">어류 상세 정보</string>
     <string name="parasite_detail">기생충 상세 정보</string>
@@ -40,6 +41,7 @@
     <string name="not_exist_fish_message">존재하지 않은 어류입니다.</string>
 
     <!-- 어류 판별에서 사용 할 문자열 -->
+    <string name="fish_identification_percentage_info">해당 어류일 확률 : </string>
     <string name="fish_identification_camera_storage_permission_message">카메라와 저장소 접근 권한을 허용해주세요.</string>
     <string name="fish_identification_storage_permission_message">저장소 접근 권한을 허용해주세요.</string>
     <string name="fish_identification_process_message">사진 조절</string>

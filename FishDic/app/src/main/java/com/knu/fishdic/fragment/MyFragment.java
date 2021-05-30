@@ -24,9 +24,9 @@ import com.knu.fishdic.utils.ImageUtility;
  ***/
 
 public class MyFragment extends Fragment {
-    public static String FRAGMENT_TYPE_KEY_VALUE = "fragmentTypeKey"; //Fragment의 타입 키 값
-    public static String POSITION_KEY_VALUE = "positionKey"; //position 키 값
-    public static String IMAGE_KEY_VALUE = "imageKey"; //이미지의 키 값
+    public static final String FRAGMENT_TYPE_KEY_VALUE = "fragmentTypeKey"; //Fragment의 타입 키 값
+    public static final String POSITION_KEY_VALUE = "positionKey"; //position 키 값
+    public static final String IMAGE_KEY_VALUE = "imageKey"; //이미지의 키 값
 
     public enum FRAGMENT_TYPE { //Fragment의 타입 정의
         BASIC_INFO, //어류 상세 정보 페이지의 기본 정보

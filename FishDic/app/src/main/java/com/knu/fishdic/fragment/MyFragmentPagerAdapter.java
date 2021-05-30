@@ -11,8 +11,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 // https://developer.android.com/reference/androidx/fragment/app/FragmentPagerAdapter
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-    private MyFragment.FRAGMENT_TYPE fragmentType; //현재 Fragment의 타입
-    private Bitmap[] refImages; //전체 이미지 참조 변수
+    private final MyFragment.FRAGMENT_TYPE fragmentType; //현재 Fragment의 타입
+    private final Bitmap[] refImages; //전체 이미지 참조 변수
 
     public MyFragmentPagerAdapter(FragmentManager fragmentManager, Bundle args) {
         /***

@@ -26,6 +26,8 @@ import okhttp3.Response;
 // 앱 초기화를 위한 InitManager 정의
 
 public class InitManager {
+    public static boolean isAllComponentsInitialized = false; //모든 구성요소 초기화 작업 수행여부
+
     private enum BANNER_STATE { //배너 상태 정의
         INIT, //초기 상태
         OUT_DATED, //구 버전
@@ -33,30 +35,56 @@ public class InitManager {
         FAILURE //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
     }
 
-    public static void initGlobalRecyclerAdapter() { //전역 RecyclerAdapter 초기화
+    public static void initAllComponents() { //모든 구성요소 초기화
+        if (!isAllComponentsInitialized) {
+            initGlobalRecyclerAdapter();//전역 RecyclerAdapter 초기화
+            initGlobalManager(); //전역 Manager 초기화
+
+            doDataBindJobForDic(); //도감을 위한 데이터 바인딩 작업 수행
+            doDataBindJobForDeniedFish(); //이달의 금어기를 위한 데이터 바인딩 작업 수행
+
+            initBannerImages(); //배너 이미지 초기 작업 수행
+            initHelpImages(); //이용가이드 초기 작업 수행
+
+            isAllComponentsInitialized = true;
+        }
+    }
+
+    private static void initGlobalRecyclerAdapter() { //전역 RecyclerAdapter 초기화
         FishDic.globalDicRecyclerAdapter = new RecyclerAdapter();
         FishDic.globalDeniedFishRecyclerAdapter = new RecyclerAdapter();
         FishDic.globalFishIdentificationRecyclerAdapter = new RecyclerAdapter();
     }
 
-    public static void doDataBindJobForDic() { //도감을 위한 데이터 바인딩 작업 수행
-        if(FishDic.globalDicRecyclerAdapter == null)
-            return;
+    private static void initGlobalManager(){ //전역 Manager 초기화
+        //TODO :  java.lang.RuntimeException: Unable to start activity ComponentInfo{com.knu.fishdic/com.knu.fishdic.activity.MainActivity}: java.lang.ArrayIndexOutOfBoundsException: length=0; index=6 버그 수정
+        FishDic.globalDBManager = new DBManager();
+        FishDic.globalFishIdentificationManager = new FishIdentificationManager();
+    }
+
+    private static void doDataBindJobForDic() { //도감을 위한 데이터 바인딩 작업 수행
+        if(FishDic.globalDicRecyclerAdapter == null || FishDic.globalDBManager == null)
+            try {
+                throw new Exception("Not Initialized globalDicRecyclerAdapter or globalDBManager");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         FishDic.globalDicRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.ALL_FISH));
     }
 
-    public static void doDataBindJobForDeniedFish() { //이달의 금어기를 위한 데이터 바인딩 작업 수행
-        if(FishDic.globalDeniedFishRecyclerAdapter == null)
-            return;
+    private static void doDataBindJobForDeniedFish() { //이달의 금어기를 위한 데이터 바인딩 작업 수행
+        if(FishDic.globalDeniedFishRecyclerAdapter == null || FishDic.globalDBManager == null)
+            try {
+                throw new Exception("Not Initialized globalDeniedFishRecyclerAdapter or globalDBManager");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         FishDic.globalDeniedFishRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.DENIED_FISH));
     }
 
-    public static void initBannerImages() { //배너 이미지 초기화 작업 수행
-        if (FishDic.bannerImages != null)
-            return;
-
+    private static void initBannerImages() { //배너 이미지 초기화 작업 수행
         switch (getCurrentBannerState()) { //기존 배너 상태 확인
             case INIT: //초기 상태일 경우
             case OUT_DATED: //구 버전일 경우
@@ -82,16 +110,15 @@ public class InitManager {
         }
 
         File[] bannerImagesList = dir.listFiles((dir1, name) -> {
-            if (name.matches("version")) //버전 관리 파일 제외한 모든 파일만 허용
-                return false;
-            return true;
+            //버전 관리 파일 제외한 모든 파일만 허용
+            return !name.matches("version");
         }); //배너 이미지 목록
 
         int bannerImagesCount = bannerImagesList.length; //배너 이미지 수
         FishDic.bannerImages = new Bitmap[bannerImagesCount];
         for (int index = 0; index < bannerImagesCount; index++) {
 
-            FileInputStream fileInputStream = null;
+            FileInputStream fileInputStream;
             try {
                 fileInputStream = new FileInputStream(bannerImagesList[index]);
                 byte[] buffer = new byte[fileInputStream.available()];
@@ -251,9 +278,11 @@ public class InitManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        assetManager.close();
     }
 
-    public static void initHelpImages() { //이용가이드 초기 작업 수행
+    private static void initHelpImages() { //이용가이드 초기 작업 수행
         AssetManager assetManager = FishDic.globalContext.getAssets();
         InputStream inputStream;
 
@@ -276,5 +305,7 @@ public class InitManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        assetManager.close();
     }
 }

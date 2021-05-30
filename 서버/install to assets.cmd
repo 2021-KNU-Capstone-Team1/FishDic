@@ -25,6 +25,6 @@ set TARGET_MODEL_PATH=%TARGET_PATH%\model
 if not exist %TARGET_MODEL_PATH% mkdir %TARGET_MODEL_PATH%
 echo Target Model Path : %TARGET_MODEL_PATH%
 copy /Y .\model\model.tflite %TARGET_MODEL_PATH%
-copy /Y .\model\class_names.txt %TARGET_MODEL_PATH%
+:: copy /Y .\model\class_names.txt %TARGET_MODEL_PATH%
 
 pause

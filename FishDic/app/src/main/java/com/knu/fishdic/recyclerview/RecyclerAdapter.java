@@ -125,7 +125,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
          * 사용자가 검색 창에 입력 할 경우 참조 목록(refItemList)이 필터링 된 새로운 목록을 참조한다.
          * 올바른 데이터 바인딩을 위해 현재 참조 중인 목록의 총 개수를 반환
          ***/
-        return this.refItemList.size();
+        if(this.refItemList != null)
+            return this.refItemList.size();
+        else //참조 중인 목록이 메모리 해제되었을 시
+            return 0;
     }
 
     public void addItem(RecyclerViewItem Item) { //외부에서 전체 목록 (원본)에 요소 추가
@@ -144,7 +147,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
             recyclerViewItem.setTitle(subQueryResult.getString(DBManager.NAME)); //어류 이름
             recyclerViewItem.setImage(subQueryResult.getByteArray(DBManager.IMAGE)); //어류 이미지
-            recyclerViewItem.setContent("생물분류 : " + subQueryResult.getString(DBManager.BIO_CLASS)); //생물 분류
+            recyclerViewItem.setContent(subQueryResult.getString(DBManager.BIO_CLASS)); //내용
 
             this.addItem(recyclerViewItem);
         }
@@ -159,12 +162,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     }
 
     public void deallocateAllItemList() { //원본 목록 및 참조 목록 모두 메모리 해제
-        if (this.refItemList != null)
+        if (this.refItemList != null) {
             this.refItemList = null;
-
-        if (this.itemList != null)
+        }
+        if (this.itemList != null) {
             this.itemList = null;
-
+        }
         notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
         System.gc(); //할당 해제 된 모든 목록에 대하여 가비지 컬렉션 요청
     }

@@ -10,7 +10,7 @@ android {
     }
     defaultConfig {
         applicationId "com.knu.fishdic"
-        minSdkVersion 26 //최소 실행 SDK 버전
+        minSdkVersion 28 //최소 실행 SDK 버전
         targetSdkVersion 30 //타겟 SDK 버전
         versionCode 1
         versionName "1.0" //앱 버전
@@ -33,14 +33,17 @@ android {
 dependencies { //의존성
     implementation 'com.amitshekhar.android:android-networking:1.0.2' //네트워킹 작업을 위한 Fast-Android-Networking
     implementation 'me.relex:circleindicator:1.3.2' //배너 및 이용가이드를 위한 원형 인디케이터
+    implementation 'androidx.recyclerview:recyclerview:1.2.0' //도감 및 이달의 금어기을 위한 RecyclerView
+    //implementation 'org.tensorflow:tensorflow-lite:+' //텐서플로우 라이트
+    implementation 'org.tensorflow:tensorflow-lite-task-vision:0.2.0'
+    implementation 'com.github.CanHub:Android-Image-Cropper:3.1.1' //이미지 자르기 기능
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0' //도감 및 이달의 금어기을 위한 RecyclerView
     implementation 'androidx.navigation:navigation-fragment:2.3.4'
     implementation 'androidx.navigation:navigation-ui:2.3.4'
-    implementation 'org.tensorflow:tensorflow-lite:+' //텐서플로우 라이트
-    implementation 'com.github.CanHub:Android-Image-Cropper:3.1.1' //이미지 자르기 기능
+
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -38,7 +38,7 @@ public class HelpActivity extends AppCompatActivity {
 
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
     {
-        this.help_back_imageButton = (ImageButton) findViewById(R.id.help_back_imageButton);
+        this.help_back_imageButton = findViewById(R.id.help_back_imageButton);
         this.viewPager = findViewById(R.id.help_viewPager);
         this.indicator = findViewById(R.id.help_circleIndicator);
 
