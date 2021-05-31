@@ -5,6 +5,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -300,6 +302,7 @@ public class DBManager extends SQLiteOpenHelper {
     public Bundle getSimpleFishBundle(FISH_DATA_TYPE fishDataType, Bundle args) { //간략화된 어류 정보 반환
         String sqlQuery;
         String currentDate;
+        Cursor cursor;
 
         switch (fishDataType) { //어류 데이터 타입에 따라서 쿼리문 설정
             case ALL_FISH: //모든 어류
@@ -352,10 +355,10 @@ public class DBManager extends SQLiteOpenHelper {
                 boolean isFirstAdded = true; //첫 번째 추가 여부
                 for (Iterator i = scientificNameSet.iterator(); i.hasNext(); ) { //판별 된 학명들에 대하여 쿼리에 추가
                     if (isFirstAdded) {
-                        stringBuffer.append(" in ('").append(i.next()).append("'");
+                        stringBuffer.append(" IN (\'").append(i.next().toString().trim()).append("\'");
                         isFirstAdded = false;
                     } else {
-                        stringBuffer.append(",'").append(i.next()).append("'");
+                        stringBuffer.append(", \'").append(i.next().toString().trim()).append("\'");
                     }
                 }
                 stringBuffer.append(")");
@@ -368,51 +371,51 @@ public class DBManager extends SQLiteOpenHelper {
                 throw new IllegalStateException("Unexpected value: " + fishDataType);
         }
 
-        Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
-        synchronized (cursor) {
-            int nameIndex = cursor.getColumnIndex(NAME);
-            int scientificNameIndex = cursor.getColumnIndex(SCIENTIFIC_NAME);
-            int imageIndex = cursor.getColumnIndex(IMAGE);
-            int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
+        cursor = this.sqlDB.rawQuery(sqlQuery, null);
 
-            Bundle queryResult = new Bundle(); //키(문자열), 값 쌍의 최종 결과
+        int nameIndex = cursor.getColumnIndex(NAME);
+        int scientificNameIndex = cursor.getColumnIndex(SCIENTIFIC_NAME);
+        int imageIndex = cursor.getColumnIndex(IMAGE);
+        int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
 
-            boolean queryResultExist = false; //쿼리 결과 존재 여부
-            int fishIndex = 0; //어류 인덱스
+        Bundle queryResult = new Bundle(); //키(문자열), 값 쌍의 최종 결과
 
-            Log.e("count", String.valueOf(cursor.getCount()));
+        boolean queryResultExist = false; //쿼리 결과 존재 여부
+        int fishIndex = 0; //어류 인덱스
 
-            //TODO : 어류 판별 결과 쿼리가 정상적이지만 나타나지않음
+        Log.e("count", String.valueOf(cursor.getCount()));
 
-            Log.e("커서 덤프", DatabaseUtils.dumpCursorToString(cursor));
+        //TODO : 어류 판별 결과 쿼리가 정상적이지만 나타나지않음
 
-            while (cursor.moveToNext()) {
-                if (!queryResultExist)
-                    queryResultExist = true;
+        Log.e("커서 덤프", DatabaseUtils.dumpCursorToString(cursor));
 
-                Bundle subQueryResult = new Bundle(); //queryResult 내부에 각 어류 정보를 추가하기 위한 키(문자열), 값 쌍의 하위 결과
-                subQueryResult.putString(NAME, cursor.getString(nameIndex));
-                subQueryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
+        cursor.moveToFirst();
+        while (cursor.moveToNext()) {
+            if (!queryResultExist)
+                queryResultExist = true;
 
-                if (fishDataType == FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT) //어류 판별 결과일 경우 해당 어류일 확률 출력
-                    subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + String.format("%.2f", args.getFloat(cursor.getString(scientificNameIndex))) + "\n" +
-                            FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
-                else
-                    subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
+            Bundle subQueryResult = new Bundle(); //queryResult 내부에 각 어류 정보를 추가하기 위한 키(문자열), 값 쌍의 하위 결과
+            subQueryResult.putString(NAME, cursor.getString(nameIndex));
+            subQueryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
 
-                queryResult.putBundle(String.valueOf(fishIndex), subQueryResult); //각 어류의 인덱스를 키로하여 어류 정보를 queryResult 내부에 추가
-                fishIndex++;
-            }
-            cursor.close();
-            queryResult.putInt(TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 어류 접근 위해 전체 어류 수를 추가
+            if (fishDataType == FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT) //어류 판별 결과일 경우 해당 어류일 확률 출력
+                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + String.format("%.2f", args.getFloat(cursor.getString(scientificNameIndex))) + "\n" +
+                        FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
+            else
+                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
 
-            Log.e("test", queryResult.toString());
-
-            if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
-                return queryResult;
-            else //쿼리 결과가 존재하지 않으면
-                return null;
+            queryResult.putBundle(String.valueOf(fishIndex), subQueryResult); //각 어류의 인덱스를 키로하여 어류 정보를 queryResult 내부에 추가
+            fishIndex++;
         }
+        cursor.close();
+        queryResult.putInt(TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 어류 접근 위해 전체 어류 수를 추가
+
+        Log.e("test", queryResult.toString());
+
+        if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
+            return queryResult;
+        else //쿼리 결과가 존재하지 않으면
+            return null;
     }
 
     public Bundle getFishDetailBundle(Bundle args) { //특정 어류의 상세정보 반환
@@ -480,6 +483,7 @@ public class DBManager extends SQLiteOpenHelper {
         boolean queryResultExist = false; //쿼리 결과 존재 여부
         int specialProhibitAdminIndex = 0; //특별 금지행정의 인덱스
 
+        cursor.moveToFirst();
         while (cursor.moveToNext()) {
             if (!queryResultExist)
                 queryResultExist = true;
