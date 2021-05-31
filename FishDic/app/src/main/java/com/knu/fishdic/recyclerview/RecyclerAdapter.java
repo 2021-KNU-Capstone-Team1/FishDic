@@ -133,6 +133,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     public void addItem(RecyclerViewItem Item) { //외부에서 전체 목록 (원본)에 요소 추가
         this.itemList.add(Item);
+        notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
     }
 
     public void addItemFromBundle(Bundle queryResult) { //외부에서 전체 목록 (원본)에 Bundle로부터 요소 추가
@@ -151,8 +152,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
             this.addItem(recyclerViewItem);
         }
-
-        notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
     }
 
     public void deallocateRefItemList() { //참조 목록에 대한 메모리 해제
