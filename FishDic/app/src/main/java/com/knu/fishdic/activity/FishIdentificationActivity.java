@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -24,20 +25,12 @@ import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.fragment.MyDialogFragment;
 import com.knu.fishdic.manager.DBManager;
-import com.knu.fishdic.manager.FishIdentificationManager;
 
 import java.io.IOException;
 
 // 어류 판별 액티비티 정의
 
 public class FishIdentificationActivity extends AppCompatActivity {
-    // public static String FISH_IDENTIFICATION_METHOD_KEY_VALUE = "fishIdentificationMethodKey"; //어류 판별 방법 키 값
-    // public static String FISH_IDENTIFICATION_IMAGE_KEY_VALUE = "fishIdentificationImageKey"; //판별 이미지 키 값
-
-    // /*** 어류 판별 위한 방법 ***/
-    // public static final int TAKE_PICTURE = 1; //카메라로부터 사진 찍기 위한 키 값 상수
-    // public static final int GET_FROM_GALLERY = 101; //갤러리로부터 사진 가져오기 위한 키 값 상수
-    FishIdentificationManager fishIdentificationManager = null;
     private static final int CAMERA_REQUEST = 100;
     private static final int STORAGE_REQUEST = 200;
     String[] cameraPermission;
@@ -55,13 +48,13 @@ public class FishIdentificationActivity extends AppCompatActivity {
         setTitle(R.string.app_name);
         setContentView(R.layout.activity_fishidentification);
 
-        setComponentsInteraction();
-
         /*** 카메라 및 저장소 권한 확인 ***/
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         startCropImageActivity(); //이미지 Crop 작업 위한 액티비티 시작
+        setComponentsInteraction();
+
         //this.showFishDetailErrDialog();
     }
 
@@ -107,7 +100,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
                             (grantResults[1] == PackageManager.PERMISSION_GRANTED);
 
                     if (cameraAccepted && storageAccepted) { //카메라와 저장소 접근 권한 모두 허용되었으면
-                       // startCropImageActivity();
+                        // startCropImageActivity();
                     } else {
                         Toast.makeText(this, getString(R.string.fish_identification_camera_storage_permission_message), Toast.LENGTH_LONG).show();
                         this.onBackPressed();
@@ -121,7 +114,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
                             (grantResults[1] == PackageManager.PERMISSION_GRANTED);
 
                     if (storageAccepted) { //저장소 접근 권한 허용되었으면
-                       // startCropImageActivity();
+                        // startCropImageActivity();
                     } else {
                         Toast.makeText(this, getString(R.string.fish_identification_storage_permission_message), Toast.LENGTH_LONG).show();
                         this.onBackPressed();
@@ -131,23 +124,6 @@ public class FishIdentificationActivity extends AppCompatActivity {
         }
     }
 
-    /*
-        private Boolean checkStoragePermission() { //저장소 접근 권한 확인
-            return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-        }
-
-        private Boolean checkCameraPermission() { //카메라 접근 권한 확인
-            return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
-        }
-
-        private void requestStoragePermission() { //저장소 접근 권한 요청
-            requestPermissions(storagePermission, STORAGE_REQUEST);
-        }
-
-        private void requestCameraPermission() { //카메라 접근 권한 요청
-            requestPermissions(cameraPermission, CAMERA_REQUEST);
-        }
-    */
     private void startCropImageActivity() { //이미지 자르기 작업 위한 액티비티 시작
         CropImage.activity()
                 .setActivityTitle(getString(R.string.fish_identification_process_message))
@@ -166,7 +142,14 @@ public class FishIdentificationActivity extends AppCompatActivity {
 
                 try {
                     Bitmap bitmap = ImageDecoder.decodeBitmap(src).copy(Bitmap.Config.ARGB_8888, true);
+                    Bundle classificationResult = FishDic.globalFishIdentificationManager.getImageClassificationResult(bitmap); //분류 결과
 
+                    if (classificationResult != null) {
+                        Bundle test = FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT, classificationResult);
+
+                        FishDic.globalFishIdentificationRecyclerAdapter.addItemFromBundle(test);
+                        Log.e("count", String.valueOf(FishDic.globalFishIdentificationRecyclerAdapter.getItemCount()));
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -175,7 +158,6 @@ public class FishIdentificationActivity extends AppCompatActivity {
 
 
                 //TODO : 어류 판별 작업 및 화면에 뿌리기
-
 
             }
         }

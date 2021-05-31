@@ -335,14 +335,13 @@ public class DBManager extends SQLiteOpenHelper {
 
             case FISH_IDENTIFICATION_RESULT: //어류 판별 결과 (해당 어류에 대한 가중치를 포함하여 출력)
                 /***
-                 * //어류 판별 시 가중치가 높은 순으로 정렬하여 전달받을 것?
-                 * 전달받은 args는 판별 완료 된 각 어류의 학명과 가중치를 포함한다. (학명 : 가중치 쌍)
+                 * 전달받은 args는 판별 완료 된 각 어류의 학명과 가중치를 포함하며 가중치가 높은 순으로 정렬되어 있다. (학명 : 가중치 쌍)
                  **/
                 if (args == null || args.isEmpty()) //어류 판별 시 출력 위한 결과가 존재하지 않을 경우
                     return null;
 
                 Set<String> scientificNameSet = args.keySet(); //학명 집합
-                sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + " . " + SCIENTIFIC_NAME + ", " +
+                sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + SCIENTIFIC_NAME + ", " +
                         FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
                         " FROM " + FISH_TABLE +
                         " INNER JOIN " + BIO_CLASS_TABLE +
@@ -352,10 +351,10 @@ public class DBManager extends SQLiteOpenHelper {
                 boolean isFirstAdded = true; //첫 번째 추가 여부
                 for (Iterator i = scientificNameSet.iterator(); i.hasNext(); ) { //판별 된 학명들에 대하여 쿼리에 추가
                     if (isFirstAdded) {
-                        sqlQuery += " = " + i.next();
+                        sqlQuery += " = " + '"' + i.next() + '"';
                         isFirstAdded = false;
                     } else {
-                        sqlQuery += " OR " + FISH_TABLE + "." + SCIENTIFIC_NAME + " = " + i.next();
+                        sqlQuery += " OR " + FISH_TABLE + "." + SCIENTIFIC_NAME + " = " + '"' + i.next() + '"';
                     }
                 }
 
@@ -378,6 +377,9 @@ public class DBManager extends SQLiteOpenHelper {
         boolean queryResultExist = false; //쿼리 결과 존재 여부
         int fishIndex = 0; //어류 인덱스
 
+        Log.e("c", String.valueOf(cursor.getCount()));
+        //TODO : 어류 판별 결과 쿼리가 정상적이지만 나타나지않음
+
         while (cursor.moveToNext()) {
             if (!queryResultExist)
                 queryResultExist = true;
@@ -387,7 +389,7 @@ public class DBManager extends SQLiteOpenHelper {
             subQueryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
 
             if(fishDataType == FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT)
-                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + args.getInt(cursor.getString(scientificNameIndex)) +
+                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + String.format("%.2f", args.getFloat(cursor.getString(scientificNameIndex))) + "\n" +
                         FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
             else
                 subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
@@ -396,6 +398,8 @@ public class DBManager extends SQLiteOpenHelper {
             fishIndex++;
         }
         queryResult.putInt(TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 어류 접근 위해 전체 어류 수를 추가
+
+        Log.e("test", queryResult.toString());
 
         if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
             return queryResult;

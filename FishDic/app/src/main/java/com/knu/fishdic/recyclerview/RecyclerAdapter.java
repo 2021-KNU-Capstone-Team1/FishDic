@@ -151,6 +151,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
             this.addItem(recyclerViewItem);
         }
+
+        notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
     }
 
     public void deallocateRefItemList() { //참조 목록에 대한 메모리 해제

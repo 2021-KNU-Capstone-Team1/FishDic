@@ -3,6 +3,7 @@ package com.knu.fishdic.manager;
 // 어류 판별을 위한 FishIdentificationManager 정의
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.knu.fishdic.FishDic;
@@ -24,7 +25,7 @@ public class FishIdentificationManager {
     private static String MODEL_PATH; //판별 위한 모델 경로
     private static final String MODEL_NAME = "model.tflite"; //판별 위한 모델 이름
 
-    private final float RESULTS_THRESHOLD = 0.1f; //결과 임계깞
+    private final float RESULTS_THRESHOLD = 0.1f; //결과 임계값
     private final int MAX_RESULTS_COUNT = 10; //최대 결과 수
 
     public FishIdentificationManager() {
@@ -60,23 +61,56 @@ public class FishIdentificationManager {
         }
     }
 
-    public void getImageClassificationResults(Bitmap target) { //이미지 분류 결과 반환
+    public Bundle getImageClassificationResult(Bitmap target) { //이미지 분류 결과 반환
+        Bundle result = null;
+
         ImageClassifier.ImageClassifierOptions options = ImageClassifier
-                        .ImageClassifierOptions.builder()
-                        .setScoreThreshold(RESULTS_THRESHOLD)
-                        .setMaxResults(MAX_RESULTS_COUNT)
-                        .build();
+                .ImageClassifierOptions.builder()
+                .setScoreThreshold(RESULTS_THRESHOLD)
+                .setMaxResults(MAX_RESULTS_COUNT)
+                .build();
 
         ImageClassifier imageClassifier = null;
         try {
             imageClassifier = ImageClassifier.createFromFileAndOptions(new File(MODEL_PATH + MODEL_NAME), options);
+            List<Classifications> classificationsList = imageClassifier.classify(TensorImage.fromBitmap(target)); //분류 결과
+            imageClassifier.close();
+
+            if (classificationsList != null) { //분류 결과가 존재하면
+                /***
+                 * 1) 분류 결과의 구조는 다음과 같으며 score가 높은 순으로 정렬되어 있음
+                 * 2) 학명 및 score 분리
+                 * ---
+                 * [Classifications
+                 *        {
+                 * 		    categories=
+                 * 		    [
+                 * 			    <Category "Pleuronectes yokohamae" (displayName= score=8.404746 index=35)>,
+                 * 			    <Category "Hexagrammos otakii" (displayName= score=4.6259165 index=19)>,
+                 * 			    <Category "Muraenesox cinereus" (displayName= score=3.373327 index=25)>,
+                 * 			    <Category "Atrina" (displayName= score=0.7307081 index=3)>
+                 * 		    ],
+                 * 	        headIndex=0
+                 *         }
+                 * ]
+                 ***/
+
+                int totalCategoriesCount = classificationsList.get(0).getCategories().size(); //전체 카테고리의 수
+                result = new Bundle();
+
+                for (int i = 0; i < totalCategoriesCount; i++) {
+                    Log.d(classificationsList.get(0).getCategories().get(i).getLabel(), String.valueOf(classificationsList.get(0).getCategories().get(i).getScore()));
+                    result.putFloat(classificationsList.get(0).getCategories().get(i).getLabel(), classificationsList.get(0).getCategories().get(i).getScore()); //학명, 가중치 쌍
+                }
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        List<Classifications> results = imageClassifier.classify(TensorImage.fromBitmap(target));
-        for (int i = 0; i < results.size(); i++) {
-            Log.i("result : ", results.get(i).toString());
-        }
+        if (imageClassifier != null)
+            imageClassifier.close();
+
+        return result;
     }
 }
