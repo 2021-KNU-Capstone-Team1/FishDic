@@ -1,6 +1,5 @@
 package com.knu.fishdic.manager;
 
-import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -65,7 +64,7 @@ public class DBManager extends SQLiteOpenHelper {
         SPECIAL_PROHIBIT_ADMIN_DATE //금지시작기간, 금지종료기간
     }
 
-    private final SQLiteDatabase sqlDB; //DB 접근 위한 SQLiteDatabase 객체
+    private SQLiteDatabase sqlDB; //DB 접근 위한 SQLiteDatabase 객체
     private static String DB_PATH = ""; //DB 경로
     private static final String DB_NAME = "FishDicDB.db"; //DB 이름
 
@@ -271,9 +270,6 @@ public class DBManager extends SQLiteOpenHelper {
 
     private void copyDB() { //assets으로부터 시스템으로 DB 복사
         /*** 서버로부터 DB 다운로드 실패 시 내장 DB를 이용한 대체 흐름 수행 ***/
-
-        AssetManager assetManager = FishDic.globalContext.getAssets();
-
         try {
             File folder = new File(DB_PATH);
             if (!folder.exists()) {
@@ -298,24 +294,54 @@ public class DBManager extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        assetManager.close();
     }
 
-    public Bundle getSimpleFishBundleForFishIdentification(FISH_DATA_TYPE fishDataType, Bundle args) { //어류 판별에 대한 간략화된 어류 정보 반환
-        /***
-         * //어류 판별 시 가중치가 높은 순으로 정렬하여 전달받을 것?
-         * 전달받은 args는 판별 완료 된 각 어류의 학명과 가중치를 포함한다. (학명 : 가중치 쌍)
-         **/
-
-        if (args == null || args.isEmpty()) //어류 판별 시 출력 위한 결과가 존재하지 않을 경우
-            return null;
-
-        Set<String> scientificNameSet = args.keySet(); //학명 집합
+    public Bundle getSimpleFishBundle(FISH_DATA_TYPE fishDataType, Bundle args) { //간략화된 어류 정보 반환
         String sqlQuery;
+        String currentDate;
 
-        switch (fishDataType) {
-            case FISH_IDENTIFICATION_RESULT: //어류 판별 결과 (해당 어류에 대한 가중치를 포함하여 출력):
+        switch (fishDataType) { //어류 데이터 타입에 따라서 쿼리문 설정
+            case ALL_FISH: //모든 어류
+                sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
+                        " FROM " + FISH_TABLE +
+                        " INNER JOIN " + BIO_CLASS_TABLE +
+                        " ON " + FISH_TABLE + "." + NAME + " = " + BIO_CLASS_TABLE + "." + NAME;
+                Log.d("모든 어류 Query", sqlQuery);
+                break;
+
+            case DENIED_FISH: //이달의 금어기
+                /***
+                 * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
+                 * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
+                 * ---
+                 * 금지시작기간은 현재 날짜보다 이전에서 시작해서, 금지종료기간은 현재 날짜 이후일 경우만 뽑는다.
+                 ***/
+
+                currentDate = this.getCurrentDate(DATE_FORMAT_TYPE.WITH_SEPARATOR); //현재 "년-달-일"
+                sqlQuery = "SELECT DISTINCT " + DENIED_FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
+                        " FROM " + DENIED_FISH_TABLE +
+                        " INNER JOIN " + BIO_CLASS_TABLE +
+                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + BIO_CLASS_TABLE + "." + NAME +
+                        " INNER JOIN " + FISH_TABLE +
+                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + FISH_TABLE + "." + NAME +
+                        " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE +
+                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
+                        " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
+                        " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
+                        " WHERE " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + '"' + currentDate + '"' +
+                        " AND " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + '"' + currentDate + '"';
+                Log.d("이달의 금어기 Query", sqlQuery);
+                break;
+
+            case FISH_IDENTIFICATION_RESULT: //어류 판별 결과 (해당 어류에 대한 가중치를 포함하여 출력)
+                /***
+                 * //어류 판별 시 가중치가 높은 순으로 정렬하여 전달받을 것?
+                 * 전달받은 args는 판별 완료 된 각 어류의 학명과 가중치를 포함한다. (학명 : 가중치 쌍)
+                 **/
+                if (args == null || args.isEmpty()) //어류 판별 시 출력 위한 결과가 존재하지 않을 경우
+                    return null;
+
+                Set<String> scientificNameSet = args.keySet(); //학명 집합
                 sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + " . " + SCIENTIFIC_NAME + ", " +
                         FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
                         " FROM " + FISH_TABLE +
@@ -359,80 +385,12 @@ public class DBManager extends SQLiteOpenHelper {
             Bundle subQueryResult = new Bundle(); //queryResult 내부에 각 어류 정보를 추가하기 위한 키(문자열), 값 쌍의 하위 결과
             subQueryResult.putString(NAME, cursor.getString(nameIndex));
             subQueryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
-            subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + args.getInt(cursor.getString(scientificNameIndex)) +
-                    FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
 
-            queryResult.putBundle(String.valueOf(fishIndex), subQueryResult); //각 어류의 인덱스를 키로하여 어류 정보를 queryResult 내부에 추가
-            fishIndex++;
-        }
-        queryResult.putInt(TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 어류 접근 위해 전체 어류 수를 추가
-
-        if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
-            return queryResult;
-        else //쿼리 결과가 존재하지 않으면
-            return null;
-    }
-
-    public Bundle getSimpleFishBundle(FISH_DATA_TYPE fishDataType) { //간략화된 어류 정보 반환
-        String sqlQuery;
-        String currentDate;
-
-        switch (fishDataType) { //어류 데이터 타입에 따라서 쿼리문 설정
-            case ALL_FISH: //모든 어류
-                sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
-                        " FROM " + FISH_TABLE +
-                        " INNER JOIN " + BIO_CLASS_TABLE +
-                        " ON " + FISH_TABLE + "." + NAME + " = " + BIO_CLASS_TABLE + "." + NAME;
-                Log.d("모든 어류 Query", sqlQuery);
-                break;
-
-            case DENIED_FISH: //이달의 금어기
-                /***
-                 * 특별 금지행정의 특별 금지구역이 별도로 지정되지 않은 금어기는, 전 지역을 대상으로 포획을 금지한다.
-                 * 특별 금지행정의 금지기간이 별도로 지정되지 않은 금어기는, 별도의 행정명령 시까지 포획을 금지한다.
-                 * ---
-                 * 금지시작기간은 현재 날짜보다 이전에서 시작해서, 금지종료기간은 현재 날짜 이후일 경우만 뽑는다.
-                 ***/
-
-                currentDate = this.getCurrentDate(DATE_FORMAT_TYPE.WITH_SEPARATOR); //현재 "년-달-일"
-                sqlQuery = "SELECT DISTINCT " + DENIED_FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
-                        " FROM " + DENIED_FISH_TABLE +
-                        " INNER JOIN " + BIO_CLASS_TABLE +
-                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + BIO_CLASS_TABLE + "." + NAME +
-                        " INNER JOIN " + FISH_TABLE +
-                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + FISH_TABLE + "." + NAME +
-                        " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE +
-                        " ON " + DENIED_FISH_TABLE + "." + NAME + "=" + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + NAME +
-                        " LEFT OUTER JOIN " + SPECIAL_PROHIBIT_ADMIN_TABLE +
-                        " ON " + SPECIAL_PROHIBIT_ADMIN_RELATION_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID + "=" + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_ID +
-                        " WHERE " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_START_DATE + " <= " + '"' + currentDate + '"' +
-                        " AND " + SPECIAL_PROHIBIT_ADMIN_TABLE + "." + SPECIAL_PROHIBIT_ADMIN_END_DATE + " >= " + '"' + currentDate + '"';
-                Log.d("이달의 금어기 Query", sqlQuery);
-                break;
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + fishDataType);
-        }
-
-        Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
-
-        int nameIndex = cursor.getColumnIndex(NAME);
-        int imageIndex = cursor.getColumnIndex(IMAGE);
-        int bioClassIndex = cursor.getColumnIndex(BIO_CLASS);
-
-        Bundle queryResult = new Bundle(); //키(문자열), 값 쌍의 최종 결과
-
-        boolean queryResultExist = false; //쿼리 결과 존재 여부
-        int fishIndex = 0; //어류 인덱스
-
-        while (cursor.moveToNext()) {
-            if (!queryResultExist)
-                queryResultExist = true;
-
-            Bundle subQueryResult = new Bundle(); //queryResult 내부에 각 어류 정보를 추가하기 위한 키(문자열), 값 쌍의 하위 결과
-            subQueryResult.putString(NAME, cursor.getString(nameIndex));
-            subQueryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
-            subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
+            if(fishDataType == FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT)
+                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + args.getInt(cursor.getString(scientificNameIndex)) +
+                        FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
+            else
+                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
 
             queryResult.putBundle(String.valueOf(fishIndex), subQueryResult); //각 어류의 인덱스를 키로하여 어류 정보를 queryResult 내부에 추가
             fishIndex++;

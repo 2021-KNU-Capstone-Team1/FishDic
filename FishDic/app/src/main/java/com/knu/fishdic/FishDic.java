@@ -72,6 +72,7 @@ public class FishDic extends Application {
         AndroidNetworking.initialize(globalContext, okHttpClient); //네트워킹 작업을 위한 Fast-Android-Networking 초기화
 
         //NotificationManagerCompat.from(globalContext);
+
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.knu.fishdic.manager;
 
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -37,8 +36,8 @@ public class InitManager {
 
     public static void initAllComponents() { //모든 구성요소 초기화
         if (!isAllComponentsInitialized) {
-            initGlobalRecyclerAdapter();//전역 RecyclerAdapter 초기화
             initGlobalManager(); //전역 Manager 초기화
+            initGlobalRecyclerAdapter();//전역 RecyclerAdapter 초기화
 
             doDataBindJobForDic(); //도감을 위한 데이터 바인딩 작업 수행
             doDataBindJobForDeniedFish(); //이달의 금어기를 위한 데이터 바인딩 작업 수행
@@ -57,7 +56,6 @@ public class InitManager {
     }
 
     private static void initGlobalManager(){ //전역 Manager 초기화
-        //TODO :  java.lang.RuntimeException: Unable to start activity ComponentInfo{com.knu.fishdic/com.knu.fishdic.activity.MainActivity}: java.lang.ArrayIndexOutOfBoundsException: length=0; index=6 버그 수정
         FishDic.globalDBManager = new DBManager();
         FishDic.globalFishIdentificationManager = new FishIdentificationManager();
     }
@@ -70,7 +68,7 @@ public class InitManager {
                 e.printStackTrace();
             }
 
-        FishDic.globalDicRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.ALL_FISH));
+        FishDic.globalDicRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.ALL_FISH, null));
     }
 
     private static void doDataBindJobForDeniedFish() { //이달의 금어기를 위한 데이터 바인딩 작업 수행
@@ -81,7 +79,7 @@ public class InitManager {
                 e.printStackTrace();
             }
 
-        FishDic.globalDeniedFishRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.DENIED_FISH));
+        FishDic.globalDeniedFishRecyclerAdapter.addItemFromBundle(FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.DENIED_FISH, null));
     }
 
     private static void initBannerImages() { //배너 이미지 초기화 작업 수행
@@ -256,17 +254,16 @@ public class InitManager {
     }
 
     private static void debugBannerImages() { //테스트용 배너 이미지 초기화 작업 수행 (대체 흐름)
-        AssetManager assetManager = FishDic.globalContext.getAssets();
         InputStream inputStream;
 
         try {
-            String[] bannerImagesList = assetManager.list("banner/"); //테스트용 배너 이미지 리스트
+            String[] bannerImagesList = FishDic.globalContext.getAssets().list("banner/"); //테스트용 배너 이미지 리스트
             int bannerImagesCount = bannerImagesList.length; //배너 이미지 수
 
             FishDic.bannerImages = new Bitmap[bannerImagesCount];
 
             for (int index = 0; index < bannerImagesCount; index++) {
-                inputStream = assetManager.open("banner/" + bannerImagesList[index]);
+                inputStream = FishDic.globalContext.getAssets().open("banner/" + bannerImagesList[index]);
 
                 byte[] buffer = new byte[inputStream.available()];
                 inputStream.read(buffer);
@@ -278,22 +275,19 @@ public class InitManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        assetManager.close();
     }
 
     private static void initHelpImages() { //이용가이드 초기 작업 수행
-        AssetManager assetManager = FishDic.globalContext.getAssets();
         InputStream inputStream;
 
         try {
-            String[] helpImagesList = assetManager.list("help/"); //이용가이드 이미지 리스트
+            String[] helpImagesList = FishDic.globalContext.getAssets().list("help/"); //이용가이드 이미지 리스트
             int helpImagesCount = helpImagesList.length; //이용가이드 이미지 수
 
             FishDic.helpImages = new Bitmap[helpImagesCount];
 
             for (int index = 0; index < helpImagesCount; index++) {
-                inputStream = assetManager.open("help/" + helpImagesList[index]);
+                inputStream = FishDic.globalContext.getAssets().open("help/" + helpImagesList[index]);
 
                 byte[] buffer = new byte[inputStream.available()];
                 inputStream.read(buffer);
@@ -305,7 +299,5 @@ public class InitManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        assetManager.close();
     }
 }
