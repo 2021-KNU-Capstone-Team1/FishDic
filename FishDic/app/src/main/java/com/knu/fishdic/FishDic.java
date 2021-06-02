@@ -1,9 +1,14 @@
 package com.knu.fishdic;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.StrictMode;
+
+import androidx.core.app.NotificationManagerCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
@@ -22,6 +27,7 @@ public class FishDic extends Application {
 
     public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
     public static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
+    public static final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
 
     public static String BANNER_IMAGES_PATH; //배너 이미지 경로
@@ -39,12 +45,7 @@ public class FishDic extends Application {
     public static Bitmap[] bannerImages; //배너 이미지
     public static Bitmap[] helpImages; //이용가이드 이미지
 
-    //TODO : 다운로드 진행상황 표시 (상단 알림쪽에) 보류
-    //NotificationManagerCompat notificationManager; //알림 관리자
-    public enum NOTIFICATION_TYPE { //알림 타입
-        DOWNLOAD
-    }
-
+   // public static String NOTIFICATION_CHANNEL_ID = "FishDicNotificationChannel"; //알림 채널 아이디
 
     @Override
     public void onCreate() { //최초 앱 가동 시
@@ -71,8 +72,17 @@ public class FishDic extends Application {
                 .build();
         AndroidNetworking.initialize(globalContext, okHttpClient); //네트워킹 작업을 위한 Fast-Android-Networking 초기화
 
-        //NotificationManagerCompat.from(globalContext);
+        /*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { //알림 채널 생성
+            CharSequence name = getString(R.string.app_name);
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH);
 
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+        */
     }
 
     @Override

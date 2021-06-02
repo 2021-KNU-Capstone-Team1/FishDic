@@ -25,13 +25,15 @@ import okhttp3.Response;
 // 앱 초기화를 위한 InitManager 정의
 
 public class InitManager {
+    private final int NOTIFICATION_ID = 2; //알림 아이디
     public static boolean isAllComponentsInitialized = false; //모든 구성요소 초기화 작업 수행여부
 
     private enum BANNER_STATE { //배너 상태 정의
         INIT, //초기 상태
         OUT_DATED, //구 버전
-        UPDATED,//갱신 된 버전
-        FAILURE //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
+        UPDATED, //갱신 된 버전
+        DELAYED_FAILURE, //배너 상태 확인 실패 (지연 된 갱신 수행)
+        IMMEDIATE_FAILURE //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
     }
 
     public static void initAllComponents() { //모든 구성요소 초기화
@@ -90,16 +92,17 @@ public class InitManager {
                 break;
 
             case UPDATED: //최신 버전일 경우
+            case DELAYED_FAILURE: //배너 상태 확인 실패 (지연 된 갱신 수행)
                 break;
 
-            case FAILURE: //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
+            case IMMEDIATE_FAILURE: //배너 상태 확인 실패 (테스트용 배너 이미지를 사용하는 대체 흐름 수행)
                 debugBannerImages();
                 return;
         }
 
         /*** 배너 이미지 할당 ***/
         File dir = new File(FishDic.BANNER_IMAGES_PATH);
-        if (!dir.exists()) { //위에서 이미 배너 이미지 디렉토리가 할당 되었어야 함
+        if (!dir.exists()) { //위에서 이미 배너 이미지 디렉토리가 할당되었어야 함
             try {
                 throw new Exception("Banner Integrity ERR");
             } catch (Exception e) {
@@ -109,7 +112,7 @@ public class InitManager {
 
         File[] bannerImagesList = dir.listFiles((dir1, name) -> {
             //버전 관리 파일 제외한 모든 파일만 허용
-            return !name.matches("version");
+            return !name.matches(FishDic.VERSION_FILE_NAME);
         }); //배너 이미지 목록
 
         int bannerImagesCount = bannerImagesList.length; //배너 이미지 수
@@ -145,8 +148,8 @@ public class InitManager {
             dir.mkdir();
         }
 
-        final File currentBannerVersionFile = new File(FishDic.BANNER_IMAGES_PATH + FishDic.VERSION_FILE_NAME); //로컬 배너 버전 파일
-        boolean currentBannerExists = dir.listFiles().length > 1 & currentBannerVersionFile.exists(); //로컬 배너 존재 여부 (디렉토리 내의 버전 파일을 제외한 파일 수가 1개 이상 혹은 버전 파일 존재 모두 만족 않을 시 무결성이 깨진 걸로 간주)
+        final File currentBannerVersionFile = new File(FishDic.BANNER_IMAGES_PATH + FishDic.VERSION_FILE_NAME); //로컬 배너 버전 관리 파일
+        boolean currentBannerExists = dir.listFiles().length > 1 & currentBannerVersionFile.exists(); //로컬 배너 존재 여부 (디렉토리 내의 버전 관리 파일을 제외한 파일 수가 1개 이상 혹은 버전 파일 존재 모두 만족 않을 시 무결성이 깨진 걸로 간주)
 
         int currentBannerVersion = -1; //로컬 배너 버전
         int serverBannerVersion = -1; //서버 배너 버전
@@ -193,7 +196,10 @@ public class InitManager {
             ANError error = response.getError();
             Log.d("Server Banner Version Check ERR", error.getMessage());
 
-            return BANNER_STATE.FAILURE;
+            if(currentBannerExists) //현재 배너가 존재하면
+                return BANNER_STATE.DELAYED_FAILURE;
+
+            return BANNER_STATE.IMMEDIATE_FAILURE; //현재 배너가 존재하지 않으면
         }
 
         if (currentBannerVersion < serverBannerVersion) { //로컬 Banner 버전 < 서버 Banner 버전일 경우 : 구 버전 상태 반환
@@ -208,7 +214,7 @@ public class InitManager {
             }
         }
 
-        return BANNER_STATE.FAILURE;
+        return BANNER_STATE.IMMEDIATE_FAILURE;
     }
 
     private static void updateBannerFromServer() { //서버로부터 최신 배너 이미지 갱신
@@ -250,6 +256,8 @@ public class InitManager {
         } else {
             ANError error = response.getError();
             Log.e("Request Banner List ERR", error.getMessage());
+
+            debugBannerImages();
         }
     }
 

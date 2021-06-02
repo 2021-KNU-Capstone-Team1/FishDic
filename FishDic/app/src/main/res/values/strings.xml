@@ -17,6 +17,8 @@
     <!-- 메세지 다이얼로그 공용 문자열 -->
     <string name="error_title">오류</string>
     <string name="ok_message">확인</string>
+    <string name="permission_granted">권한이&#160;허가되었습니다.</string>
+    <string name="permission_denied">권한이&#160;거부되었습니다.\n</string>
 
     <!-- 어류 상세 정보에서 사용 할 문자열 -->
     <string name="basic_info">기본&#160;정보</string>
@@ -43,7 +45,6 @@
     <!-- 어류 판별에서 사용 할 문자열 -->
     <string name="fish_identification_percentage_info">유사도&#160;:&#160;</string>
     <string name="fish_identification_camera_storage_permission_message">카메라와&#160;저장소&#160;접근&#160;권한을&#160;허용해주세요.</string>
-    <string name="fish_identification_storage_permission_message">저장소&#160;접근&#160;권한을&#160;허용해주세요.</string>
     <string name="fish_identification_process_message">사진&#160;조절</string>
     <string name="fish_identification_result_message">판별&#160;결과</string>
     <string name="fish_identification_info_message">총&#160;%d건의&#160;유사&#160;어류가&#160;판별되었습니다.</string>

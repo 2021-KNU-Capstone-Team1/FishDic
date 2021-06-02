@@ -1,11 +1,16 @@
 package com.knu.fishdic.manager;
 
+import android.app.Notification;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
@@ -14,6 +19,7 @@ import com.androidnetworking.error.ANError;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
+import com.knu.fishdic.utils.ImageUtility;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +43,7 @@ public class DBManager extends SQLiteOpenHelper {
     public static final String TOTAL_FISH_COUNT_KEY_VALUE = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
     public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
     public static final String QUERY_RESULT_KEY_VALUE = "queryResultKey"; //쿼리 결과를 위한 키 값
+    private final int NOTIFICATION_ID = 0; //알림 아이디
 
     public enum FISH_DATA_TYPE { //어류 데이터 타입 정의
         ALL_FISH, //모든 어류
@@ -47,8 +54,9 @@ public class DBManager extends SQLiteOpenHelper {
     private enum DB_STATE { //DB 상태 정의
         INIT, //초기 상태
         OUT_DATED, //구 버전
-        UPDATED,//갱신 된 버전
-        FAILURE //DB 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
+        UPDATED, //갱신 된 버전
+        DELAYED_FAILURE, //DB 상태 확인 실패 (지연 된 갱신 수행)
+        IMMEDIATE_FAILURE //DB 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
     }
 
     private enum DATE_FORMAT_TYPE { //날짜 형식 타입 정의
@@ -110,9 +118,10 @@ public class DBManager extends SQLiteOpenHelper {
                 break;
 
             case UPDATED: //최신 버전일 경우
+            case DELAYED_FAILURE: //DB 상태 확인 실패 (지연 된 갱신 수행)
                 break;
 
-            case FAILURE: //DB 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
+            case IMMEDIATE_FAILURE: //DB 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
                 this.copyDB();
         }
 
@@ -156,8 +165,8 @@ public class DBManager extends SQLiteOpenHelper {
         }
 
         final File currentDBFile = new File(DB_PATH + DB_NAME); //현재 로컬 DB 파일
-        final File currentDBVersionFile = new File(DB_PATH + FishDic.VERSION_FILE_NAME); //로컬 DB 버전 파일
-        boolean currentDBExists = currentDBFile.exists() & currentDBVersionFile.exists(); //로컬 DB 존재 여부 (DB 파일 혹은 버전 파일 하나라도 존재 하지 않을 시 무결성이 깨진 걸로 간주)
+        final File currentDBVersionFile = new File(DB_PATH + FishDic.VERSION_FILE_NAME); //로컬 DB 버전 관리 파일
+        boolean currentDBExists = currentDBFile.exists() & currentDBVersionFile.exists(); //로컬 DB 존재 여부 (DB 파일 혹은 버전 관리 파일 하나라도 존재 하지 않을 시 무결성이 깨진 걸로 간주)
 
         int currentDBVersion = -1; //로컬 DB 버전
         int serverDBVersion = -1; //서버 DB 버전
@@ -211,7 +220,10 @@ public class DBManager extends SQLiteOpenHelper {
             ANError error = response.getError();
             Log.d("Server DB Version Check ERR", error.getMessage());
 
-            return DB_STATE.FAILURE;
+            if (currentDBExists) //현재 DB가 존재하면
+                return DB_STATE.DELAYED_FAILURE;
+
+            return DB_STATE.IMMEDIATE_FAILURE; //현재 DB가 존재하지 않으면
         }
 
         if (currentDBVersion < serverDBVersion) { //로컬 DB 버전 < 서버 DB 버전일 경우 : 구 버전 상태 반환
@@ -226,7 +238,7 @@ public class DBManager extends SQLiteOpenHelper {
             }
         }
 
-        return DB_STATE.FAILURE;
+        return DB_STATE.IMMEDIATE_FAILURE;
     }
 
     private void updateDBFromServer() { //서버로부터 최신 DB 갱신
@@ -235,17 +247,25 @@ public class DBManager extends SQLiteOpenHelper {
             dir.mkdir();
         }
 
+        /*
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(FishDic.globalContext);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(FishDic.globalContext, FishDic.NOTIFICATION_CHANNEL_ID)
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle("Downloading newest DB From Server")
+                .setPriority(NotificationCompat.PRIORITY_MAX);
+        */
         Log.d("Downloading newest DB From Server", "---");
         ANRequest request = AndroidNetworking
                 .download(FishDic.PUBLIC_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
                 .doNotCacheResponse()
                 .build()
-                .setAnalyticsListener((timeTakenInMillis, bytesSent, bytesReceived, isFromCache) -> {
+                /*.setAnalyticsListener((timeTakenInMillis, bytesSent, bytesReceived, isFromCache) -> {
                     Log.i("DB", " timeTakenInMillis : " + timeTakenInMillis);
                     Log.i("DB", " bytesSent : " + bytesSent);
                     Log.i("DB", " bytesReceived : " + bytesReceived);
                     Log.i("DB", " isFromCache : " + isFromCache);
-                })
+                })*/
                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
                 });
         ANResponse<String> response = request.executeForDownload();
@@ -267,6 +287,8 @@ public class DBManager extends SQLiteOpenHelper {
         } else { //다운로드 오류 시
             ANError error = response.getError();
             Log.d("Server DB Download ERR", error.getMessage());
+
+            this.copyDB();
         }
     }
 
@@ -302,8 +324,7 @@ public class DBManager extends SQLiteOpenHelper {
         String sqlQuery;
         String currentDate;
         Cursor cursor;
-
-        HashMap<String, Float> scoreHashMap = null; //가중치에 따른 학명 정렬을 위한 해시맵 (key : 학명, value : 가중치)
+        Bundle scientificNameScoreMap = null; //학명 : 가중치 쌍의 맵
 
         switch (fishDataType) { //어류 데이터 타입에 따라서 쿼리문 설정
             case ALL_FISH: //모든 어류
@@ -356,21 +377,20 @@ public class DBManager extends SQLiteOpenHelper {
                         " WHERE " + FISH_TABLE + "." + SCIENTIFIC_NAME;
 
                 StringBuffer stringBuffer = new StringBuffer(sqlQuery);
-                scoreHashMap = new HashMap<>();
+                scientificNameScoreMap = new Bundle();
 
                 for (int fishIndex = 0; fishIndex < totalFishCount; fishIndex++) {
-                    Bundle subResult = args.getBundle(String.valueOf(fishIndex)); //각 어류에 대한 학명 : 가중치 쌍인 하위 결과
-                    Set<String> keySet = subResult.keySet();
+                    Bundle subArgs = args.getBundle(String.valueOf(fishIndex)); //각 어류에 대한 학명 : 가중치 쌍인 하위 결과
+                    Set<String> keySet = subArgs.keySet();
                     String scientificName = keySet.iterator().next(); //해당 어류의 학명 (하위 결과에는 학명인 키 값이 KeySet에서 하나만 존재)
-                    float score = subResult.getFloat(scientificName); //해당 어류의 가중치
-                    
+                    float score = subArgs.getFloat(scientificName); //해당 어류의 가중치
+
                     if (fishIndex == 0) { //첫 번째로 쿼리문에 추가할 경우
                         stringBuffer.append(" IN (\'").append(scientificName).append("\'");
                     } else {
                         stringBuffer.append(", \'").append(scientificName).append("\'");
                     }
-
-                    scoreHashMap.put(scientificName, score);
+                    scientificNameScoreMap.putFloat(scientificName, score);
                 }
 
                 stringBuffer.append(")");
@@ -405,9 +425,9 @@ public class DBManager extends SQLiteOpenHelper {
             subQueryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
 
             if (fishDataType == FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT) { //어류 판별 결과일 경우 유사도 출력 (높은 순으로)
-                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + String.format("%.2f", scoreHashMap.get(cursor.getString(scientificNameIndex))) + "%\n" +
+                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + String.format("%.2f", scientificNameScoreMap.getFloat(cursor.getString(scientificNameIndex))) + "%\n" +
                         FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
-                subQueryResult.putFloat(RecyclerAdapter.COMPARABLE_KEY_VALUE, scoreHashMap.get(cursor.getString(scientificNameIndex))); //정렬을 위해 해당 어류의 가중치에 따른 순서
+                subQueryResult.putFloat(RecyclerAdapter.COMPARABLE_KEY_VALUE, scientificNameScoreMap.getFloat(cursor.getString(scientificNameIndex))); //정렬을 위해 해당 어류의 가중치에 따른 순서
             } else {
                 subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
             }
@@ -453,8 +473,7 @@ public class DBManager extends SQLiteOpenHelper {
         Log.d("어류 상세정보 Query : ", sqlQuery);
         Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
 
-        DatabaseUtils.dumpCursor(cursor);
-
+        //DatabaseUtils.dumpCursor(cursor);
 
         int nameIndex = cursor.getColumnIndex(NAME);
         int scientificNameIndex = cursor.getColumnIndex(SCIENTIFIC_NAME);
@@ -552,7 +571,6 @@ public class DBManager extends SQLiteOpenHelper {
         StackTraceElement[] stacks = new Throwable().getStackTrace();
         Log.d("Stack Trace Start", String.valueOf(stacks.length));
         for (StackTraceElement element : stacks) {
-            Log.d("클래스 명", element.getMethodName());
             Log.d("메소드 명", element.getMethodName());
         }
         */
@@ -571,7 +589,7 @@ public class DBManager extends SQLiteOpenHelper {
                 Log.d("하위 결과 탐색 시작", key + " ---");
                 doParseQueryResultBundle(subQueryResult, 0, false); //하위 결과에 대하여 계속 탐색
                 Log.d("하위 결과 탐색 완료", key + " ---");
-            }else{ //해당 키가 가지고 있는 값 출력
+            } else { //해당 키가 가지고 있는 값 출력
                 Log.d(key, queryResult.get(key).toString());
             }
         }
