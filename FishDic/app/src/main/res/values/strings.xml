@@ -41,7 +41,7 @@
     <string name="not_exist_fish_message">존재하지&#160;않은&#160;어류입니다.</string>
 
     <!-- 어류 판별에서 사용 할 문자열 -->
-    <string name="fish_identification_percentage_info">해당&#160;어류일&#160;확률&#160;:&#160;</string>
+    <string name="fish_identification_percentage_info">유사도&#160;:&#160;</string>
     <string name="fish_identification_camera_storage_permission_message">카메라와&#160;저장소&#160;접근&#160;권한을&#160;허용해주세요.</string>
     <string name="fish_identification_storage_permission_message">저장소&#160;접근&#160;권한을&#160;허용해주세요.</string>
     <string name="fish_identification_process_message">사진&#160;조절</string>

@@ -5,7 +5,6 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -14,6 +13,7 @@ import com.androidnetworking.common.ANResponse;
 import com.androidnetworking.error.ANError;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
+import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,8 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Set;
 
 import okhttp3.Response;
@@ -304,6 +303,8 @@ public class DBManager extends SQLiteOpenHelper {
         String currentDate;
         Cursor cursor;
 
+        HashMap<String, Float> scoreHashMap = null; //가중치에 따른 학명 정렬을 위한 해시맵 (key : 학명, value : 가중치)
+
         switch (fishDataType) { //어류 데이터 타입에 따라서 쿼리문 설정
             case ALL_FISH: //모든 어류
                 sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
@@ -339,12 +340,15 @@ public class DBManager extends SQLiteOpenHelper {
 
             case FISH_IDENTIFICATION_RESULT: //어류 판별 결과 (해당 어류에 대한 가중치를 포함하여 출력)
                 /***
-                 * 전달받은 args는 판별 완료 된 각 어류의 학명과 가중치를 포함하며 가중치가 높은 순으로 정렬되어 있다. (학명 : 가중치 쌍)
-                 **/
+                 * 판별 된 어류의 전체 수만큼 전달받은 args 내부에 0부터 순차적으로 Key값을 가지므로
+                 * 각 어류에 대한 학명 : 가중치 쌍인 하위 결과 (Bundle)을 해당 Key값으로 분리한다. (가중치에 따라 높은 순으로 정렬되어 있음)
+                 ***/
+
                 if (args == null || args.isEmpty()) //어류 판별 시 출력 위한 결과가 존재하지 않을 경우
                     return null;
 
-                Set<String> scientificNameSet = args.keySet(); //학명 집합
+                int totalFishCount = args.getInt(TOTAL_FISH_COUNT_KEY_VALUE); //판별 완료 된 전체 어류 수
+
                 sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + SCIENTIFIC_NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
                         " FROM " + FISH_TABLE +
                         " INNER JOIN " + BIO_CLASS_TABLE +
@@ -352,15 +356,23 @@ public class DBManager extends SQLiteOpenHelper {
                         " WHERE " + FISH_TABLE + "." + SCIENTIFIC_NAME;
 
                 StringBuffer stringBuffer = new StringBuffer(sqlQuery);
-                boolean isFirstAdded = true; //첫 번째 추가 여부
-                for (Iterator i = scientificNameSet.iterator(); i.hasNext(); ) { //판별 된 학명들에 대하여 쿼리에 추가
-                    if (isFirstAdded) {
-                        stringBuffer.append(" IN (\'").append(i.next().toString().trim()).append("\'");
-                        isFirstAdded = false;
+                scoreHashMap = new HashMap<>();
+
+                for (int fishIndex = 0; fishIndex < totalFishCount; fishIndex++) {
+                    Bundle subResult = args.getBundle(String.valueOf(fishIndex)); //각 어류에 대한 학명 : 가중치 쌍인 하위 결과
+                    Set<String> keySet = subResult.keySet();
+                    String scientificName = keySet.iterator().next(); //해당 어류의 학명 (하위 결과에는 학명인 키 값이 KeySet에서 하나만 존재)
+                    float score = subResult.getFloat(scientificName); //해당 어류의 가중치
+                    
+                    if (fishIndex == 0) { //첫 번째로 쿼리문에 추가할 경우
+                        stringBuffer.append(" IN (\'").append(scientificName).append("\'");
                     } else {
-                        stringBuffer.append(", \'").append(i.next().toString().trim()).append("\'");
+                        stringBuffer.append(", \'").append(scientificName).append("\'");
                     }
+
+                    scoreHashMap.put(scientificName, score);
                 }
+
                 stringBuffer.append(")");
                 sqlQuery = stringBuffer.toString();
 
@@ -383,34 +395,27 @@ public class DBManager extends SQLiteOpenHelper {
         boolean queryResultExist = false; //쿼리 결과 존재 여부
         int fishIndex = 0; //어류 인덱스
 
-        Log.e("count", String.valueOf(cursor.getCount()));
-
-        //TODO : 어류 판별 결과 쿼리가 정상적이지만 나타나지않음
-
-        Log.e("커서 덤프", DatabaseUtils.dumpCursorToString(cursor));
-
-        cursor.moveToFirst();
         while (cursor.moveToNext()) {
             if (!queryResultExist)
                 queryResultExist = true;
 
             Bundle subQueryResult = new Bundle(); //queryResult 내부에 각 어류 정보를 추가하기 위한 키(문자열), 값 쌍의 하위 결과
+
             subQueryResult.putString(NAME, cursor.getString(nameIndex));
             subQueryResult.putByteArray(IMAGE, cursor.getBlob(imageIndex));
 
-            if (fishDataType == FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT) //어류 판별 결과일 경우 해당 어류일 확률 출력
-                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + String.format("%.2f", args.getFloat(cursor.getString(scientificNameIndex))) + "\n" +
+            if (fishDataType == FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT) { //어류 판별 결과일 경우 유사도 출력 (높은 순으로)
+                subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + String.format("%.2f", scoreHashMap.get(cursor.getString(scientificNameIndex))) + "%\n" +
                         FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
-            else
+                subQueryResult.putFloat(RecyclerAdapter.COMPARABLE_KEY_VALUE, scoreHashMap.get(cursor.getString(scientificNameIndex))); //정렬을 위해 해당 어류의 가중치에 따른 순서
+            } else {
                 subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
-
+            }
             queryResult.putBundle(String.valueOf(fishIndex), subQueryResult); //각 어류의 인덱스를 키로하여 어류 정보를 queryResult 내부에 추가
             fishIndex++;
         }
         cursor.close();
         queryResult.putInt(TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 어류 접근 위해 전체 어류 수를 추가
-
-        Log.e("test", queryResult.toString());
 
         if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
             return queryResult;
@@ -448,6 +453,9 @@ public class DBManager extends SQLiteOpenHelper {
         Log.d("어류 상세정보 Query : ", sqlQuery);
         Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
 
+        DatabaseUtils.dumpCursor(cursor);
+
+
         int nameIndex = cursor.getColumnIndex(NAME);
         int scientificNameIndex = cursor.getColumnIndex(SCIENTIFIC_NAME);
         int imageIndex = cursor.getColumnIndex(IMAGE);
@@ -483,7 +491,6 @@ public class DBManager extends SQLiteOpenHelper {
         boolean queryResultExist = false; //쿼리 결과 존재 여부
         int specialProhibitAdminIndex = 0; //특별 금지행정의 인덱스
 
-        cursor.moveToFirst();
         while (cursor.moveToNext()) {
             if (!queryResultExist)
                 queryResultExist = true;
@@ -526,7 +533,7 @@ public class DBManager extends SQLiteOpenHelper {
             subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_START_DATE, replaceEmptyData(cursor.getString(specialProhibitAdminStartDateIndex), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_DATE));
             subQueryResult.putString(SPECIAL_PROHIBIT_ADMIN_END_DATE, replaceEmptyData(cursor.getString(specialProhibitAdminEndDateIndex), EMPTY_DATA_TYPE.SPECIAL_PROHIBIT_ADMIN_DATE));
 
-            queryResult.putBundle(String.valueOf(specialProhibitAdminIndex), subQueryResult); //특별 금지행정의 인덱스를 키로하여 최종 결과에 추가
+            queryResult.putBundle(String.valueOf(specialProhibitAdminIndex), subQueryResult); //특별 금지행정의 인덱스를 키로 하여 최종 결과에 추가
             specialProhibitAdminIndex++;
         }
         cursor.close();
@@ -540,7 +547,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     public static void doParseQueryResultBundle(Bundle queryResult, int subIndex, boolean isInitialCall) { //디버그를 위해 쿼리 결과 구조 파싱 수행
         int index = subIndex;
-        
+
         /*
         StackTraceElement[] stacks = new Throwable().getStackTrace();
         Log.d("Stack Trace Start", String.valueOf(stacks.length));
@@ -564,6 +571,8 @@ public class DBManager extends SQLiteOpenHelper {
                 Log.d("하위 결과 탐색 시작", key + " ---");
                 doParseQueryResultBundle(subQueryResult, 0, false); //하위 결과에 대하여 계속 탐색
                 Log.d("하위 결과 탐색 완료", key + " ---");
+            }else{ //해당 키가 가지고 있는 값 출력
+                Log.d(key, queryResult.get(key).toString());
             }
         }
     }

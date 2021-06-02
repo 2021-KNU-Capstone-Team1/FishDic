@@ -25,8 +25,7 @@ public class FishIdentificationManager {
     private static String MODEL_PATH; //판별 위한 모델 경로
     private static final String MODEL_NAME = "model.tflite"; //판별 위한 모델 이름
 
-    private final float RESULTS_THRESHOLD = 0.1f; //결과 임계값
-    private final int MAX_RESULTS_COUNT = 10; //최대 결과 수
+    private final float RESULTS_SCORE_THRESHOLD = 0.1f; //결과 가중치 임계값
 
     public FishIdentificationManager() {
         MODEL_PATH = "/data/data/" + FishDic.globalContext.getPackageName() + "/model/"; //판별용 모델 경로 "/data/data/앱 이름/model/"
@@ -66,20 +65,25 @@ public class FishIdentificationManager {
 
         ImageClassifier.ImageClassifierOptions options = ImageClassifier
                 .ImageClassifierOptions.builder()
-                .setScoreThreshold(RESULTS_THRESHOLD)
-                .setMaxResults(MAX_RESULTS_COUNT)
+                .setScoreThreshold(RESULTS_SCORE_THRESHOLD)
                 .build();
 
         ImageClassifier imageClassifier = null;
         try {
             imageClassifier = ImageClassifier.createFromFileAndOptions(new File(MODEL_PATH + MODEL_NAME), options);
             List<Classifications> classificationsList = imageClassifier.classify(TensorImage.fromBitmap(target)); //분류 결과
+
+
+             Log.e("test", classificationsList.toString());
+
+
             imageClassifier.close();
 
             if (classificationsList != null) { //분류 결과가 존재하면
                 /***
-                 * 1) 분류 결과의 구조는 다음과 같으며 score가 높은 순으로 정렬되어 있음
-                 * 2) 학명 및 score 분리
+                 * 1) org.tensorflow.lite.support.label.Category 참조
+                 * 2) 분류 결과의 구조는 다음과 같으며 score가 높은 순으로 정렬되어 있음
+                 * 3) 학명 및 score 분리
                  * ---
                  * [Classifications
                  *        {
@@ -96,12 +100,19 @@ public class FishIdentificationManager {
                  ***/
 
                 int totalCategoriesCount = classificationsList.get(0).getCategories().size(); //전체 카테고리의 수
-                result = new Bundle();
+                int fishIndex = 0; //어류 인덱스
+                result = new Bundle(); //키(문자열), 값 쌍의 최종 결과
 
-                for (int i = 0; i < totalCategoriesCount; i++) {
-                    Log.d(classificationsList.get(0).getCategories().get(i).getLabel(), String.valueOf(classificationsList.get(0).getCategories().get(i).getScore()));
-                    result.putFloat(classificationsList.get(0).getCategories().get(i).getLabel(), classificationsList.get(0).getCategories().get(i).getScore()); //학명, 가중치 쌍
+                for (int i = 0; i < totalCategoriesCount; i++) { //전체 카테고리의 수만큼 하위 결과에 추가 후 어류 인덱스를 기준으로 최종 결과에 추가
+                    Log.d(classificationsList.get(0).getCategories().get(i).getLabel().trim(), String.valueOf(classificationsList.get(0).getCategories().get(i).getScore()));
+
+                    Bundle subResult = new Bundle(); //result 내부에 판별 된 어류를 각각 추가하기 위한 키(문자열), 값 쌍의 하위 결과
+                    subResult.putFloat(classificationsList.get(0).getCategories().get(i).getLabel().trim(), classificationsList.get(0).getCategories().get(i).getScore()); //학명, 가중치 쌍
+                    result.putBundle(String.valueOf(fishIndex), subResult); //어류 인덱스를 키로 하여 최종 결과에 추가
+                    fishIndex++;
                 }
+
+                result.putInt(DBManager.TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 판별 된 어류(학명 : 가중치 쌍)를 접근 위해 전체 어류 수를 추가
             }
 
         } catch (IOException e) {

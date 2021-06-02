@@ -19,7 +19,7 @@ import com.knu.fishdic.utils.ImageUtility;
 
 import java.util.ArrayList;
 
-// 이달의 금어기, 도감에 사용되는 RecyclerView를 위한 어댑터 정의
+// 이달의 금어기, 도감, 판별 결과에 사용되는 RecyclerView를 위한 어댑터 정의
 // https://developer.android.com/jetpack/androidx/releases/recyclerview
 
 /***
@@ -32,6 +32,8 @@ import java.util.ArrayList;
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> implements Filterable {
+    public static final String COMPARABLE_KEY_VALUE = "comparableKey"; //비교를 위한 키 값
+
     private ArrayList<RecyclerViewItem> itemList; //전체 목록 (원본)
     private ArrayList<RecyclerViewItem> refItemList; //현재 참조중인 목록
     private OnItemClickListener refItemClickListener; //아이템 클릭 리스너 참조 변수
@@ -125,7 +127,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
          * 사용자가 검색 창에 입력 할 경우 참조 목록(refItemList)이 필터링 된 새로운 목록을 참조한다.
          * 올바른 데이터 바인딩을 위해 현재 참조 중인 목록의 총 개수를 반환
          ***/
-        if(this.refItemList != null)
+        if (this.refItemList != null)
             return this.refItemList.size();
         else //참조 중인 목록이 메모리 해제되었을 시
             return 0;
@@ -133,7 +135,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     public void addItem(RecyclerViewItem Item) { //외부에서 전체 목록 (원본)에 요소 추가
         this.itemList.add(Item);
-        notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
     }
 
     public void addItemFromBundle(Bundle queryResult) { //외부에서 전체 목록 (원본)에 Bundle로부터 요소 추가
@@ -141,17 +142,37 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             return;
 
         int totalFishCount = queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY_VALUE); //전체 어류의 수
+        boolean requestSort = false; //정렬 요청
 
         for (int fishIndex = 0; fishIndex < totalFishCount; fishIndex++) { //전체 어류의 수만큼 각각 전체 목록 (원본)에 요소 추가
             Bundle subQueryResult = queryResult.getBundle(String.valueOf(fishIndex)); //각 어류의 인덱스로 접근하여 하위 결과 추출
+
             RecyclerViewItem recyclerViewItem = new RecyclerViewItem();
 
+            if (subQueryResult.containsKey(COMPARABLE_KEY_VALUE)) { //정렬하기 위한 비교 가능 한 값을 포함하고 있을 경우
+                if(!requestSort)
+                    requestSort = true;
+
+                recyclerViewItem.setComparableValue(subQueryResult.getFloat(COMPARABLE_KEY_VALUE)); //비교 위한 값 설정
+            }
             recyclerViewItem.setTitle(subQueryResult.getString(DBManager.NAME)); //어류 이름
             recyclerViewItem.setImage(subQueryResult.getByteArray(DBManager.IMAGE)); //어류 이미지
             recyclerViewItem.setContent(subQueryResult.getString(DBManager.BIO_CLASS)); //내용
 
             this.addItem(recyclerViewItem);
         }
+
+        if(requestSort) {
+            this.sortItemList();
+        }
+
+        notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
+    }
+
+    public void sortItemList() { //ItemList 정렬
+        this.itemList.sort((o1, o2) -> { //정렬을 위한 비교
+            return Float.compare(o2.getComparableValue(), o1.getComparableValue());
+        });
     }
 
     public void deallocateRefItemList() { //참조 목록에 대한 메모리 해제
@@ -162,15 +183,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         }
     }
 
-    public void deallocateAllItemList() { //원본 목록 및 참조 목록 모두 메모리 해제
-        if (this.refItemList != null) {
-            this.refItemList = null;
-        }
-        if (this.itemList != null) {
-            this.itemList = null;
+    public void clearItemItemList() { //원본 목록 초기화
+        if (!this.itemList.isEmpty()) {
+            this.itemList.clear();
         }
         notifyDataSetChanged(); //데이터 변경에 따른 뷰의 재 바인딩 작업 수행
-        System.gc(); //할당 해제 된 모든 목록에 대하여 가비지 컬렉션 요청
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

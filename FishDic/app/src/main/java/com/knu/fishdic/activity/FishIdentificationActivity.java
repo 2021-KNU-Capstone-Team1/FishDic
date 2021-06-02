@@ -7,8 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +38,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
 
     //TODO : h5 -.> pb -> tflite로 변환
     ImageButton fishIdentification_back_imageButton; //뒤로 가기 버튼
+    TextView fishIdentification_message_textView; //판별 완료 개수 출력
 
     RecyclerView fishIdentification_recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -52,15 +53,15 @@ public class FishIdentificationActivity extends AppCompatActivity {
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        startCropImageActivity(); //이미지 Crop 작업 위한 액티비티 시작
         setComponentsInteraction();
 
+        startCropImageActivity(); //이미지 Crop 작업 위한 액티비티 시작
         //this.showFishDetailErrDialog();
     }
 
     @Override
     public void onBackPressed() { //하드웨어, 소프트웨어 back 키와 앱 내의 뒤로 가기 버튼을 위하여 현재 액티비티 종료 시 수행 할 작업 설정
-        FishDic.globalFishIdentificationRecyclerAdapter.deallocateAllItemList(); //할당 해제 된 모든 목록에 대하여 가비지 컬렉션 요청
+        FishDic.globalFishIdentificationRecyclerAdapter.clearItemItemList(); //원본 목록 초기화
 
         super.onBackPressed();
     }
@@ -68,6 +69,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
     private void setComponentsInteraction() //내부 구성요소 상호작용 설정
     {
         this.fishIdentification_back_imageButton = findViewById(R.id.fishIdentification_back_imageButton);
+        this.fishIdentification_message_textView = findViewById(R.id.fishIdentification_message_textView);
 
         this.fishIdentification_recyclerView = findViewById(R.id.fishIdentification_recyclerView);
         this.fishIdentification_recyclerView.setHasFixedSize(true); //최적화를 위해서 사이즈 고정
@@ -82,7 +84,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
 
         FishDic.globalFishIdentificationRecyclerAdapter.setOnItemClickListener((v, title) -> { //새로운 클릭 리스너 객체 생성 하여 RecyclerAdapter 내부의 refItemClickListener가 참조
             /*** 커스텀 리스너 인터페이스내의 void onItemClick(View v, String title) 오버라이드 ***/
-            Intent intent = new Intent(FishDic.globalContext, FishDetailActivity.class);
+            Intent intent = new Intent(this, FishDetailActivity.class);
             intent.putExtra(DBManager.NAME, title); //어류 이름 전달
             startActivity(intent);
         });
@@ -145,10 +147,10 @@ public class FishIdentificationActivity extends AppCompatActivity {
                     Bundle classificationResult = FishDic.globalFishIdentificationManager.getImageClassificationResult(bitmap); //분류 결과
 
                     if (classificationResult != null) {
-                        Bundle test = FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT, classificationResult);
-
-                        FishDic.globalFishIdentificationRecyclerAdapter.addItemFromBundle(test);
-                        Log.e("count", String.valueOf(FishDic.globalFishIdentificationRecyclerAdapter.getItemCount()));
+                        Bundle queryResult = FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT, classificationResult);
+                        final String infoMessage = String.format(getString(R.string.fish_identification_info_message), queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY_VALUE));
+                        this.fishIdentification_message_textView.setText(infoMessage); //판별 된 어류 개수 출력
+                        FishDic.globalFishIdentificationRecyclerAdapter.addItemFromBundle(queryResult);
                     }
 
                 } catch (IOException e) {
