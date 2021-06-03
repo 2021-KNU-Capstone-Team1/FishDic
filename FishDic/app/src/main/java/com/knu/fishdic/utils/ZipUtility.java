@@ -11,6 +11,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+// 파일 압축을 위한 ZipUtility 정의
+
 public class ZipUtility {
     private static final int BUFFER_SIZE = 1024;
 

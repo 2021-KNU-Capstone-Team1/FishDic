@@ -32,6 +32,7 @@ import okhttp3.Response;
 // 이달의 금어기, 도감 관련 모든 기능을 위한 DBManager 정의
 
 public class DBManager extends SQLiteOpenHelper {
+    public final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
     public static final String TOTAL_FISH_COUNT_KEY_VALUE = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
     public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
     public static final String QUERY_RESULT_KEY_VALUE = "queryResultKey"; //쿼리 결과를 위한 키 값
@@ -46,7 +47,7 @@ public class DBManager extends SQLiteOpenHelper {
     public enum DATE_FORMAT_TYPE { //날짜 형식 타입 정의
         SIMPLE_WITH_SEPARATOR, //구분자 사용 (yyyy-MM-dd)
         SIMPLE_WITHOUT_SEPARATOR, //구분자 사용하지 않음 (yyyyMMdd)
-        DETAIL_WITH_SEPARATOR //구분자 사용 (yyyy-MM-dd'T'HH:mm:ss)
+        DETAIL_WITHOUT_SEPARATOR //구분자 사용하지 않음 (yyyy-MM-dd'T'HHmmss)
     }
 
     private enum DB_STATE { //DB 상태 정의
@@ -167,7 +168,7 @@ public class DBManager extends SQLiteOpenHelper {
         /*** 서버와 로컬 DB 버전 비교 ***/
         Log.d("Checking newest DB Version", "---");
         ANRequest request = AndroidNetworking
-                .download(FishDic.PUBLIC_DB_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
+                .download(PUBLIC_DB_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
                 .doNotCacheResponse()
                 .build()
                 .setAnalyticsListener((timeTakenInMillis, bytesSent, bytesReceived, isFromCache) -> {
@@ -250,7 +251,7 @@ public class DBManager extends SQLiteOpenHelper {
         */
         Log.d("Downloading newest DB From Server", "---");
         ANRequest request = AndroidNetworking
-                .download(FishDic.PUBLIC_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
+                .download(PUBLIC_DB_SERVER + DB_NAME, DB_PATH, DB_NAME)
                 .doNotCacheResponse()
                 .build()
                 /*.setAnalyticsListener((timeTakenInMillis, bytesSent, bytesReceived, isFromCache) -> {
@@ -622,8 +623,8 @@ public class DBManager extends SQLiteOpenHelper {
                 break;
 
 
-            case DETAIL_WITH_SEPARATOR: //구분자 사용 (yyyy-MM-dd'T'HH:mm:ss)
-                dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            case DETAIL_WITHOUT_SEPARATOR: //구분자 사용하지 않음 (yyyy-MM-dd'T'HHmmss)
+                dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss");
                 break;
 
             default:

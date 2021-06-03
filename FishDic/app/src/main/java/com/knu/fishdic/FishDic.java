@@ -19,19 +19,7 @@ import okhttp3.OkHttpClient;
 
 public class FishDic extends Application {
     public static String CACHE_PATH = ""; //임시 폴더 경로
-
-    public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
-    public static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
-    public static final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
-    public static final String PUBLIC_FEEDBACK_SERVER = "http://fishdic.asuscomm.com/";
-
-    public static final String FEEDBACK_TEST = "upload.php";
-    public static final String REQUEST_BANNERLIST = "request_bannerlist.php";
-    public static final String FEEDBACK_KEY ="feedback_data";
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
-
-    public static String BANNER_IMAGES_PATH; //배너 이미지 경로
-    public static String HELP_IMAGES_PATH; //이용가이드 이미지 경로
 
     public static Context globalContext; //전역 앱 Context (앱 실행 후 종료 시 까지 유지)
     public static DBManager globalDBManager; //전역 데이터베이스 관리를 위한 DBManager
@@ -42,10 +30,16 @@ public class FishDic extends Application {
     public static RecyclerAdapter globalDeniedFishRecyclerAdapter;
     public static RecyclerAdapter globalFishIdentificationRecyclerAdapter; //어류 판별 결과를 보여주기 위한 RecyclerAdapter
 
+    public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
+    public static final String REQUEST_BANNERLIST = "request_bannerlist.php";
+
+    public static String BANNER_IMAGES_PATH; //배너 이미지 경로
+    public static String HELP_IMAGES_PATH; //이용가이드 이미지 경로
+
     public static Bitmap[] bannerImages; //배너 이미지
     public static Bitmap[] helpImages; //이용가이드 이미지
 
-   // public static String NOTIFICATION_CHANNEL_ID = "FishDicNotificationChannel"; //알림 채널 아이디
+    // public static String NOTIFICATION_CHANNEL_ID = "FishDicNotificationChannel"; //알림 채널 아이디
 
     @Override
     public void onCreate() { //최초 앱 가동 시

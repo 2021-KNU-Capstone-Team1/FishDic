@@ -12,8 +12,6 @@ import com.knu.fishdic.R;
 import com.knu.fishdic.fragment.MyFragment;
 import com.knu.fishdic.fragment.MyFragmentPagerAdapter;
 
-import java.util.Timer;
-
 import me.relex.circleindicator.CircleIndicator;
 
 // 이용가이드 액티비티 정의

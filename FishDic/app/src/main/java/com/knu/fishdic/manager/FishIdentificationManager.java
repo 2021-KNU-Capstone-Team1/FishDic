@@ -10,8 +10,7 @@ import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.OkHttpResponseListener;
-import com.androidnetworking.interfaces.UploadProgressListener;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.utils.ImageUtility;
 import com.knu.fishdic.utils.ZipUtility;
@@ -36,6 +35,11 @@ import okhttp3.Response;
 // 어류 판별을 위한 FishIdentificationManager 정의
 
 public class FishIdentificationManager {
+    public static final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
+    public final String PUBLIC_FEEDBACK_SERVER = "http://fishdic.asuscomm.com/";
+    public final String SEND_FEEDBACK = "send_feedback.php";
+    public final String FEEDBACK_KEY = "feedback_data";
+
     private final int NOTIFICATION_ID = 1; //알림 아이디
 
     private enum MODEL_STATE { //모델 상태 정의
@@ -94,7 +98,7 @@ public class FishIdentificationManager {
         /*** 서버와 로컬 DB 버전 비교 ***/
         Log.d("Checking newest DB Version", "---");
         ANRequest request = AndroidNetworking
-                .download(FishDic.PUBLIC_MODEL_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
+                .download(PUBLIC_MODEL_SERVER + FishDic.VERSION_FILE_NAME, FishDic.CACHE_PATH, FishDic.VERSION_FILE_NAME)
                 .doNotCacheResponse()
                 .build()
                 .setAnalyticsListener((timeTakenInMillis, bytesSent, bytesReceived, isFromCache) -> {
@@ -177,7 +181,7 @@ public class FishIdentificationManager {
         */
         Log.d("Downloading newest Model From Server", "---");
         ANRequest request = AndroidNetworking
-                .download(FishDic.PUBLIC_MODEL_SERVER + MODEL_NAME, MODEL_PATH, MODEL_NAME)
+                .download(PUBLIC_MODEL_SERVER + MODEL_NAME, MODEL_PATH, MODEL_NAME)
                 .doNotCacheResponse()
                 .build()
                 /*.setAnalyticsListener((timeTakenInMillis, bytesSent, bytesReceived, isFromCache) -> {
@@ -317,7 +321,7 @@ public class FishIdentificationManager {
 
         String androidId = Settings.Secure.getString(FishDic.globalContext.getContentResolver(), Settings.Secure.ANDROID_ID); //고유 사용자 식별을 위한 안드로이드 ID
 
-        final String currentDate = DBManager.getCurrentDate(DBManager.DATE_FORMAT_TYPE.DETAIL_WITH_SEPARATOR);
+        final String currentDate = DBManager.getCurrentDate(DBManager.DATE_FORMAT_TYPE.DETAIL_WITHOUT_SEPARATOR);
         final String targetImageFileName = currentDate + "_" + androidId + ".jpeg";
         final String targetResultFileName = currentDate + "_" + androidId + ".txt";
         final String targetCompressedFileName = currentDate + "_" + androidId + ".zip";
@@ -352,31 +356,26 @@ public class FishIdentificationManager {
 
         File targetCompressedFile = new File(FishDic.CACHE_PATH + targetCompressedFileName); //전송 위해 압축 된 파일
 
-        AndroidNetworking.post(FishDic.PUBLIC_FEEDBACK_SERVER + FishDic.FEEDBACK_TEST)
-                .addFileBody(targetCompressedFile)
+        AndroidNetworking.upload(PUBLIC_FEEDBACK_SERVER + SEND_FEEDBACK)
                 .addHeaders("enctype", "multipart/form-data")
-                .setContentType("application/zip")
-                .setTag(FishDic.FEEDBACK_KEY)
+                .addHeaders("Content-Length", String.valueOf(targetCompressedFile.length()))
+                .addMultipartFile(FEEDBACK_KEY, targetCompressedFile)
                 .setPriority(Priority.HIGH)
                 .build()
-                .setUploadProgressListener(new UploadProgressListener() {
-                    @Override
-                    public void onProgress(long bytesUploaded, long totalBytes) {
-                        Log.i("Upload", " bytesUploaded, : " + bytesUploaded);
-                        Log.i("Upload", " totalBytes : " + totalBytes);
-                    }
+                .setUploadProgressListener((bytesUploaded, totalBytes) -> {
+                    Log.i("Upload", " bytesUploaded, : " + bytesUploaded);
+                    Log.i("Upload", " totalBytes : " + totalBytes);
                 })
-                .getAsOkHttpResponse(new OkHttpResponseListener() {
+                .getAsString(new StringRequestListener() {
                     @Override
-                    public void onResponse(Response response) {
-                        Log.d("Result Headers", response.headers().toString());
-                        Log.d("Result Body", response.message());
+                    public void onResponse(String response) {
+                        Log.d("Response", response);
                         targetCompressedFile.delete();
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.d("Result", anError.getMessage());
+                        Log.d("Response Error", anError.getMessage());
                         targetCompressedFile.delete();
                     }
                 });

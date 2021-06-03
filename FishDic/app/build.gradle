@@ -34,10 +34,10 @@ dependencies { //의존성
     implementation 'com.amitshekhar.android:android-networking:1.0.2' //네트워킹 작업을 위한 Fast-Android-Networking
     implementation 'me.relex:circleindicator:1.3.2' //배너 및 이용가이드를 위한 원형 인디케이터
     implementation 'androidx.recyclerview:recyclerview:1.2.0' //도감 및 이달의 금어기을 위한 RecyclerView
-    //implementation 'org.tensorflow:tensorflow-lite:+' //텐서플로우 라이트
+    //implementation 'org.tensorflow:tensorflow-lite:+'
     implementation 'org.tensorflow:tensorflow-lite-task-vision:0.2.0'
     implementation 'com.github.CanHub:Android-Image-Cropper:3.1.1' //이미지 자르기 기능
-    implementation 'gun0912.ted:tedpermission:2.2.3'
+    //implementation 'gun0912.ted:tedpermission:2.2.3'
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.1.0'
