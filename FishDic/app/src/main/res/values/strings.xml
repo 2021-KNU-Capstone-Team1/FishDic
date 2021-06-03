@@ -44,7 +44,7 @@
 
     <!-- 어류 판별에서 사용 할 문자열 -->
     <string name="fish_identification_percentage_info">유사도&#160;:&#160;</string>
-    <string name="fish_identification_camera_storage_permission_message">카메라와&#160;저장소&#160;접근&#160;권한을&#160;허용해주세요.</string>
+    <string name="fish_identification_camera_storage_permission_message">판별&#160;기능&#160;수행&#160;및&#160;개선을&#160;위해&#160;카메라,&#160;저장소&#160;접근&#160;권한&#160;및&#160;휴대&#160;전화&#160;상태&#160;접근&#160;권한을&#160;허용해주세요.</string>
     <string name="fish_identification_process_message">사진&#160;조절</string>
     <string name="fish_identification_result_message">판별&#160;결과</string>
     <string name="fish_identification_info_message">총&#160;%d건의&#160;유사&#160;어류가&#160;판별되었습니다.</string>

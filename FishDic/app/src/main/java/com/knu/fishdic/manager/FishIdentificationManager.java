@@ -2,18 +2,19 @@ package com.knu.fishdic.manager;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
+import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.OkHttpResponseListener;
+import com.androidnetworking.interfaces.UploadProgressListener;
 import com.knu.fishdic.FishDic;
-import com.knu.fishdic.R;
+import com.knu.fishdic.utils.ImageUtility;
+import com.knu.fishdic.utils.ZipUtility;
 
 import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.task.vision.classifier.Classifications;
@@ -239,8 +240,9 @@ public class FishIdentificationManager {
         }
     }
 
-    public Bundle getImageClassificationResult(Bitmap target) { //이미지 분류 결과 반환
+    public Bundle getImageClassificationResult(Bitmap targetBitmap) { //이미지 분류 결과 반환
         Bundle result = null;
+        List<Classifications> classificationsList = null;
 
         ImageClassifier.ImageClassifierOptions options = ImageClassifier
                 .ImageClassifierOptions.builder()
@@ -250,7 +252,7 @@ public class FishIdentificationManager {
         ImageClassifier imageClassifier = null;
         try {
             imageClassifier = ImageClassifier.createFromFileAndOptions(new File(MODEL_PATH + MODEL_NAME), options);
-            List<Classifications> classificationsList = imageClassifier.classify(TensorImage.fromBitmap(target)); //분류 결과
+            classificationsList = imageClassifier.classify(TensorImage.fromBitmap(targetBitmap)); //분류 결과
             imageClassifier.close();
 
             if (classificationsList != null) { //분류 결과가 존재하면
@@ -296,6 +298,87 @@ public class FishIdentificationManager {
         if (imageClassifier != null)
             imageClassifier.close();
 
+        sendFeedbackData(targetBitmap, classificationsList);
+
         return result;
+    }
+
+    private void sendFeedbackData(Bitmap targetBitmap, List<Classifications> targetClassificationList) { //피드백 데이터 전송
+        byte[] image = ImageUtility.encodeFromBitmap(targetBitmap, Bitmap.CompressFormat.JPEG, 50); //판별 시 사용 된 이미지
+        String result = targetClassificationList.toString(); //판별 결과
+
+        /***
+         * < 전송 위한 피드백 데이터 예시 >
+         * 2021-06-03T08:59:32_a5f815c6de14843a.jpeg
+         * 2021-06-03T08:59:32_a5f815c6de14843a.txt
+         * ---
+         * 2021-06-03T08:59:32_a5f815c6de14843a.zip
+         ***/
+
+        String androidId = Settings.Secure.getString(FishDic.globalContext.getContentResolver(), Settings.Secure.ANDROID_ID); //고유 사용자 식별을 위한 안드로이드 ID
+
+        final String currentDate = DBManager.getCurrentDate(DBManager.DATE_FORMAT_TYPE.DETAIL_WITH_SEPARATOR);
+        final String targetImageFileName = currentDate + "_" + androidId + ".jpeg";
+        final String targetResultFileName = currentDate + "_" + androidId + ".txt";
+        final String targetCompressedFileName = currentDate + "_" + androidId + ".zip";
+
+        File targetImageFile = new File(FishDic.CACHE_PATH + targetImageFileName); //판별 시 사용 된 이미지 파일
+        File targetResultFile = new File(FishDic.CACHE_PATH + targetResultFileName); //판별 결과 파일
+        FileOutputStream fileOutputStream;
+
+        try { //판별 시 사용 된 이미지 처리
+            fileOutputStream = new FileOutputStream(targetImageFile);
+            fileOutputStream.write(image, 0, image.length);
+            fileOutputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try { //판별 결과 처리
+            fileOutputStream = new FileOutputStream(targetResultFile);
+            fileOutputStream.write(result.getBytes());
+            fileOutputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ZipUtility.zip(new String[]{FishDic.CACHE_PATH + targetImageFileName, FishDic.CACHE_PATH + targetResultFileName},
+                FishDic.CACHE_PATH + targetCompressedFileName);
+
+        targetImageFile.delete();
+        targetResultFile.delete();
+
+        File targetCompressedFile = new File(FishDic.CACHE_PATH + targetCompressedFileName); //전송 위해 압축 된 파일
+
+        AndroidNetworking.post(FishDic.PUBLIC_FEEDBACK_SERVER + FishDic.FEEDBACK_TEST)
+                .addFileBody(targetCompressedFile)
+                .addHeaders("enctype", "multipart/form-data")
+                .setContentType("application/zip")
+                .setTag(FishDic.FEEDBACK_KEY)
+                .setPriority(Priority.HIGH)
+                .build()
+                .setUploadProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesUploaded, long totalBytes) {
+                        Log.i("Upload", " bytesUploaded, : " + bytesUploaded);
+                        Log.i("Upload", " totalBytes : " + totalBytes);
+                    }
+                })
+                .getAsOkHttpResponse(new OkHttpResponseListener() {
+                    @Override
+                    public void onResponse(Response response) {
+                        Log.d("Result Headers", response.headers().toString());
+                        Log.d("Result Body", response.message());
+                        targetCompressedFile.delete();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d("Result", anError.getMessage());
+                        targetCompressedFile.delete();
+                    }
+                });
     }
 }

@@ -1,16 +1,10 @@
 package com.knu.fishdic.manager;
 
-import android.app.Notification;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
@@ -19,7 +13,6 @@ import com.androidnetworking.error.ANError;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
-import com.knu.fishdic.utils.ImageUtility;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Set;
 
 import okhttp3.Response;
@@ -51,17 +43,18 @@ public class DBManager extends SQLiteOpenHelper {
         FISH_IDENTIFICATION_RESULT //어류 판별 결과 (해당 어류에 대한 가중치를 포함하여 출력)
     }
 
+    public enum DATE_FORMAT_TYPE { //날짜 형식 타입 정의
+        SIMPLE_WITH_SEPARATOR, //구분자 사용 (yyyy-MM-dd)
+        SIMPLE_WITHOUT_SEPARATOR, //구분자 사용하지 않음 (yyyyMMdd)
+        DETAIL_WITH_SEPARATOR //구분자 사용 (yyyy-MM-dd'T'HH:mm:ss)
+    }
+
     private enum DB_STATE { //DB 상태 정의
         INIT, //초기 상태
         OUT_DATED, //구 버전
         UPDATED, //갱신 된 버전
         DELAYED_FAILURE, //DB 상태 확인 실패 (지연 된 갱신 수행)
         IMMEDIATE_FAILURE //DB 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
-    }
-
-    private enum DATE_FORMAT_TYPE { //날짜 형식 타입 정의
-        WITH_SEPARATOR, //구분자 사용 (YY-MM-dd)
-        WITHOUT_SEPARATOR //구분자 사용하지 않음 (YYMMdd)
     }
 
     private enum EMPTY_DATA_TYPE { //빈 데이터 타입 정의
@@ -343,7 +336,7 @@ public class DBManager extends SQLiteOpenHelper {
                  * 금지시작기간은 현재 날짜보다 이전에서 시작해서, 금지종료기간은 현재 날짜 이후일 경우만 뽑는다.
                  ***/
 
-                currentDate = this.getCurrentDate(DATE_FORMAT_TYPE.WITH_SEPARATOR); //현재 "년-달-일"
+                currentDate = this.getCurrentDate(DATE_FORMAT_TYPE.SIMPLE_WITH_SEPARATOR); //현재 "년-달-일"
                 sqlQuery = "SELECT DISTINCT " + DENIED_FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
                         " FROM " + DENIED_FISH_TABLE +
                         " INNER JOIN " + BIO_CLASS_TABLE +
@@ -615,17 +608,22 @@ public class DBManager extends SQLiteOpenHelper {
         return data;
     }
 
-    private String getCurrentDate(DATE_FORMAT_TYPE dateFormatType) //현재 날짜 반환
+    public static String getCurrentDate(DATE_FORMAT_TYPE dateFormatType) //현재 날짜 반환
     {
         SimpleDateFormat dateFormat;
 
         switch (dateFormatType) {
-            case WITH_SEPARATOR: //구분자 사용(YY-MM-DD)
-                dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+            case SIMPLE_WITH_SEPARATOR: //구분자 사용(yyyy-MM-DD)
+                dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 break;
 
-            case WITHOUT_SEPARATOR: //구분자 사용하지 않음(YYMMDD)
-                dateFormat = new SimpleDateFormat("YYYYMMdd");
+            case SIMPLE_WITHOUT_SEPARATOR: //구분자 사용하지 않음(yyyyMMDD)
+                dateFormat = new SimpleDateFormat("yyyyMMdd");
+                break;
+
+
+            case DETAIL_WITH_SEPARATOR: //구분자 사용 (yyyy-MM-dd'T'HH:mm:ss)
+                dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 break;
 
             default:

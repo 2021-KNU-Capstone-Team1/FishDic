@@ -1,14 +1,9 @@
 package com.knu.fishdic;
 
 import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.StrictMode;
-
-import androidx.core.app.NotificationManagerCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
@@ -28,6 +23,11 @@ public class FishDic extends Application {
     public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
     public static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
     public static final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
+    public static final String PUBLIC_FEEDBACK_SERVER = "http://fishdic.asuscomm.com/";
+
+    public static final String FEEDBACK_TEST = "upload.php";
+    public static final String REQUEST_BANNERLIST = "request_bannerlist.php";
+    public static final String FEEDBACK_KEY ="feedback_data";
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
 
     public static String BANNER_IMAGES_PATH; //배너 이미지 경로

@@ -1,20 +1,25 @@
 package com.knu.fishdic.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.fragment.MyFragment;
 import com.knu.fishdic.fragment.MyFragmentPagerAdapter;
 import com.knu.fishdic.manager.InitManager;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
     CircleIndicator indicator;
+
+    PermissionListener permissionlistener;
 
     private Timer timer;
     private int currentPosition = 0; //현재 배너 이미지의 위치
@@ -49,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         this.setComponentsInteraction();
+
+        /*** 카메라 및 저장소, 시스템 정보 접근 권한 확인 ***/
+        TedPermission.with(FishDic.globalContext)
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage(getString(R.string.fish_identification_camera_storage_permission_message))
+                .setPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .check();
+
         this.initViewPager();
     }
 
@@ -60,6 +75,17 @@ public class MainActivity extends AppCompatActivity {
         this.main_help_imageButton = findViewById(R.id.main_help_imageButton);
         this.viewPager = findViewById(R.id.banner_viewPager);
         this.indicator = findViewById(R.id.banner_circleIndicator);
+
+        this.permissionlistener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+            }
+
+            @Override
+            public void onPermissionDenied(List<String> deniedPermissions) {
+                Toast.makeText(FishDic.globalContext, getString(R.string.permission_denied) + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
 
         //도감 화면으로 넘어가는 클릭 리스너
         this.main_dic_imageButton.setOnClickListener(v -> {

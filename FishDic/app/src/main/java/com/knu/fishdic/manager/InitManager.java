@@ -223,7 +223,7 @@ public class InitManager {
             dir.mkdir();
         }
 
-        ANRequest request = AndroidNetworking.get(FishDic.PUBLIC_BANNER_SERVER + "request_bannerlist.php") //서버의 최신 배너 이미지 리스트 확인
+        ANRequest request = AndroidNetworking.get(FishDic.PUBLIC_BANNER_SERVER + FishDic.REQUEST_BANNERLIST) //서버의 최신 배너 이미지 리스트 확인
                 .doNotCacheResponse()
                 .build();
 
