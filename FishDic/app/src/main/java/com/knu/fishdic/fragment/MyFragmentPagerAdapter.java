@@ -21,8 +21,8 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
          ***/
 
         super(fragmentManager);
-        this.fragmentType = (MyFragment.FRAGMENT_TYPE) args.getSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE);
-        this.refImages = (Bitmap[]) args.getParcelableArray(MyFragment.IMAGE_KEY_VALUE);
+        this.fragmentType = (MyFragment.FRAGMENT_TYPE) args.getSerializable(MyFragment.FRAGMENT_TYPE_KEY);
+        this.refImages = (Bitmap[]) args.getParcelableArray(MyFragment.IMAGE_KEY);
     }
 
     @Override
@@ -33,8 +33,8 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) { //해당 위치(position)를 위한 Fragment 반환
         Bundle args = new Bundle();
-        args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, this.fragmentType);
-        args.putParcelable(MyFragment.IMAGE_KEY_VALUE, this.refImages[position]);
+        args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY, this.fragmentType);
+        args.putParcelable(MyFragment.IMAGE_KEY, this.refImages[position]);
 
         return MyFragment.newInstance(position, args); //Fragment의 타입, 해당 위치(position)의 이미지를 전달하여 새로운 Fragment 개체 생성
     }

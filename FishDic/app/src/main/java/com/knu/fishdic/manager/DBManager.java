@@ -32,10 +32,15 @@ import okhttp3.Response;
 // 이달의 금어기, 도감 관련 모든 기능을 위한 DBManager 정의
 
 public class DBManager extends SQLiteOpenHelper {
+    public static final String TOTAL_FISH_COUNT_KEY = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
+    public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
+    public static final String QUERY_RESULT_KEY = "queryResultKey"; //쿼리 결과를 위한 키 값
+
     public final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
-    public static final String TOTAL_FISH_COUNT_KEY_VALUE = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
-    public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
-    public static final String QUERY_RESULT_KEY_VALUE = "queryResultKey"; //쿼리 결과를 위한 키 값
+
+    private static String DB_PATH = ""; //DB 경로
+    private static final String DB_NAME = "FishDicDB.db"; //DB 이름
+
     private final int NOTIFICATION_ID = 0; //알림 아이디
 
     public enum FISH_DATA_TYPE { //어류 데이터 타입 정의
@@ -69,8 +74,6 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     private SQLiteDatabase sqlDB; //DB 접근 위한 SQLiteDatabase 객체
-    private static String DB_PATH = ""; //DB 경로
-    private static final String DB_NAME = "FishDicDB.db"; //DB 이름
 
     //테이블명 정의
     public static final String FISH_TABLE = "어류_테이블";
@@ -362,7 +365,7 @@ public class DBManager extends SQLiteOpenHelper {
                 if (args == null || args.isEmpty()) //어류 판별 시 출력 위한 결과가 존재하지 않을 경우
                     return null;
 
-                int totalFishCount = args.getInt(TOTAL_FISH_COUNT_KEY_VALUE); //판별 완료 된 전체 어류 수
+                int totalFishCount = args.getInt(TOTAL_FISH_COUNT_KEY); //판별 완료 된 전체 어류 수
 
                 sqlQuery = "SELECT " + FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + SCIENTIFIC_NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
                         " FROM " + FISH_TABLE +
@@ -421,7 +424,7 @@ public class DBManager extends SQLiteOpenHelper {
             if (fishDataType == FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT) { //어류 판별 결과일 경우 유사도 출력 (높은 순으로)
                 subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.fish_identification_percentage_info) + String.format("%.2f", scientificNameScoreMap.getFloat(cursor.getString(scientificNameIndex))) + "%\n" +
                         FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
-                subQueryResult.putFloat(RecyclerAdapter.COMPARABLE_KEY_VALUE, scientificNameScoreMap.getFloat(cursor.getString(scientificNameIndex))); //정렬을 위해 해당 어류의 가중치에 따른 순서
+                subQueryResult.putFloat(RecyclerAdapter.COMPARABLE_VALUE_KEY, scientificNameScoreMap.getFloat(cursor.getString(scientificNameIndex))); //정렬을 위해 해당 어류의 가중치에 따른 순서
             } else {
                 subQueryResult.putString(BIO_CLASS, FishDic.globalContext.getString(R.string.bio_class_info) + cursor.getString(bioClassIndex));
             }
@@ -429,7 +432,7 @@ public class DBManager extends SQLiteOpenHelper {
             fishIndex++;
         }
         cursor.close();
-        queryResult.putInt(TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 어류 접근 위해 전체 어류 수를 추가
+        queryResult.putInt(TOTAL_FISH_COUNT_KEY, fishIndex); //인덱스로 각 어류 접근 위해 전체 어류 수를 추가
 
         if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
             return queryResult;
@@ -464,7 +467,7 @@ public class DBManager extends SQLiteOpenHelper {
         else //학명으로 검색
             sqlQuery += "." + NAME + "=" + "'" + args.getString(SCIENTIFIC_NAME) + "'";
 
-        Log.d("어류 상세정보 Query : ", sqlQuery);
+        Log.d("어류 상세정보 Query", sqlQuery);
         Cursor cursor = this.sqlDB.rawQuery(sqlQuery, null);
 
         //DatabaseUtils.dumpCursor(cursor);
@@ -550,7 +553,7 @@ public class DBManager extends SQLiteOpenHelper {
             specialProhibitAdminIndex++;
         }
         cursor.close();
-        queryResult.putInt(TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY_VALUE, specialProhibitAdminIndex); //인덱스로 각 특별 금지행정 접근 위해 전체 특별 금지행정의 수를 추가
+        queryResult.putInt(TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY, specialProhibitAdminIndex); //인덱스로 각 특별 금지행정 접근 위해 전체 특별 금지행정의 수를 추가
 
         if (queryResultExist) //쿼리 결과가 존재하면 결과 반환
             return queryResult;

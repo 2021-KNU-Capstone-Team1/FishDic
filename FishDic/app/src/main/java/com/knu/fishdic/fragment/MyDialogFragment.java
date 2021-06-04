@@ -15,6 +15,7 @@ import com.knu.fishdic.R;
 
 public class MyDialogFragment extends DialogFragment {
     public static final String DIALOG_TYPE_KEY = "dialogTypeKey"; //다이얼로그 타입 키
+
     public enum DIALOG_TYPE { //다이얼로그 타입 정의
         FISH_DETAIL_ERR, //어류 상세정보 오류 메시지 창
         FISH_IDENTIFICATION_ERR //어류 판별 오류 메시지 창

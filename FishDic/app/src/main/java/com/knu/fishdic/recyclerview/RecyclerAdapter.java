@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> implements Filterable {
-    public static final String COMPARABLE_KEY_VALUE = "comparableKey"; //비교를 위한 키 값
+    public static final String COMPARABLE_VALUE_KEY = "comparableValueKey"; //비교를 위한 키 값
 
     private ArrayList<RecyclerViewItem> itemList; //전체 목록 (원본)
     private ArrayList<RecyclerViewItem> refItemList; //현재 참조중인 목록
@@ -141,7 +141,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         if (queryResult == null)
             return;
 
-        int totalFishCount = queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY_VALUE); //전체 어류의 수
+        int totalFishCount = queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY); //전체 어류의 수
         boolean requestSort = false; //정렬 요청
 
         for (int fishIndex = 0; fishIndex < totalFishCount; fishIndex++) { //전체 어류의 수만큼 각각 전체 목록 (원본)에 요소 추가
@@ -149,11 +149,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
             RecyclerViewItem recyclerViewItem = new RecyclerViewItem();
 
-            if (subQueryResult.containsKey(COMPARABLE_KEY_VALUE)) { //정렬하기 위한 비교 가능 한 값을 포함하고 있을 경우
+            if (subQueryResult.containsKey(COMPARABLE_VALUE_KEY)) { //정렬하기 위한 비교 가능 한 값을 포함하고 있을 경우
                 if(!requestSort)
                     requestSort = true;
 
-                recyclerViewItem.setComparableValue(subQueryResult.getFloat(COMPARABLE_KEY_VALUE)); //비교 위한 값 설정
+                recyclerViewItem.setComparableValue(subQueryResult.getFloat(COMPARABLE_VALUE_KEY)); //비교 위한 값 설정
             }
             recyclerViewItem.setTitle(subQueryResult.getString(DBManager.NAME)); //어류 이름
             recyclerViewItem.setImage(subQueryResult.getByteArray(DBManager.IMAGE)); //어류 이미지

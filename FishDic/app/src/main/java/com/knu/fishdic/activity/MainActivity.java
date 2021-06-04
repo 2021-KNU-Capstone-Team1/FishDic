@@ -118,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
     */
     private void initViewPager() { //ViewPager 초기화
         Bundle args = new Bundle();
-        args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY_VALUE, MyFragment.FRAGMENT_TYPE.BANNER);
-        args.putParcelableArray(MyFragment.IMAGE_KEY_VALUE, FishDic.bannerImages);
+        args.putSerializable(MyFragment.FRAGMENT_TYPE_KEY, MyFragment.FRAGMENT_TYPE.BANNER);
+        args.putParcelableArray(MyFragment.IMAGE_KEY, FishDic.bannerImages);
 
         /*** ViewPager 어댑터 생성 및 할당, 원형 인디케이터 ViewPager에 할당 ***/
         this.viewPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), args);

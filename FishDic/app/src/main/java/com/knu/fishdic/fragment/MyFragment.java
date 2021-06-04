@@ -24,9 +24,9 @@ import com.knu.fishdic.utils.ImageUtility;
  ***/
 
 public class MyFragment extends Fragment {
-    public static final String FRAGMENT_TYPE_KEY_VALUE = "fragmentTypeKey"; //Fragment의 타입 키 값
-    public static final String POSITION_KEY_VALUE = "positionKey"; //position 키 값
-    public static final String IMAGE_KEY_VALUE = "imageKey"; //이미지의 키 값
+    public static final String FRAGMENT_TYPE_KEY = "fragmentTypeKey"; //Fragment의 타입 키 값
+    public static final String POSITION_KEY = "positionKey"; //position 키 값
+    public static final String IMAGE_KEY = "imageKey"; //이미지의 키 값
 
     public enum FRAGMENT_TYPE { //Fragment의 타입 정의
         BASIC_INFO, //어류 상세 정보 페이지의 기본 정보
@@ -51,7 +51,7 @@ public class MyFragment extends Fragment {
         MyFragment fragment = new MyFragment();
 
         //디버그용 DBManager.doParseQueryResultBundle(args, 0, true);
-        FRAGMENT_TYPE fragmentType = (FRAGMENT_TYPE) args.getSerializable(FRAGMENT_TYPE_KEY_VALUE);
+        FRAGMENT_TYPE fragmentType = (FRAGMENT_TYPE) args.getSerializable(FRAGMENT_TYPE_KEY);
         switch (fragmentType) { //Fragment의 타입에 따라 Fragment의 인스턴스 객체 생성을 위한 데이터 설정
             case BASIC_INFO: //어류 상세 정보 페이지의 기본 정보
             case DENIED_INFO: //어류 상세 정보 페이지의 금지행정 정보
@@ -61,12 +61,12 @@ public class MyFragment extends Fragment {
                  * 금어기 테이블 : 금지체장, 금지체중, 수심
                  * 특별 금지행정 테이블 : 특별 금지행정 ID, 특별 금지구역, 금지시작기간, 금지종료기간
                  ***/
-                fragment.refQueryResult = args.getBundle(DBManager.QUERY_RESULT_KEY_VALUE); //파라미터로 받은 쿼리 결과 참조
+                fragment.refQueryResult = args.getBundle(DBManager.QUERY_RESULT_KEY); //파라미터로 받은 쿼리 결과 참조
                 break;
 
             case BANNER: //메인화면의 배너
             case HELP: //이용가이드
-                fragment.refImage = args.getParcelable(IMAGE_KEY_VALUE); //파라미터로 받은 이미지 참조
+                fragment.refImage = args.getParcelable(IMAGE_KEY); //파라미터로 받은 이미지 참조
                 break;
 
             default:
@@ -74,8 +74,8 @@ public class MyFragment extends Fragment {
         }
 
         Bundle subArgs = new Bundle();
-        subArgs.putInt(POSITION_KEY_VALUE, position);
-        subArgs.putSerializable(FRAGMENT_TYPE_KEY_VALUE, fragmentType);
+        subArgs.putInt(POSITION_KEY, position);
+        subArgs.putSerializable(FRAGMENT_TYPE_KEY, fragmentType);
         fragment.setArguments(subArgs);
 
         return fragment;
@@ -90,8 +90,8 @@ public class MyFragment extends Fragment {
          * savedInstanceState : If the fragment is being re-created from a previous saved state, this is the state.
          ***/
         super.onCreate(savedInstanceState);
-        this.position = getArguments().getInt(POSITION_KEY_VALUE, 0);
-        this.fragmentType = (FRAGMENT_TYPE) getArguments().getSerializable(FRAGMENT_TYPE_KEY_VALUE);
+        this.position = getArguments().getInt(POSITION_KEY, 0);
+        this.fragmentType = (FRAGMENT_TYPE) getArguments().getSerializable(FRAGMENT_TYPE_KEY);
     }
 
 

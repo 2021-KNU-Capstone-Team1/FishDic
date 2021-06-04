@@ -97,7 +97,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
 
                     if (classificationResult != null) {
                         Bundle queryResult = FishDic.globalDBManager.getSimpleFishBundle(DBManager.FISH_DATA_TYPE.FISH_IDENTIFICATION_RESULT, classificationResult);
-                        final String infoMessage = String.format(getString(R.string.fish_identification_info_message), queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY_VALUE));
+                        final String infoMessage = String.format(getString(R.string.fish_identification_info_message), queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY));
                         this.fishIdentification_message_textView.setText(infoMessage); //판별 된 어류 개수 출력
                         FishDic.globalFishIdentificationRecyclerAdapter.addItemFromBundle(queryResult);
                     } else {

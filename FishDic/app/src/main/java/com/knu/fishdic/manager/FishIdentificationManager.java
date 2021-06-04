@@ -35,10 +35,13 @@ import okhttp3.Response;
 // 어류 판별을 위한 FishIdentificationManager 정의
 
 public class FishIdentificationManager {
-    public static final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
+    public final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
     public final String PUBLIC_FEEDBACK_SERVER = "http://fishdic.asuscomm.com/";
     public final String SEND_FEEDBACK = "send_feedback.php";
-    public final String FEEDBACK_KEY = "feedback_data";
+    public final String FEEDBACK_KEY = "Gh94K7572e503WjsiiV6dQZjQHea2126";
+
+    private static String MODEL_PATH; //판별 위한 모델 경로
+    private static final String MODEL_NAME = "model.tflite"; //판별 위한 모델 이름
 
     private final int NOTIFICATION_ID = 1; //알림 아이디
 
@@ -49,9 +52,6 @@ public class FishIdentificationManager {
         DELAYED_FAILURE, //모델 상태 확인 실패 (지연 된 갱신 수행)
         IMMEDIATE_FAILURE //모델 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
     }
-
-    private static String MODEL_PATH; //판별 위한 모델 경로
-    private static final String MODEL_NAME = "model.tflite"; //판별 위한 모델 이름
 
     private final float RESULTS_SCORE_THRESHOLD = 0.1f; //결과 가중치 임계값
 
@@ -292,7 +292,7 @@ public class FishIdentificationManager {
                     fishIndex++;
                 }
 
-                result.putInt(DBManager.TOTAL_FISH_COUNT_KEY_VALUE, fishIndex); //인덱스로 각 판별 된 어류(학명 : 가중치 쌍)를 접근 위해 전체 어류 수를 추가
+                result.putInt(DBManager.TOTAL_FISH_COUNT_KEY, fishIndex); //인덱스로 각 판별 된 어류(학명 : 가중치 쌍)를 접근 위해 전체 어류 수를 추가
             }
 
         } catch (IOException e) {
