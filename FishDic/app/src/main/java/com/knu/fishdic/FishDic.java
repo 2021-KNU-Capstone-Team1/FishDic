@@ -8,6 +8,7 @@ import android.os.StrictMode;
 import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
 import com.knu.fishdic.manager.FishIdentificationManager;
+import com.knu.fishdic.manager.UpdateManager;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
 import java.util.concurrent.TimeUnit;
@@ -18,10 +19,15 @@ import okhttp3.OkHttpClient;
 // https://developer.android.com/reference/android/app/Application
 
 public class FishDic extends Application {
-    public static String CACHE_PATH = ""; //임시 폴더 경로
     public static final String VERSION_FILE_NAME = "version"; //버전 관리 파일 이름
+    public static String CACHE_PATH = ""; //임시 폴더 경로
+    public static String DB_PATH = ""; //DB 경로
+    public static final String DB_NAME = "FishDicDB.db"; //DB 이름
+    public static String MODEL_PATH; //판별 위한 모델 경로
+    public static final String MODEL_NAME = "model.tflite"; //판별 위한 모델 이름
 
     public static Context globalContext; //전역 앱 Context (앱 실행 후 종료 시 까지 유지)
+    public static UpdateManager globalUpdateManager; //전역 서버로부터의 업데이트 기능을 위한 UpdateManager
     public static DBManager globalDBManager; //전역 데이터베이스 관리를 위한 DBManager
     public static FishIdentificationManager globalFishIdentificationManager; //전역 어류 판별 관리를 위한 FishIdentificationManager
 
@@ -29,9 +35,6 @@ public class FishDic extends Application {
     public static RecyclerAdapter globalDicRecyclerAdapter;
     public static RecyclerAdapter globalDeniedFishRecyclerAdapter;
     public static RecyclerAdapter globalFishIdentificationRecyclerAdapter; //어류 판별 결과를 보여주기 위한 RecyclerAdapter
-
-    public static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
-    public static final String REQUEST_BANNERLIST = "request_bannerlist.php";
 
     public static String BANNER_IMAGES_PATH; //배너 이미지 경로
     public static String HELP_IMAGES_PATH; //이용가이드 이미지 경로
@@ -47,12 +50,15 @@ public class FishDic extends Application {
 
         globalContext = getApplicationContext();
 
+        globalUpdateManager = null;
         globalDBManager = null;
         globalFishIdentificationManager = null;
 
         globalDicRecyclerAdapter = globalDeniedFishRecyclerAdapter = globalFishIdentificationRecyclerAdapter = null;
 
         CACHE_PATH = globalContext.getCacheDir().toString() + "/";
+        DB_PATH = "/data/data/" + FishDic.globalContext.getPackageName() + "/databases/"; //안드로이드의 DB 저장 경로는 "/data/data/앱 이름/databases/"
+        MODEL_PATH = "/data/data/" + FishDic.globalContext.getPackageName() + "/model/"; //판별용 모델 경로 "/data/data/앱 이름/model/"
         BANNER_IMAGES_PATH = "/data/data/" + globalContext.getPackageName() + "/banner/"; //배너 이미지 경로 "/data/data/앱 이름/banner/"
         HELP_IMAGES_PATH = "/data/data/" + globalContext.getPackageName() + "/help/"; //이용가이드 이미지 경로 "/data/data/앱 이름/help/"
 
