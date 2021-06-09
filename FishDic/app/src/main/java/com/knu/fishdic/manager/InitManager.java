@@ -1,26 +1,15 @@
 package com.knu.fishdic.manager;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.ANRequest;
-import com.androidnetworking.common.ANResponse;
-import com.androidnetworking.error.ANError;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 import com.knu.fishdic.utils.ImageUtility;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import okhttp3.Response;
 
 // 앱 초기화를 위한 InitManager 정의
 

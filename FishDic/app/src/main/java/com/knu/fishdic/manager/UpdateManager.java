@@ -1,6 +1,5 @@
 package com.knu.fishdic.manager;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -8,7 +7,6 @@ import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
 import com.androidnetworking.error.ANError;
 import com.knu.fishdic.FishDic;
-import com.knu.fishdic.utils.ImageUtility;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -261,7 +259,7 @@ public class UpdateManager {
 
         ANRequest request; //요청
         ANResponse<String> response; //결과
-        switch (currentUpdateTarget) { //서버로부터 업데이트 ㅅ행
+        switch (currentUpdateTarget) { //서버로부터 업데이트 수행
             case DB: //어류 데이터베이스
             case MODEL: //어류 판별 위한 모델
                 request = AndroidNetworking
@@ -343,7 +341,7 @@ public class UpdateManager {
             case DB: //어류 데이터베이스
                 localTargetPath = FishDic.DB_PATH;
                 localTargetFileName = FishDic.DB_NAME;
-                localTargetAssetsDirName = "/DB";
+                localTargetAssetsDirName = "DB/";
 
                 Log.d("Downloading newest DB From Server", "---");
                 break;
@@ -351,7 +349,7 @@ public class UpdateManager {
             case MODEL: //어류 판별 위한 모델
                 localTargetPath = FishDic.MODEL_PATH;
                 localTargetFileName = FishDic.MODEL_NAME;
-                localTargetAssetsDirName = "/model";
+                localTargetAssetsDirName = "model/";
 
                 Log.d("Downloading newest Model From Server", "---");
                 break;

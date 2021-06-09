@@ -88,7 +88,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) { //이미지 자르기 작업 완료 시
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUriContent();
+                Uri resultUri = result != null ? result.getUriContent() : null;
                 ImageDecoder.Source src = ImageDecoder.createSource(getContentResolver(), resultUri);
 
                 try {
@@ -100,7 +100,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
                         final String infoMessage = String.format(getString(R.string.fish_identification_info_message), queryResult.getInt(DBManager.TOTAL_FISH_COUNT_KEY));
                         this.fishIdentification_message_textView.setText(infoMessage); //판별 된 어류 개수 출력
                         FishDic.globalFishIdentificationRecyclerAdapter.addItemFromBundle(queryResult);
-                    } else {
+                    } else { //판별 결과가 존재하지 않을 경우
                         final String infoMessage = String.format(getString(R.string.fish_identification_info_message), 0);
                         this.fishIdentification_message_textView.setText(infoMessage);
                         this.showFishDetailErrDialog();
