@@ -7,6 +7,9 @@
     <string name="fish_identification">어류&#160;판별</string>
     <string name="parasite">기생충&#160;정보</string>
     <string name="help">이용가이드</string>
+    <string name="settings">설정</string>
+    <string name="exit">종료</string>
+    <string name="homepage">https://github.com/2021-KNU-Capstone-Team1/FishDic</string>
 
     <!-- 도감 및 어류 상세 정보에서 사용 할 문자열 -->
     <string name="bio_class_info">생물분류&#160;:&#160;</string>

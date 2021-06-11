@@ -11,6 +11,8 @@
         android:id="@+id/fishDetail_imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
         android:layout_marginBottom="20dp"
         android:src="@drawable/icon_96x96" />
 

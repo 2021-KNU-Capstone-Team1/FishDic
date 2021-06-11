@@ -3,9 +3,11 @@ package com.knu.fishdic.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -28,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     ImageButton main_fishIdentification_imageButton;        //메인화면 하단부 카메라 버튼
     ImageButton main_help_imageButton;                      //메인화면 하단부 도움 버튼
 
+    ImageButton main_menu_imageButton; //메인화면 상단 메뉴 버튼
+    DrawerLayout drawerLayout; //메인화면 최상위 루트 레이아웃
+    View drawerView; //네비게이션 메뉴 뷰
+    
     ViewPager viewPager;
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
     CircleIndicator indicator;
@@ -58,8 +64,18 @@ public class MainActivity extends AppCompatActivity {
         this.main_deniedFish_imageButton = findViewById(R.id.main_deniedFish_imageButton);
         this.main_fishIdentification_imageButton = findViewById(R.id.main_fishIdentification_imageButton);
         this.main_help_imageButton = findViewById(R.id.main_help_imageButton);
+
+        this.main_menu_imageButton = findViewById(R.id.main_menu_imageButton);
+        this.drawerLayout = findViewById(R.id.outerMain_drawerLayout);
+        this.drawerView = (View) findViewById(R.id.drawer_layout);
+
         this.viewPager = findViewById(R.id.banner_viewPager);
         this.indicator = findViewById(R.id.banner_circleIndicator);
+
+        //메인화면 상단 메뉴 버튼 클릭 리스너
+        this.main_menu_imageButton.setOnClickListener(v -> {
+            this.drawerLayout.openDrawer(drawerView); //네비게이션 메뉴 출력
+        });
 
         //도감 화면으로 넘어가는 클릭 리스너
         this.main_dic_imageButton.setOnClickListener(v -> {
