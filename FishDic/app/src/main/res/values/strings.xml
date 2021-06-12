@@ -17,8 +17,8 @@
     <string name="homepage">github.com/2021-KNU-Capstone-Team1/FishDic</string>
 
     <!-- 설정에서 사용 할 문자열 -->
-    <string name="fish_detail_font_size">어류&#160;상세&#160;정보&#160;폰트&#160;크기</string>
-    <string name="fish_identification_threshold">어류&#160;판별&#160;결과&#160;유사도&#160;임계값</string>
+    <string name="settings_fish_detail_font_size">어류&#160;상세&#160;정보&#160;폰트&#160;크기</string>
+    <string name="settings_fish_identification_threshold">어류&#160;판별&#160;결과&#160;유사도&#160;임계값</string>
     <string name="settings_init_message">초기화</string>
     <string name="settings_ok_message">확인</string>
 

@@ -9,6 +9,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+    <!-- 상단 로고 -->
     <LinearLayout
         android:id="@+id/innerNavigation_linearLayout1"
         android:layout_width="match_parent"
@@ -26,6 +27,9 @@
             android:src="@drawable/logo" />
     </LinearLayout>
 
+    <!-- 하단 상호작용 요소들 -->
+    <!-- 이미지를 10dp 만큼 padding 하였으므로,
+    글자도 가운데로 오기 위해 10dp 만큼 paddingLeft 주었음 -->
     <LinearLayout
         android:id="@+id/innerNavigation_linearLayout2"
         android:layout_width="match_parent"
@@ -35,7 +39,13 @@
         android:gravity="bottom"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/innerNavigation_settings_toolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible">
@@ -43,7 +53,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
+                android:padding="10dp"
                 android:src="@drawable/settings_40x40"
                 android:visibility="visible" />
 
@@ -52,13 +62,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingLeft="15dp"
+                android:paddingLeft="10dp"
                 android:text="@string/settings"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
         </androidx.appcompat.widget.Toolbar>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/innerNavigation_exit_toolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible">
@@ -66,7 +82,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
+                android:padding="10dp"
                 android:src="@drawable/exit_40x40"
                 android:visibility="visible" />
 
@@ -75,14 +91,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingLeft="15dp"
+                android:paddingLeft="10dp"
                 android:text="@string/exit"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
         </androidx.appcompat.widget.Toolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
         <Space
             android:layout_width="match_parent"
-            android:layout_height="30dp" />
+            android:layout_height="20dp" />
+
+
         <TextView
             android:id="@+id/innerNavigation_app_version_textView"
             android:layout_width="match_parent"
@@ -90,7 +114,7 @@
             android:padding="10dp"
             android:text="@string/app_version"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/innerNavigation_db_version_textView"
@@ -99,9 +123,7 @@
             android:padding="10dp"
             android:text="@string/db_version"
             android:textColor="@color/black"
-            android:textSize="15sp" />
-
-
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/innerNavigation_model_version_textView"
@@ -110,15 +132,24 @@
             android:padding="10dp"
             android:text="@string/model_version"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="13sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/innerNavigation_homepage_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
+            android:gravity="center"
             android:linksClickable="true"
-            android:padding="10dp"
             android:text="@string/homepage"
             android:textColor="@color/black"
             android:textSize="9sp" />

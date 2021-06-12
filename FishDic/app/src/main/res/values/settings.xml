@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 옵션에서 사용 할 드롭다운 데이터 정의 -->
+<resources>
+    <!-- 어류 상세 정보 폰트 크기 -->
+    <string-array name="settings_fish_detail_font_size_array">
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+    </string-array>
+
+    <!-- 어류 판별 결과 유사도 임계값 -->
+    <string-array name="settings_fish_identification_threshold_array">
+        <item>0.1</item>
+        <item>0.2</item>
+        <item>0.3</item>
+        <item>0.4</item>
+        <item>0.5</item>
+    </string-array>
+</resources>

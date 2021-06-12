@@ -30,9 +30,12 @@ public class MainActivity extends AppCompatActivity {
     ImageButton main_fishIdentification_imageButton;        //메인화면 하단부 카메라 버튼
     ImageButton main_help_imageButton;                      //메인화면 하단부 도움 버튼
 
+    /*** 메뉴 네비게이션 ***/
     ImageButton main_menu_imageButton; //메인화면 상단 메뉴 버튼
     DrawerLayout drawerLayout; //메인화면 최상위 루트 레이아웃
     View drawerView; //네비게이션 메뉴 뷰
+    View innerNavigation_settings_toolBar; //설정
+    View innerNavigation_exit_toolBar; //종료
     
     ViewPager viewPager;
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
@@ -65,9 +68,13 @@ public class MainActivity extends AppCompatActivity {
         this.main_fishIdentification_imageButton = findViewById(R.id.main_fishIdentification_imageButton);
         this.main_help_imageButton = findViewById(R.id.main_help_imageButton);
 
+        /*** 메뉴 네비게이션 ***/
         this.main_menu_imageButton = findViewById(R.id.main_menu_imageButton);
         this.drawerLayout = findViewById(R.id.outerMain_drawerLayout);
         this.drawerView = (View) findViewById(R.id.outerNavigation_linearLayout);
+        this.innerNavigation_settings_toolBar  = findViewById(R.id.innerNavigation_settings_toolBar);
+
+
 
         this.viewPager = findViewById(R.id.banner_viewPager);
         this.indicator = findViewById(R.id.banner_circleIndicator);
@@ -75,6 +82,11 @@ public class MainActivity extends AppCompatActivity {
         //메인화면 상단 메뉴 버튼 클릭 리스너
         this.main_menu_imageButton.setOnClickListener(v -> {
             this.drawerLayout.openDrawer(drawerView); //네비게이션 메뉴 출력
+        });
+
+        this.innerNavigation_settings_toolBar.setOnClickListener(v -> {
+            Intent intent = new Intent(FishDic.globalContext, SettingsActivity.class);
+            startActivity(intent);
         });
 
         //도감 화면으로 넘어가는 클릭 리스너
