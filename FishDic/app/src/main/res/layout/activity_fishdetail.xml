@@ -84,8 +84,6 @@
                     <!-- FragmentManager에 의해 상세 정보 삽입 -->
 
                 </LinearLayout>
-
-
             </ScrollView>
 
         </TableRow>

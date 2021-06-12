@@ -7,9 +7,20 @@
     <string name="fish_identification">어류&#160;판별</string>
     <string name="parasite">기생충&#160;정보</string>
     <string name="help">이용가이드</string>
+
+    <!-- 메인 화면의 상단 왼쪽의 메뉴 클릭 시 보여질 네비게이션 메뉴에서 사용 할 문자열 -->
     <string name="settings">설정</string>
     <string name="exit">종료</string>
-    <string name="homepage">https://github.com/2021-KNU-Capstone-Team1/FishDic</string>
+    <string name="app_version">앱&#160;버전&#160;:&#160;</string>
+    <string name="db_version">DB&#160;버전&#160;:&#160;</string>
+    <string name="model_version">판별&#160;모델&#160;버전&#160;:&#160;</string>
+    <string name="homepage">github.com/2021-KNU-Capstone-Team1/FishDic</string>
+
+    <!-- 설정에서 사용 할 문자열 -->
+    <string name="fish_detail_font_size">어류&#160;상세&#160;정보&#160;폰트&#160;크기</string>
+    <string name="fish_identification_threshold">어류&#160;판별&#160;결과&#160;유사도&#160;임계값</string>
+    <string name="settings_init_message">초기화</string>
+    <string name="settings_ok_message">확인</string>
 
     <!-- 도감 및 어류 상세 정보에서 사용 할 문자열 -->
     <string name="bio_class_info">생물분류&#160;:&#160;</string>

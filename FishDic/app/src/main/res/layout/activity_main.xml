@@ -149,5 +149,5 @@
         </TableRow>
     </TableLayout>
 
-    <include layout="@layout/activity_drawer" /> <!-- 상단 왼쪽의 메뉴 클릭 시 보여질 네비게이션 메뉴 레이아웃 포함 -->
+    <include layout="@layout/activity_navigation" /> <!-- 메인 화면의 상단 왼쪽의 메뉴 클릭 시 보여질 네비게이션 메뉴 레이아웃 포함 -->
 </androidx.drawerlayout.widget.DrawerLayout>

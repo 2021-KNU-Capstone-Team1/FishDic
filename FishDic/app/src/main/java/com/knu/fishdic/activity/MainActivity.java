@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.main_menu_imageButton = findViewById(R.id.main_menu_imageButton);
         this.drawerLayout = findViewById(R.id.outerMain_drawerLayout);
-        this.drawerView = (View) findViewById(R.id.drawer_layout);
+        this.drawerView = (View) findViewById(R.id.outerNavigation_linearLayout);
 
         this.viewPager = findViewById(R.id.banner_viewPager);
         this.indicator = findViewById(R.id.banner_circleIndicator);
