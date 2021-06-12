@@ -1,7 +1,9 @@
 package com.knu.fishdic.manager;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -10,6 +12,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.knu.fishdic.FishDic;
+import com.knu.fishdic.fragment.MyFragment;
 import com.knu.fishdic.utils.ImageUtility;
 import com.knu.fishdic.utils.ZipUtility;
 
@@ -17,34 +20,56 @@ import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.task.vision.classifier.Classifications;
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
 // 어류 판별을 위한 FishIdentificationManager 정의
 
 public class FishIdentificationManager {
+    public static String localModelVersion = ""; //로컬 모델 버전
+
+    public static final String RESULTS_SCORE_THRESHOLD_KEY = "resultsScoreThresholdKey"; //결과 가중치 임계값을 위한 키 값
     public final String PUBLIC_FEEDBACK_SERVER = "http://fishdic.asuscomm.com/";
     public final String SEND_FEEDBACK = "send_feedback.php";
     public final String FEEDBACK_KEY = "Gh94K7572e503WjsiiV6dQZjQHea2126";
 
     private final int NOTIFICATION_ID = 1; //알림 아이디
 
-    //TODO : 옵션 창에서 결과 가중치 임계값 변경 및 폰트 크기 변경
-    
-    private final float RESULTS_SCORE_THRESHOLD = 0.1f; //결과 가중치 임계값
-
     public FishIdentificationManager() {
+        this.allocateLocalModelVersion();
+    }
+
+    private void allocateLocalModelVersion() { //로컬 모델 버전 할당
+        if (localModelVersion != "") //이미 할당 되었을 경우
+            return;
+
+        File localModelVersionFile = new File(FishDic.MODEL_PATH + FishDic.VERSION_FILE_NAME); //모델 버전 관리 파일
+
+        try {
+            BufferedReader localModelVersionFileReader = new BufferedReader(new FileReader(localModelVersionFile));
+            localModelVersion =localModelVersionFileReader.readLine();
+            localModelVersionFileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Bundle getImageClassificationResult(Bitmap targetBitmap) { //이미지 분류 결과 반환
+        SharedPreferences sharedPreference = PreferenceManager.getDefaultSharedPreferences(FishDic.globalContext); //공유 설정
+        float resultsScoreThreshold = sharedPreference.getFloat(RESULTS_SCORE_THRESHOLD_KEY, 10.0f); //결과 가중치 임계값
         Bundle result = null;
         List<Classifications> classificationsList = null;
 
+        //Log.d("현재 결과 가중치 임계값", String.valueOf(resultsScoreThreshold));
+
         ImageClassifier.ImageClassifierOptions options = ImageClassifier
                 .ImageClassifierOptions.builder()
-                .setScoreThreshold(RESULTS_SCORE_THRESHOLD)
+                .setScoreThreshold(resultsScoreThreshold)
                 .build();
 
         ImageClassifier imageClassifier = null;
@@ -53,27 +78,30 @@ public class FishIdentificationManager {
             classificationsList = imageClassifier.classify(TensorImage.fromBitmap(targetBitmap)); //분류 결과
             imageClassifier.close();
 
-            if (classificationsList != null) { //분류 결과가 존재하면
-                /***
-                 * 1) org.tensorflow.lite.support.label.Category 참조
-                 * 2) 분류 결과의 구조는 다음과 같으며 score가 높은 순으로 정렬되어 있음
-                 * 3) 학명 및 score 분리
-                 * ---
-                 * [Classifications
-                 *        {
-                 * 		    categories=
-                 * 		    [
-                 * 			    <Category "Pleuronectes yokohamae" (displayName= score=8.404746 index=35)>,
-                 * 			    <Category "Hexagrammos otakii" (displayName= score=4.6259165 index=19)>,
-                 * 			    <Category "Muraenesox cinereus" (displayName= score=3.373327 index=25)>,
-                 * 			    <Category "Atrina" (displayName= score=0.7307081 index=3)>
-                 * 		    ],
-                 * 	        headIndex=0
-                 *         }
-                 * ]
-                 ***/
+            //Log.d("분류 결과", classificationsList.toString());
 
-                int totalCategoriesCount = classificationsList.get(0).getCategories().size(); //전체 카테고리의 수
+            /***
+             * 1) org.tensorflow.lite.support.label.Category 참조
+             * 2) 분류 결과의 구조는 다음과 같으며 score가 높은 순으로 정렬되어 있음
+             * 3) 학명 및 score 분리
+             * ---
+             * [Classifications
+             *        {
+             * 		    categories=
+             * 		    [
+             * 			    <Category "Pleuronectes yokohamae" (displayName= score=8.404746 index=35)>,
+             * 			    <Category "Hexagrammos otakii" (displayName= score=4.6259165 index=19)>,
+             * 			    <Category "Muraenesox cinereus" (displayName= score=3.373327 index=25)>,
+             * 			    <Category "Atrina" (displayName= score=0.7307081 index=3)>
+             * 		    ],
+             * 	        headIndex=0
+             *         }
+             * ]
+             ***/
+
+            int totalCategoriesCount = classificationsList.get(0).getCategories().size(); //전체 카테고리의 수
+
+            if (totalCategoriesCount > 0) { //분류 된 카테고리가 있을 경우
                 int fishIndex = 0; //어류 인덱스
                 result = new Bundle(); //키(문자열), 값 쌍의 최종 결과
 
@@ -88,7 +116,6 @@ public class FishIdentificationManager {
 
                 result.putInt(DBManager.TOTAL_FISH_COUNT_KEY, fishIndex); //인덱스로 각 판별 된 어류(학명 : 가중치 쌍)를 접근 위해 전체 어류 수를 추가
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

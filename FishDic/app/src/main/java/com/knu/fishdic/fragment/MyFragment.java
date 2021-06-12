@@ -1,7 +1,9 @@
 package com.knu.fishdic.fragment;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.manager.DBManager;
 import com.knu.fishdic.utils.ImageUtility;
@@ -24,6 +27,7 @@ import com.knu.fishdic.utils.ImageUtility;
  ***/
 
 public class MyFragment extends Fragment {
+    public static final String FISH_DETAIL_FONT_SIZE_KEY = "fishDetailFontSizeKey"; //어류 상세 정보 폰트 크기를 위한 키 값
     public static final String FRAGMENT_TYPE_KEY = "fragmentTypeKey"; //Fragment의 타입 키 값
     public static final String POSITION_KEY = "positionKey"; //position 키 값
     public static final String IMAGE_KEY = "imageKey"; //이미지의 키 값
@@ -102,7 +106,8 @@ public class MyFragment extends Fragment {
          * This is optional, and non-graphical fragments can return null.
          * This will be called between onCreate(Bundle) and onViewCreated(View, Bundle).
          ***/
-
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(FishDic.globalContext); //공유 설정
+        int fishDetailFontSize = sharedPreferences.getInt(FISH_DETAIL_FONT_SIZE_KEY, 10); //폰트 크기
         View view;
         //디버그용 Log.d("currentFragmentType", this.fragmentType.toString());
 
@@ -137,6 +142,7 @@ public class MyFragment extends Fragment {
                 TextView fishDetail_warnings_textView = view.findViewById(R.id.fishDetail_warnings_textView); //주의사항
 
                 fishDetail_name_textView.setText(this.refQueryResult.getString(DBManager.NAME));
+                fishDetail_name_textView.setTextSize(fishDetailFontSize);
 
                 /*** 이미지가 존재 할 경우 해당 이미지로 설정, 존재하지 않을 경우 대체 이미지 설정 ***/
                 Bitmap bitmap = ImageUtility.decodeFromByteArray(this.refQueryResult.getByteArray(DBManager.IMAGE));
@@ -146,12 +152,19 @@ public class MyFragment extends Fragment {
                     fishDetail_imageView.setImageResource(R.drawable.photo_coming_soon_600x600);
 
                 fishDetail_scientific_name_textView.setText(this.refQueryResult.getString(DBManager.SCIENTIFIC_NAME));
+                fishDetail_scientific_name_textView.setTextSize(fishDetailFontSize);
                 fishDetail_bio_class_textView.setText(this.refQueryResult.getString(DBManager.BIO_CLASS));
+                fishDetail_bio_class_textView.setTextSize(fishDetailFontSize);
                 fishDetail_shape_textView.setText(this.refQueryResult.getString(DBManager.SHAPE));
+                fishDetail_shape_textView.setTextSize(fishDetailFontSize);
                 fishDetail_distribution_textView.setText(this.refQueryResult.getString(DBManager.DISTRIBUTION));
+                fishDetail_distribution_textView.setTextSize(fishDetailFontSize);
                 fishDetail_body_length_textView.setText(this.refQueryResult.getString(DBManager.BODY_LENGTH));
+                fishDetail_body_length_textView.setTextSize(fishDetailFontSize);
                 fishDetail_habitat_textView.setText(this.refQueryResult.getString(DBManager.HABITAT));
+                fishDetail_habitat_textView.setTextSize(fishDetailFontSize);
                 fishDetail_warnings_textView.setText(this.refQueryResult.getString(DBManager.WARNINGS));
+                fishDetail_warnings_textView.setTextSize(fishDetailFontSize);
                 break;
 
             case DENIED_INFO: //어류 상세 정보 페이지의 금지행정 정보
@@ -163,11 +176,17 @@ public class MyFragment extends Fragment {
                 TextView fishDetail_special_prohibit_admin_end_date_textView = view.findViewById(R.id.fishDetail_special_prohibit_admin_end_date_textView); //금지종료기간
 
                 fishDetail_denied_length_textView.setText(this.refQueryResult.getString(DBManager.DENIED_LENGTH));
+                fishDetail_denied_length_textView.setTextSize(fishDetailFontSize);
                 fishDetail_denied_weight_textView.setText(this.refQueryResult.getString(DBManager.DENIED_WEIGHT));
+                fishDetail_denied_weight_textView.setTextSize(fishDetailFontSize);
                 fishDetail_denied_water_depth_textView.setText(this.refQueryResult.getString(DBManager.DENIED_WATER_DEPTH));
+                fishDetail_denied_water_depth_textView.setTextSize(fishDetailFontSize);
                 fishDetail_special_prohibit_admin_area_textView.setText(this.refQueryResult.getString(DBManager.SPECIAL_PROHIBIT_ADMIN_AREA));
+                fishDetail_special_prohibit_admin_area_textView.setTextSize(fishDetailFontSize);
                 fishDetail_special_prohibit_admin_start_date_textView.setText(this.refQueryResult.getString(DBManager.SPECIAL_PROHIBIT_ADMIN_START_DATE));
+                fishDetail_special_prohibit_admin_start_date_textView.setTextSize(fishDetailFontSize);
                 fishDetail_special_prohibit_admin_end_date_textView.setText(this.refQueryResult.getString(DBManager.SPECIAL_PROHIBIT_ADMIN_END_DATE));
+                fishDetail_special_prohibit_admin_end_date_textView.setTextSize(fishDetailFontSize);
                 break;
 
             case BANNER: //메인화면의 배너

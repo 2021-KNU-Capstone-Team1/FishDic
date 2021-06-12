@@ -19,6 +19,8 @@ public class InitManager {
 
     public static void initAllComponents() { //모든 구성요소 초기화
         if (!isAllComponentsInitialized) {
+            UpdateManager.updateAll(); //모두 업데이트
+
             initGlobalManager(); //전역 Manager 초기화
             initGlobalRecyclerAdapter();//전역 RecyclerAdapter 초기화
 
@@ -39,12 +41,6 @@ public class InitManager {
     }
 
     private static void initGlobalManager() { //전역 Manager 초기화
-        /***
-         * 중요 : 다른 Manager 를 위해 UpdateManager 를 제일 먼저 초기화 수행해야 함
-         ***/
-
-        FishDic.globalUpdateManager = new UpdateManager();
-
         FishDic.globalDBManager = new DBManager();
         FishDic.globalFishIdentificationManager = new FishIdentificationManager();
     }

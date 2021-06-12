@@ -10,6 +10,10 @@ import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Set;
@@ -17,6 +21,8 @@ import java.util.Set;
 // 이달의 금어기, 도감 관련 모든 기능을 위한 DBManager 정의
 
 public class DBManager extends SQLiteOpenHelper {
+    public static String localDBVersion = ""; //로컬 DB 버전
+
     public static final String TOTAL_FISH_COUNT_KEY = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
     public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
     public static final String QUERY_RESULT_KEY = "queryResultKey"; //쿼리 결과를 위한 키 값
@@ -78,6 +84,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     public DBManager() {
         super(FishDic.globalContext, FishDic.DB_NAME, null, 1); //SQLiteOpenHelper(context, name, factory, version)
+        this.allocateLocalDBVersion(); //로컬 DB 버전 할당
         this.sqlDB = this.getReadableDatabase(); //읽기 전용 DB 로드
     }
 
@@ -101,6 +108,21 @@ public class DBManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqlDB, int oldVersion, int newVersion) {
+    }
+
+    private void allocateLocalDBVersion() { //로컬 DB 버전 할당
+        if (localDBVersion != "") //이미 할당 되었을 경우
+            return;
+
+        File localDBVersionFile = new File(FishDic.DB_PATH + FishDic.VERSION_FILE_NAME); //모델 버전 관리 파일
+
+        try {
+            BufferedReader localDBVersionFileReader = new BufferedReader(new FileReader(localDBVersionFile));
+            localDBVersion = localDBVersionFileReader.readLine();
+            localDBVersionFileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Bundle getSimpleFishBundle(FISH_DATA_TYPE fishDataType, Bundle args) { //간략화된 어류 정보 반환

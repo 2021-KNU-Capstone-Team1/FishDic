@@ -10,6 +10,7 @@ import com.knu.fishdic.FishDic;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,10 +24,10 @@ import okhttp3.Response;
 // 서버로부터의 업데이트 기능을 위한 UpdateManager 정의
 
 public class UpdateManager {
-    private final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
-    private final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
-    private final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
-    private final String REQUEST_BANNERLIST = "request_bannerlist.php"; //배너 목록 요청
+    private static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
+    private static final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
+    private static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
+    private static final String REQUEST_BANNERLIST = "request_bannerlist.php"; //배너 목록 요청
 
     private enum UPDATE_TARGET { //업데이트 타겟 대상 정의
         DB, //어류 데이터베이스
@@ -42,14 +43,14 @@ public class UpdateManager {
         IMMEDIATE_FAILURE //버전 상태 확인 실패 (assets으로부터 복사하는 대체 흐름 수행)
     }
 
-    public UpdateManager() {
+    public static void updateAll() { //모두 업데이트
         UPDATE_TARGET[] updateTargets = UPDATE_TARGET.values(); //업데이트 타겟 대상 할당
 
         for (int i = 0; i < updateTargets.length; i++) {
-            switch (this.getCurrentVersionState(updateTargets[i])) { //현재 버전 상태 확인
+            switch (getCurrentVersionState(updateTargets[i])) { //현재 버전 상태 확인
                 case INIT: //초기 상태일 경우
                 case OUT_DATED: //구 버전일 경우
-                    this.updateFromServer(updateTargets[i]);
+                    updateFromServer(updateTargets[i]);
                     break;
 
                 case UPDATED: //최신 버전일 경우
@@ -57,15 +58,14 @@ public class UpdateManager {
                     break;
 
                 case IMMEDIATE_FAILURE: //버전 상태 확인 실패
-                    if(updateTargets[i] != UPDATE_TARGET.BANNER) //배너 이미지에 대해 InitManager에서 할당 수행
-                        this.copyFromAssets(updateTargets[i]);
+                    if (updateTargets[i] != UPDATE_TARGET.BANNER) //배너 이미지에 대해 InitManager에서 할당 수행
+                        copyFromAssets(updateTargets[i]);
                     break;
             }
-
         }
     }
 
-    private VERSION_STATE getCurrentVersionState(UPDATE_TARGET currentUpdateTarget) { //현재 버전 상태 반환
+    private static VERSION_STATE getCurrentVersionState(UPDATE_TARGET currentUpdateTarget) { //현재 버전 상태 반환
         /***
          * 1) 로컬 업데이트 타겟 대상과 로컬 타겟 대상 버전 관리 파일이 존재하지 않을 경우 서버로부터의 갱신을 위한 초기 상태 반환
          * 2) 로컬 업데이트 타겟 대상과 로컬 타겟 대상 버전 관리 파일이 존재할 경우 서버와 로컬 버전을 비교하여
@@ -219,7 +219,7 @@ public class UpdateManager {
         return VERSION_STATE.IMMEDIATE_FAILURE;
     }
 
-    private void updateFromServer(UPDATE_TARGET currentUpdateTarget) { //서버로부터 최신 버전 갱신
+    private static void updateFromServer(UPDATE_TARGET currentUpdateTarget) { //서버로부터 최신 버전 갱신
         String localTargetPath; //로컬 업데이트 대상 경로
         String localTargetFileName = null; //로컬 업데이트 대상 파일 이름
         String updateServer; //업데이트 서버
@@ -277,19 +277,19 @@ public class UpdateManager {
                     Log.d("Server Download", "body : " + okHttpResponse.body().toString());
                     Log.d("Server Download", "HTTP Status Code : " + okHttpResponse.code());
 
-                    File serverTargetVersionFile = new File(localTargetPath + FishDic.VERSION_FILE_NAME);
-
+                    File serverTargetVersionFile = new File(localTargetPath + FishDic.VERSION_FILE_NAME); //서버로부터 업데이트 된 타겟 버전 파일
                     if (!serverTargetVersionFile.exists())
                         try {
                             throw new Exception("Integrity ERR");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
                 } else { //다운로드 오류 시
                     ANError error = response.getError();
                     Log.d("Server Download ERR", error.getMessage());
 
-                    this.copyFromAssets(currentUpdateTarget);
+                    copyFromAssets(currentUpdateTarget);
                 }
                 break;
 
@@ -332,7 +332,7 @@ public class UpdateManager {
         }
     }
 
-    private void copyFromAssets(UPDATE_TARGET currentUpdateTarget) { //Assets으로부터 복사하는 대체 흐름
+    private static void copyFromAssets(UPDATE_TARGET currentUpdateTarget) { //Assets으로부터 복사하는 대체 흐름
         String localTargetPath; //로컬 업데이트 대상 경로
         String localTargetFileName = null; //로컬 업데이트 대상 파일 이름
         String localTargetAssetsDirName; //로컬 업데이트 대상의 Assets 디렉토리명

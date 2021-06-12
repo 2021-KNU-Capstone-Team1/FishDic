@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -15,6 +16,8 @@ import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.fragment.MyFragment;
 import com.knu.fishdic.fragment.MyFragmentPagerAdapter;
+import com.knu.fishdic.manager.DBManager;
+import com.knu.fishdic.manager.FishIdentificationManager;
 import com.knu.fishdic.manager.InitManager;
 
 import java.util.Timer;
@@ -36,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
     View drawerView; //네비게이션 메뉴 뷰
     View innerNavigation_settings_toolBar; //설정
     View innerNavigation_exit_toolBar; //종료
-    
+    TextView innerNavigation_app_version_textView; //앱 버전
+    TextView innerNavigation_db_version_textView; //DB 버전
+    TextView innerNavigation_model_version_textView; //판별 위한 모델 버전
+
     ViewPager viewPager;
     FragmentPagerAdapter viewPagerAdapter; //ViewPager 어댑터
     CircleIndicator indicator;
@@ -72,9 +78,10 @@ public class MainActivity extends AppCompatActivity {
         this.main_menu_imageButton = findViewById(R.id.main_menu_imageButton);
         this.drawerLayout = findViewById(R.id.outerMain_drawerLayout);
         this.drawerView = (View) findViewById(R.id.outerNavigation_linearLayout);
-        this.innerNavigation_settings_toolBar  = findViewById(R.id.innerNavigation_settings_toolBar);
-
-
+        this.innerNavigation_settings_toolBar = findViewById(R.id.innerNavigation_settings_toolBar);
+        this.innerNavigation_app_version_textView = findViewById(R.id.innerNavigation_app_version_textView);
+        this.innerNavigation_db_version_textView = findViewById(R.id.innerNavigation_db_version_textView);
+        this.innerNavigation_model_version_textView = findViewById(R.id.innerNavigation_model_version_textView);
 
         this.viewPager = findViewById(R.id.banner_viewPager);
         this.indicator = findViewById(R.id.banner_circleIndicator);
@@ -84,10 +91,18 @@ public class MainActivity extends AppCompatActivity {
             this.drawerLayout.openDrawer(drawerView); //네비게이션 메뉴 출력
         });
 
+        //메뉴 네비게이션 설정 클릭 리스너
         this.innerNavigation_settings_toolBar.setOnClickListener(v -> {
             Intent intent = new Intent(FishDic.globalContext, SettingsActivity.class);
             startActivity(intent);
         });
+
+        final String appVersion = String.format(getString(R.string.app_version), FishDic.getAppVersion()); //앱 버전
+        final String dbVersion = String.format(getString(R.string.db_version), DBManager.localDBVersion); //DB 버전
+        final String modelVersion = String.format(getString(R.string.model_version), FishIdentificationManager.localModelVersion); //판별 모델 버전
+        this.innerNavigation_app_version_textView.setText(appVersion);
+        this.innerNavigation_db_version_textView.setText(dbVersion);
+        this.innerNavigation_model_version_textView.setText(modelVersion);
 
         //도감 화면으로 넘어가는 클릭 리스너
         this.main_dic_imageButton.setOnClickListener(v -> {

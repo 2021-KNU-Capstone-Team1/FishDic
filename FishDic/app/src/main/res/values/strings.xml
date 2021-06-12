@@ -10,10 +10,11 @@
 
     <!-- 메인 화면의 상단 왼쪽의 메뉴 클릭 시 보여질 네비게이션 메뉴에서 사용 할 문자열 -->
     <string name="settings">설정</string>
+    <string name="info">정보</string>
     <string name="exit">종료</string>
-    <string name="app_version">앱&#160;버전&#160;:&#160;</string>
-    <string name="db_version">DB&#160;버전&#160;:&#160;</string>
-    <string name="model_version">판별&#160;모델&#160;버전&#160;:&#160;</string>
+    <string name="app_version">앱&#160;버전&#160;:&#160;v%s</string>
+    <string name="db_version">DB&#160;버전&#160;:&#160;v%s</string>
+    <string name="model_version">판별&#160;모델&#160;버전&#160;:&#160;v%s</string>
     <string name="homepage">github.com/2021-KNU-Capstone-Team1/FishDic</string>
 
     <!-- 설정에서 사용 할 문자열 -->
