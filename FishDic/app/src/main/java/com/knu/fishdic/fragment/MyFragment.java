@@ -189,6 +189,8 @@ public class MyFragment extends Fragment {
             case HELP: //이용가이드
                 ImageView viewPager_imageView = view.findViewById(R.id.viewPager_imageView);
                 viewPager_imageView.setImageBitmap(this.refImage);
+                viewPager_imageView.setAdjustViewBounds(true);
+                viewPager_imageView.setScaleType(ImageView.ScaleType.FIT_CENTER); //가운데 맞춤
                 break;
 
             default:
