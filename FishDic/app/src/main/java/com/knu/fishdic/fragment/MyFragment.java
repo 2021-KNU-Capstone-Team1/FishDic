@@ -1,9 +1,7 @@
 package com.knu.fishdic.fragment;
 
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +25,6 @@ import com.knu.fishdic.utils.ImageUtility;
  ***/
 
 public class MyFragment extends Fragment {
-    public static final String FISH_DETAIL_FONT_SIZE_KEY = "fishDetailFontSizeKey"; //어류 상세 정보 폰트 크기를 위한 키 값
     public static final String FRAGMENT_TYPE_KEY = "fragmentTypeKey"; //Fragment의 타입 키 값
     public static final String POSITION_KEY = "positionKey"; //position 키 값
     public static final String IMAGE_KEY = "imageKey"; //이미지의 키 값
@@ -106,8 +103,7 @@ public class MyFragment extends Fragment {
          * This is optional, and non-graphical fragments can return null.
          * This will be called between onCreate(Bundle) and onViewCreated(View, Bundle).
          ***/
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(FishDic.globalContext); //공유 설정
-        int fishDetailFontSize = sharedPreferences.getInt(FISH_DETAIL_FONT_SIZE_KEY, 10); //폰트 크기
+        int fishDetailFontSize = FishDic.globalSettingsManager.getFishDetailFontSize(); //어류 상세 정보 폰트 크기
         View view;
         //디버그용 Log.d("currentFragmentType", this.fragmentType.toString());
 

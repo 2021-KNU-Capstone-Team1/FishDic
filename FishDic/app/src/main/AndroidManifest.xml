@@ -60,5 +60,8 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".activity.InfoActivity"
+            android:theme="@android:style/Theme.Dialog" />
     </application>
 </manifest>

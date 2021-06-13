@@ -2,16 +2,15 @@ package com.knu.fishdic;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 
 import com.androidnetworking.AndroidNetworking;
 import com.knu.fishdic.manager.DBManager;
 import com.knu.fishdic.manager.FishIdentificationManager;
+import com.knu.fishdic.manager.SettingsManager;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
 
 import java.util.concurrent.TimeUnit;
@@ -31,6 +30,7 @@ public class FishDic extends Application {
     public static final String MODEL_NAME = "model.tflite"; //판별 위한 모델 이름
 
     public static Context globalContext; //전역 앱 Context (앱 실행 후 종료 시 까지 유지)
+    public static SettingsManager globalSettingsManager; //전역 설정 관리를 위한 SettingsManager
     public static DBManager globalDBManager; //전역 데이터베이스 관리를 위한 DBManager
     public static FishIdentificationManager globalFishIdentificationManager; //전역 어류 판별 관리를 위한 FishIdentificationManager
 
@@ -53,6 +53,7 @@ public class FishDic extends Application {
 
         globalContext = getApplicationContext();
 
+        globalSettingsManager = null;
         globalDBManager = null;
         globalFishIdentificationManager = null;
 
@@ -95,7 +96,7 @@ public class FishDic extends Application {
     }
 
     public static String getAppVersion() { //앱 버전 반환
-        String version = "";
+        String version = null;
 
         try {
             PackageInfo i = globalContext.getPackageManager().getPackageInfo(globalContext.getPackageName(), 0);

@@ -1,9 +1,7 @@
 package com.knu.fishdic.manager;
 
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -12,7 +10,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.knu.fishdic.FishDic;
-import com.knu.fishdic.fragment.MyFragment;
+import com.knu.fishdic.utils.DateUtility;
 import com.knu.fishdic.utils.ImageUtility;
 import com.knu.fishdic.utils.ZipUtility;
 
@@ -22,7 +20,6 @@ import org.tensorflow.lite.task.vision.classifier.ImageClassifier;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,9 +28,8 @@ import java.util.List;
 // 어류 판별을 위한 FishIdentificationManager 정의
 
 public class FishIdentificationManager {
-    public static String localModelVersion = ""; //로컬 모델 버전
+    public static String localModelVersion = null; //로컬 모델 버전
 
-    public static final String RESULTS_SCORE_THRESHOLD_KEY = "resultsScoreThresholdKey"; //결과 가중치 임계값을 위한 키 값
     public final String PUBLIC_FEEDBACK_SERVER = "http://fishdic.asuscomm.com/";
     public final String SEND_FEEDBACK = "send_feedback.php";
     public final String FEEDBACK_KEY = "Gh94K7572e503WjsiiV6dQZjQHea2126";
@@ -45,14 +41,14 @@ public class FishIdentificationManager {
     }
 
     private void allocateLocalModelVersion() { //로컬 모델 버전 할당
-        if (localModelVersion != "") //이미 할당 되었을 경우
+        if (localModelVersion != null) //이미 할당 되었을 경우
             return;
 
         File localModelVersionFile = new File(FishDic.MODEL_PATH + FishDic.VERSION_FILE_NAME); //모델 버전 관리 파일
 
         try {
             BufferedReader localModelVersionFileReader = new BufferedReader(new FileReader(localModelVersionFile));
-            localModelVersion =localModelVersionFileReader.readLine();
+            localModelVersion = localModelVersionFileReader.readLine();
             localModelVersionFileReader.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,16 +56,12 @@ public class FishIdentificationManager {
     }
 
     public Bundle getImageClassificationResult(Bitmap targetBitmap) { //이미지 분류 결과 반환
-        SharedPreferences sharedPreference = PreferenceManager.getDefaultSharedPreferences(FishDic.globalContext); //공유 설정
-        float resultsScoreThreshold = sharedPreference.getFloat(RESULTS_SCORE_THRESHOLD_KEY, 10.0f); //결과 가중치 임계값
         Bundle result = null;
         List<Classifications> classificationsList = null;
 
-        //Log.d("현재 결과 가중치 임계값", String.valueOf(resultsScoreThreshold));
-
         ImageClassifier.ImageClassifierOptions options = ImageClassifier
                 .ImageClassifierOptions.builder()
-                .setScoreThreshold(resultsScoreThreshold)
+                .setScoreThreshold(FishDic.globalSettingsManager.getResultsScoreThreshold())
                 .build();
 
         ImageClassifier imageClassifier = null;
@@ -142,7 +134,7 @@ public class FishIdentificationManager {
 
         String androidId = Settings.Secure.getString(FishDic.globalContext.getContentResolver(), Settings.Secure.ANDROID_ID); //고유 사용자 식별을 위한 안드로이드 ID
 
-        final String currentDate = DBManager.getCurrentDate(DBManager.DATE_FORMAT_TYPE.DETAIL_WITHOUT_SEPARATOR);
+        final String currentDate = DateUtility.getCurrentDate(DateUtility.DATE_FORMAT_TYPE.DETAIL_WITHOUT_SEPARATOR);
         final String targetImageFileName = currentDate + "_" + androidId + ".jpeg";
         final String targetResultFileName = currentDate + "_" + androidId + ".txt";
         final String targetCompressedFileName = currentDate + "_" + androidId + ".zip";

@@ -9,19 +9,18 @@ import android.util.Log;
 import com.knu.fishdic.FishDic;
 import com.knu.fishdic.R;
 import com.knu.fishdic.recyclerview.RecyclerAdapter;
+import com.knu.fishdic.utils.DateUtility;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Set;
 
 // 이달의 금어기, 도감 관련 모든 기능을 위한 DBManager 정의
 
 public class DBManager extends SQLiteOpenHelper {
-    public static String localDBVersion = ""; //로컬 DB 버전
+    public static String localDBVersion = null; //로컬 DB 버전
 
     public static final String TOTAL_FISH_COUNT_KEY = "totalFishCountKey"; //전체 어류 개수를 위한 키 값
     public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
@@ -33,12 +32,6 @@ public class DBManager extends SQLiteOpenHelper {
         ALL_FISH, //모든 어류
         DENIED_FISH, //이달의 금어기
         FISH_IDENTIFICATION_RESULT //어류 판별 결과 (해당 어류에 대한 가중치를 포함하여 출력)
-    }
-
-    public enum DATE_FORMAT_TYPE { //날짜 형식 타입 정의
-        SIMPLE_WITH_SEPARATOR, //구분자 사용 (yyyy-MM-dd)
-        SIMPLE_WITHOUT_SEPARATOR, //구분자 사용하지 않음 (yyyyMMdd)
-        DETAIL_WITHOUT_SEPARATOR //구분자 사용하지 않음 (yyyy-MM-dd'T'HHmmss)
     }
 
     private enum EMPTY_DATA_TYPE { //빈 데이터 타입 정의
@@ -111,7 +104,7 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     private void allocateLocalDBVersion() { //로컬 DB 버전 할당
-        if (localDBVersion != "") //이미 할당 되었을 경우
+        if (localDBVersion != null) //이미 할당 되었을 경우
             return;
 
         File localDBVersionFile = new File(FishDic.DB_PATH + FishDic.VERSION_FILE_NAME); //모델 버전 관리 파일
@@ -148,7 +141,7 @@ public class DBManager extends SQLiteOpenHelper {
                  * 금지시작기간은 현재 날짜보다 이전에서 시작해서, 금지종료기간은 현재 날짜 이후일 경우만 뽑는다.
                  ***/
 
-                currentDate = this.getCurrentDate(DATE_FORMAT_TYPE.SIMPLE_WITH_SEPARATOR); //현재 "년-달-일"
+                currentDate = DateUtility.getCurrentDate(DateUtility.DATE_FORMAT_TYPE.SIMPLE_WITH_SEPARATOR); //현재 "년-달-일"
                 sqlQuery = "SELECT DISTINCT " + DENIED_FISH_TABLE + "." + NAME + ", " + FISH_TABLE + "." + IMAGE + ", " + BIO_CLASS_TABLE + "." + BIO_CLASS +
                         " FROM " + DENIED_FISH_TABLE +
                         " INNER JOIN " + BIO_CLASS_TABLE +
@@ -418,31 +411,5 @@ public class DBManager extends SQLiteOpenHelper {
         }
 
         return data;
-    }
-
-    public static String getCurrentDate(DATE_FORMAT_TYPE dateFormatType) //현재 날짜 반환
-    {
-        SimpleDateFormat dateFormat;
-
-        switch (dateFormatType) {
-            case SIMPLE_WITH_SEPARATOR: //구분자 사용(yyyy-MM-DD)
-                dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                break;
-
-            case SIMPLE_WITHOUT_SEPARATOR: //구분자 사용하지 않음(yyyyMMDD)
-                dateFormat = new SimpleDateFormat("yyyyMMdd");
-                break;
-
-
-            case DETAIL_WITHOUT_SEPARATOR: //구분자 사용하지 않음 (yyyy-MM-dd'T'HHmmss)
-                dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss");
-                break;
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + dateFormatType);
-        }
-
-        Calendar cal = Calendar.getInstance();
-        return dateFormat.format(cal.getTime());
     }
 }

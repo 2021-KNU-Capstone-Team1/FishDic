@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <!-- 설정 화면 타이틀 바 -->
+    <!-- 정보 화면 타이틀 바 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
             android:background="@color/logo"
             android:gravity="center"
             android:padding="10dp"
-            android:text="@string/settings"
+            android:text="@string/info"
             android:textColor="@color/white"
             android:textSize="15sp" />
     </LinearLayout>
@@ -28,7 +28,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- 어류 상세 정보 폰트 크기 그룹박스 -->
+        <!-- 앱 정보 그룹박스 -->
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,23 +41,38 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
                 android:background="@drawable/background_groupbox"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:padding="20dp"
-                    android:src="@drawable/font_size_40x40"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon_40x40"
                     android:visibility="visible" />
 
-                <Spinner
-                    android:id="@+id/settings_fish_detail_font_size_spinner"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:entries="@array/settings_fish_detail_font_size_array" />
+                    android:text="@string/copyright"
+                    android:textAlignment="center"
+                    android:textColor="@color/logo"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoLink="web"
+                    android:linksClickable="true"
+                    android:padding="10dp"
+                    android:text="@string/homepage"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/logo"
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <TextView
@@ -69,15 +84,14 @@
                 android:background="@color/white"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/settings_fish_detail_font_size"
+                android:text="@string/app_info"
                 android:textSize="13sp" />
         </RelativeLayout>
 
-        <!-- 어류 판별 결과 유사도 임계값 그룹박스 -->
+        <!-- 라이센스 그룹박스 -->
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="vertical">
 
             <LinearLayout
@@ -86,23 +100,45 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
                 android:background="@drawable/background_groupbox"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:padding="20dp"
-                    android:src="@drawable/deeplearning_40x40"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/nifs"
                     android:visibility="visible" />
 
-                <Spinner
-                    android:id="@+id/settings_fish_identification_threshold_spinner"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:entries="@array/settings_fish_identification_threshold_array" />
+                    android:padding="10dp"
+                    android:text="@string/nifs_info"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    android:textSize="9sp" />
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:padding="20dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/tflite"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/tflite_info"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    android:textSize="9sp" />
 
             </LinearLayout>
 
@@ -115,8 +151,10 @@
                 android:background="@color/white"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/settings_fish_identification_threshold"
+                android:text="@string/license"
                 android:textSize="13sp" />
+
+
         </RelativeLayout>
     </LinearLayout>
 
@@ -125,7 +163,7 @@
         android:layout_height="1dp"
         android:background="@color/gray" />
 
-    <!-- 설정 화면 하단 버튼 -->
+    <!-- 정보 화면 하단 버튼 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -133,31 +171,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/settings_init_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="@string/settings_init_message"
-            android:textColor="@color/black"
-            android:textSize="13sp" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/settings_ok_button"
+            android:id="@+id/info_ok_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"

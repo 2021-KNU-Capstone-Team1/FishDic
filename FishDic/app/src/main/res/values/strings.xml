@@ -15,13 +15,17 @@
     <string name="app_version">앱&#160;버전&#160;:&#160;v%s</string>
     <string name="db_version">DB&#160;버전&#160;:&#160;v%s</string>
     <string name="model_version">판별&#160;모델&#160;버전&#160;:&#160;v%s</string>
-    <string name="homepage">github.com/2021-KNU-Capstone-Team1/FishDic</string>
+    <string name="homepage">https://github.com/2021-KNU-Capstone-Team1/FishDic</string>
+    <string name="copyright"><b>Copyright&#160;2021.&#160;"2021-KNU-Capstone-Team1"\nAll&#160;Rights&#160;Reserved.</b></string>
+    <string name="app_info">앱&#160;정보</string>
+    <string name="license">라이센스</string>
+    <string name="nifs_info">어류&#160;정보&#160;및&#160;금어기&#160;정보는\n국립수산과학원에서&#160;제공하는&#160;자료를&#160;바탕으로&#160;제작하였습니다.</string>
+    <string name="tflite_info">어류&#160;판별&#160;모델&#160;제작&#160;시에&#160;Tensorflow에서&#160;제공하는&#160;Keras를&#160;이용하였습니다.\n어류&#160;판별&#160;시에&#160;Tensorflow에서&#160;제공하는&#160;TFLite&#160;모듈을&#160;이용하였습니다.</string>
 
     <!-- 설정에서 사용 할 문자열 -->
     <string name="settings_fish_detail_font_size">어류&#160;상세&#160;정보&#160;폰트&#160;크기</string>
     <string name="settings_fish_identification_threshold">어류&#160;판별&#160;결과&#160;유사도&#160;임계값</string>
     <string name="settings_init_message">초기화</string>
-    <string name="settings_ok_message">확인</string>
 
     <!-- 도감 및 어류 상세 정보에서 사용 할 문자열 -->
     <string name="bio_class_info">생물분류&#160;:&#160;</string>

@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout; //메인화면 최상위 루트 레이아웃
     View drawerView; //네비게이션 메뉴 뷰
     View innerNavigation_settings_toolBar; //설정
+    View innerNavigation_info_toolBar; //정보
     View innerNavigation_exit_toolBar; //종료
     TextView innerNavigation_app_version_textView; //앱 버전
     TextView innerNavigation_db_version_textView; //DB 버전
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         this.drawerLayout = findViewById(R.id.outerMain_drawerLayout);
         this.drawerView = (View) findViewById(R.id.outerNavigation_linearLayout);
         this.innerNavigation_settings_toolBar = findViewById(R.id.innerNavigation_settings_toolBar);
+        this.innerNavigation_info_toolBar = findViewById(R.id.innerNavigation_info_toolBar);
+        this.innerNavigation_exit_toolBar = findViewById(R.id.innerNavigation_exit_toolBar);
         this.innerNavigation_app_version_textView = findViewById(R.id.innerNavigation_app_version_textView);
         this.innerNavigation_db_version_textView = findViewById(R.id.innerNavigation_db_version_textView);
         this.innerNavigation_model_version_textView = findViewById(R.id.innerNavigation_model_version_textView);
@@ -95,6 +98,17 @@ public class MainActivity extends AppCompatActivity {
         this.innerNavigation_settings_toolBar.setOnClickListener(v -> {
             Intent intent = new Intent(FishDic.globalContext, SettingsActivity.class);
             startActivity(intent);
+        });
+
+        //메뉴 네비게이션 정보 클릭 리스너
+        this.innerNavigation_info_toolBar.setOnClickListener(v -> {
+            Intent intent = new Intent(FishDic.globalContext, InfoActivity.class);
+            startActivity(intent);
+        });
+
+        //메뉴 네비게이션 종료 클릭 리스너
+        this.innerNavigation_exit_toolBar.setOnClickListener(v -> {
+            this.finishAndRemoveTask(); //완전히 종료
         });
 
         final String appVersion = String.format(getString(R.string.app_version), FishDic.getAppVersion()); //앱 버전

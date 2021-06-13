@@ -41,6 +41,7 @@ public class InitManager {
     }
 
     private static void initGlobalManager() { //전역 Manager 초기화
+        FishDic.globalSettingsManager = new SettingsManager();
         FishDic.globalDBManager = new DBManager();
         FishDic.globalFishIdentificationManager = new FishIdentificationManager();
     }
