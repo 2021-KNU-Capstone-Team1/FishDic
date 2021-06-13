@@ -12,10 +12,10 @@
     <string name="settings">설정</string>
     <string name="info">정보</string>
     <string name="exit">종료</string>
-    <string name="app_version">앱&#160;버전&#160;:&#160;v%s</string>
-    <string name="db_version">DB&#160;버전&#160;:&#160;v%s</string>
-    <string name="model_version">판별&#160;모델&#160;버전&#160;:&#160;v%s</string>
-    <string name="homepage">https://github.com/2021-KNU-Capstone-Team1/FishDic</string>
+    <string name="app_version">앱&#160;버전&#160;:&#160;%s</string>
+    <string name="db_version">DB&#160;버전&#160;:&#160;%s</string>
+    <string name="model_version">판별&#160;모델&#160;버전&#160;:&#160;%s</string>
+    <string name="homepage">github.com/2021-KNU-Capstone-Team1/FishDic</string>
     <string name="copyright"><b>Copyright&#160;2021.&#160;"2021-KNU-Capstone-Team1"\nAll&#160;Rights&#160;Reserved.</b></string>
     <string name="app_info">앱&#160;정보</string>
     <string name="license">라이센스</string>

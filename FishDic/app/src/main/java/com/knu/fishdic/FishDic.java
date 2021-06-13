@@ -100,7 +100,7 @@ public class FishDic extends Application {
 
         try {
             PackageInfo i = globalContext.getPackageManager().getPackageInfo(globalContext.getPackageName(), 0);
-            version = i.versionName;
+            version = "v" + i.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

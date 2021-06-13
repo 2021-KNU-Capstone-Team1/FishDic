@@ -109,9 +109,14 @@ public class DBManager extends SQLiteOpenHelper {
 
         File localDBVersionFile = new File(FishDic.DB_PATH + FishDic.VERSION_FILE_NAME); //모델 버전 관리 파일
 
+        if(!localDBVersionFile.exists()) { //로컬 DB 버전 관리 파일이 존재하지 않을 시
+            localDBVersion = "BUILT-IN";
+            return;
+        }
+
         try {
             BufferedReader localDBVersionFileReader = new BufferedReader(new FileReader(localDBVersionFile));
-            localDBVersion = localDBVersionFileReader.readLine();
+            localDBVersion = "v" + localDBVersionFileReader.readLine();
             localDBVersionFileReader.close();
         } catch (IOException e) {
             e.printStackTrace();

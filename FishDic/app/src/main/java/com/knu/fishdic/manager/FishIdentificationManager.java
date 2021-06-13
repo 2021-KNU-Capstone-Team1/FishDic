@@ -46,9 +46,14 @@ public class FishIdentificationManager {
 
         File localModelVersionFile = new File(FishDic.MODEL_PATH + FishDic.VERSION_FILE_NAME); //모델 버전 관리 파일
 
+        if(!localModelVersionFile.exists()) { //로컬 모델 버전 관리 파일이 존재하지 않을 시
+            localModelVersion = "BUILT-IN";
+            return;
+        }
+
         try {
             BufferedReader localModelVersionFileReader = new BufferedReader(new FileReader(localModelVersionFile));
-            localModelVersion = localModelVersionFileReader.readLine();
+            localModelVersion = "v" + localModelVersionFileReader.readLine();
             localModelVersionFileReader.close();
         } catch (IOException e) {
             e.printStackTrace();
