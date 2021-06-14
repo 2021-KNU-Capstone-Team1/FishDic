@@ -8,84 +8,72 @@
     android:layout_height="match_parent"
     tools:context=".activity.FishDetailActivity">
 
-    <!-- 어류 상세정보 외부 테이블 레이아웃 -->
-    <TableLayout
-        android:id="@+id/outerFishDetail_tableLayout"
+    <!-- 어류 상세정보 외부 LinearLayout -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        tools:visibility="visible">
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- 어류 상세정보 외부 테이블 레이아웃 : 상단 테이블 -->
-        <TableRow
-            android:id="@+id/outerFishDetail_topTable"
+        <!-- 어류 상세정보 내부 상단 LinearLayout-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/logo"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- 상단 툴바 1 -->
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                tools:visibility="visible">
+
+                <ImageButton
+                    android:id="@+id/fishDetail_back_imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/logo"
+                    android:src="@drawable/back_to_40x40"
+                    android:visibility="visible"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/fishDetail_title_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:text="@string/fish_detail"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:visibility="visible"
+                    tools:visibility="visible" />
+            </androidx.appcompat.widget.Toolbar>
+
+        </LinearLayout>
+
+        <!-- 어류 상세정보 내부 스크롤뷰 : 어류 이미지 및 상세 정보 -->
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/logo">
+            android:fillViewport="true">
 
-            <!-- 어류 상세정보 내부 ConstraintLayout -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <!-- 상단 툴바 -->
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/outerFishDetail_toolBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:visibility="visible"
-                    tools:visibility="visible">
-
-                    <ImageButton
-                        android:id="@+id/fishDetail_back_imageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/logo"
-                        android:src="@drawable/back_to_40x40"
-                        android:visibility="visible"
-                        tools:visibility="visible" />
-
-                    <TextView
-                        android:id="@+id/fishDetail_title_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="15dp"
-                        android:text="@string/fish_detail"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:visibility="visible"
-                        tools:visibility="visible" />
-                </androidx.appcompat.widget.Toolbar>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </TableRow>
-
-        <!-- 어류 상세정보 외부 테이블 레이아웃 : 가운데 테이블 -->
-        <TableRow
-            android:id="@+id/outerFishDetail_centerTable"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="99">
-
-            <!-- 어류 상세정보 내부 스크롤뷰 : 어류 이미지 및 상세 정보 -->
-            <ScrollView
+            <LinearLayout
+                android:id="@+id/innerFishDetail_linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:fillViewport="true">
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/innerFishDetail_linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <!-- FragmentManager에 의해 상세 정보 삽입 -->
-
-                </LinearLayout>
-            </ScrollView>
-
-        </TableRow>
-    </TableLayout>
+                <!-- FragmentManager에 의해 상세 정보 삽입 -->
+                
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

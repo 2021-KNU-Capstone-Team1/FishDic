@@ -9,145 +9,143 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
-    <!-- 메인화면 외부 테이블 레이아웃 -->
-    <TableLayout
-        android:id="@+id/outerMain_tableLayout"
+    <!-- 메인화면 외부 LinearLayout -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- 메인화면 외부 테이블 레이아웃 : 상단 테이블 -->
-        <TableRow
-            android:id="@+id/outerMain_topTable"
+        <!-- 메인화면 내부 상단 LinearLayout-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/logo"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- 상단 툴바 -->
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="visible"
+                tools:visibility="visible">
+
+                <ImageButton
+                    android:id="@+id/main_menu_imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/logo"
+                    android:src="@drawable/menu_40x40"
+                    android:visibility="visible"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="7dp" />
+
+            </androidx.appcompat.widget.Toolbar>
+        </LinearLayout>
+
+        <!-- 메인화면 가운데 배너 이미지를 위한 TableLayout -->
+        <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/logo">
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <!-- 메인화면 내부 ConstraintLayout -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="99">
 
-                <!-- 상단 툴바 -->
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/outerMain_toolBar"
+                <!-- 메인화면 가운데 테이블 내부 ConstraintLayout -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/banner_viewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <me.relex.circleindicator.CircleIndicator
+                        android:id="@+id/banner_circleIndicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        app:ci_drawable="@drawable/indicator_radius"
+                        app:ci_height="7dp"
+                        app:ci_margin="4dp"
+                        app:ci_width="7dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/banner_viewPager" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+
+            <!-- 메인화면 내부 하단 버튼을 위한 TableRow -->
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
                     android:layout_weight="1"
-                    android:visibility="visible"
-                    tools:visibility="visible">
+                    android:orientation="horizontal">
+
+                    <!-- 메인화면 내부 하단 버튼 -->
+                    <ImageButton
+                        android:id="@+id/main_dic_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="15dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bottom_button_style"
+                        android:padding="5dp"
+                        android:scaleType="center"
+                        android:src="@drawable/icon_40x40" />
 
                     <ImageButton
-                        android:id="@+id/main_menu_imageButton"
+                        android:id="@+id/main_deniedFish_imageButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/logo"
-                        android:src="@drawable/menu_40x40"
-                        android:visibility="visible"
-                        tools:layout_editor_absoluteX="16dp"
-                        tools:layout_editor_absoluteY="7dp"
-                        tools:visibility="visible" />
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="15dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bottom_button_style"
+                        android:padding="5dp"
+                        android:scaleType="center"
+                        android:src="@drawable/denied_fish_40x40" />
 
-                </androidx.appcompat.widget.Toolbar>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </TableRow>
+                    <ImageButton
+                        android:id="@+id/main_fishIdentification_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="15dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bottom_button_style"
+                        android:padding="5dp"
+                        android:scaleType="center"
+                        android:src="@drawable/deeplearning_40x40" />
 
-        <!-- 메인화면 외부 테이블 레이아웃 : 가운데 테이블 -->
-        <TableRow
-            android:id="@+id/outerMain_centerTable"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="98">
-
-            <!-- 메인화면 가운데 테이블 내부 ConstraintLayout -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/banner_viewPager"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <me.relex.circleindicator.CircleIndicator
-                    android:id="@+id/banner_circleIndicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    app:ci_drawable="@drawable/indicator_radius"
-                    app:ci_height="7dp"
-                    app:ci_margin="4dp"
-                    app:ci_width="7dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/banner_viewPager" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </TableRow>
-
-        <!-- 메인화면 외부 테이블 레이아웃 : 하단 테이블 -->
-        <TableRow
-            android:id="@+id/outerMain_bottomTable"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <!-- 메인화면 내부 하단 버튼을 위한 레이아웃 -->
-            <LinearLayout
-                android:id="@+id/innerMain_bottomTable_linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="30dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <!-- 메인화면 내부 하단 버튼 -->
-                <ImageButton
-                    android:id="@+id/main_dic_imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bottom_button_style"
-                    android:padding="5dp"
-                    android:scaleType="center"
-                    android:src="@drawable/icon_40x40" />
-
-                <ImageButton
-                    android:id="@+id/main_deniedFish_imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bottom_button_style"
-                    android:padding="5dp"
-                    android:scaleType="center"
-                    android:src="@drawable/denied_fish_40x40" />
-
-                <ImageButton
-                    android:id="@+id/main_fishIdentification_imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bottom_button_style"
-                    android:padding="5dp"
-                    android:scaleType="center"
-                    android:src="@drawable/deeplearning_40x40" />
-
-                <ImageButton
-                    android:id="@+id/main_help_imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/bottom_button_style"
-                    android:padding="5dp"
-                    android:scaleType="center"
-                    android:src="@drawable/help_40x40" />
-            </LinearLayout>
-        </TableRow>
-    </TableLayout>
+                    <ImageButton
+                        android:id="@+id/main_help_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bottom_button_style"
+                        android:padding="5dp"
+                        android:scaleType="center"
+                        android:src="@drawable/help_40x40" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
 
     <include layout="@layout/activity_navigation" /> <!-- 메인 화면의 상단 왼쪽의 메뉴 클릭 시 보여질 네비게이션 메뉴 레이아웃 포함 -->
 </androidx.drawerlayout.widget.DrawerLayout>

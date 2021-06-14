@@ -10,7 +10,8 @@
         android:id="@+id/viewPager_imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
         android:src="@drawable/photo_coming_soon_600x600" />
 
 </RelativeLayout>

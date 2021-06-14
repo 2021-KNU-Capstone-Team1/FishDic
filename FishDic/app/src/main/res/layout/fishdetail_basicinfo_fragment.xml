@@ -11,9 +11,9 @@
         android:id="@+id/fishDetail_imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
         android:layout_marginBottom="20dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:src="@drawable/photo_coming_soon_600x600" />
 
     <TextView
@@ -22,6 +22,7 @@
         android:layout_column="0"
         android:background="@color/logo"
         android:gravity="center"
+        android:padding="5dp"
         android:text="@string/basic_info"
         android:textColor="@color/white"
         android:textStyle="bold" />

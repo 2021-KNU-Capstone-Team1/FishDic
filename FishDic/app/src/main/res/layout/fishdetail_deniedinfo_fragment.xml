@@ -13,6 +13,7 @@
         android:layout_column="0"
         android:background="@color/logo"
         android:gravity="center"
+        android:padding="5dp"
         android:text="@string/denied_info"
         android:textColor="@color/white"
         android:textStyle="bold" />

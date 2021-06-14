@@ -19,8 +19,8 @@
     <string name="copyright"><b>Copyright&#160;2021.&#160;"2021-KNU-Capstone-Team1"\nAll&#160;Rights&#160;Reserved.</b></string>
     <string name="app_info">앱&#160;정보</string>
     <string name="license">라이센스</string>
-    <string name="nifs_info">어류&#160;정보&#160;및&#160;금어기&#160;정보는&#160;국립수산과학원에서&#160;제공하는&#160;자료를&#160;바탕으로&#160;제작하였습니다.</string>
-    <string name="tflite_info">어류&#160;판별&#160;모델&#160;제작&#160;시에&#160;Tensorflow에서&#160;제공하는&#160;Keras를&#160;이용하였습니다.\n어류&#160;판별&#160;시에&#160;Tensorflow에서&#160;제공하는&#160;TFLite&#160;모듈을&#160;이용하였습니다.</string>
+    <string name="nifs_info">어류&#160;정보&#160;및&#160;금어기&#160;정보는&#160;국립수산과학원에서&#160;제공하는&#160;자료를&#160;바탕으로&#160;제작하였다.</string>
+    <string name="tflite_info">어류&#160;판별&#160;모델&#160;제작&#160;시에&#160;Tensorflow에서&#160;제공하는&#160;Keras를&#160;이용하였다.\n어류&#160;판별&#160;시에&#160;Tensorflow에서&#160;제공하는&#160;TFLite&#160;모듈을&#160;이용하였다.</string>
 
     <!-- 설정에서 사용 할 문자열 -->
     <string name="settings_fish_detail_font_size">어류&#160;상세&#160;정보&#160;폰트&#160;크기</string>

@@ -6,7 +6,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"  //Failed to find Build Tools revision 오류가 날 경우 이 부분을 SDKManager에 들어가서 현재 설치 된 Build-Tools 버전으로 변경하거나, 해당 버전에 맞는 Build-Tools을 설치해야 함
     aaptOptions {
-        noCompress "tflite" //텐서플로우 라이트 모델 파일 압축하지 않도록 설정
+        noCompress "tflite" //텐서플로우 라이트 모델 파일을 압축하지 않도록 설정
     }
     defaultConfig {
         applicationId "com.knu.fishdic"
@@ -20,7 +20,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -40,11 +41,7 @@ dependencies { //의존성
     //implementation 'gun0912.ted:tedpermission:2.2.3'
 
     implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.navigation:navigation-fragment:2.3.5'
-    implementation 'androidx.navigation:navigation-ui:2.3.5'
-    implementation 'androidx.navigation:navigation-dynamic-features-fragment:2.3.5'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

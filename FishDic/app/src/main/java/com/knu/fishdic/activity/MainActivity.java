@@ -94,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
             this.drawerLayout.openDrawer(drawerView); //네비게이션 메뉴 출력
         });
 
+        //네비게이션 메뉴에 대한 클릭 리스너
+        this.drawerView.setOnClickListener(v -> {
+            //do nothing (네비게이션 메뉴 뒤의 버튼에 대한 상호작용 방지)
+        });
+
         //메뉴 네비게이션 설정 클릭 리스너
         this.innerNavigation_settings_toolBar.setOnClickListener(v -> {
             Intent intent = new Intent(FishDic.globalContext, SettingsActivity.class);

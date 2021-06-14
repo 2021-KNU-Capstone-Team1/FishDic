@@ -89,7 +89,7 @@
         </RelativeLayout>
 
         <!-- 라이센스 그룹박스 -->
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -104,24 +104,36 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:padding="20dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/nifs"
-                    android:visibility="visible" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/nifs_info"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/black"
-                    android:textSize="9sp" />
 
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:padding="20dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/nifs"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nifs_info"
+                        android:textColor="@color/black"
+                        android:textSize="9sp" />
+
+                </androidx.appcompat.widget.Toolbar>
+
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
@@ -132,13 +144,12 @@
                     android:visibility="visible" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
                     android:text="@string/tflite_info"
-                    android:textAlignment="textStart"
                     android:textColor="@color/black"
                     android:textSize="9sp" />
+                </androidx.appcompat.widget.Toolbar>
 
             </LinearLayout>
 
