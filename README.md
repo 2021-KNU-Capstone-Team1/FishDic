@@ -1,17 +1,16 @@
 # FishDic
 <br></br>
-<p align="center"><img src="./¸®¼Ò½º/Logo.png"><br></br></p>
-<b>(2021 Kangwon National University Department of Computer Science Capstone Design Team 1)</b><br>
+<p align="center"><img src="./ë¦¬ì†ŒìŠ¤/Logo.png"><br></br></p>
+<p align="center"><b>(2021 Kangwon National University Department of Computer Science Capstone Design Team 1)</b><br></p>
 
 ---
 ## < Project Structure Information >
-- /FishDic : ¾Èµå·ÎÀÌµå ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ÇÁ·ÎÁ§Æ® µð·ºÅä¸®
-- /¸®¼Ò½º : ¾Û¿¡¼­ »ç¿ë ÇÒ ÀÌ¹ÌÁö È¤Àº ±âÅ¸ ¸®¼Ò½º ÆÄÀÏµéÀ» ÀúÀåÇÏ´Â µð·ºÅä¸®
-- /¼­¹ö : ¼­¹ö¿¡¼­ °ü¸®µÇ´Â ¿ä¼ÒµéÀ» À§ÇÑ µð·ºÅä¸®
-- /¼³°è : ÇÁ·ÎÁ§Æ® ¼³°è ÀÛ¾÷¿ë µð·ºÅä¸®
+- /FishDic : ì•ˆë“œë¡œì´ë“œ ì• í”Œë¦¬ì¼€ì´ì…˜ í”„ë¡œì íŠ¸ ë””ë ‰í† ë¦¬
+- /ë¦¬ì†ŒìŠ¤ : ì•±ì—ì„œ ì‚¬ìš© í•  ì´ë¯¸ì§€ í˜¹ì€ ê¸°íƒ€ ë¦¬ì†ŒìŠ¤ íŒŒì¼ë“¤ì„ ì €ìž¥í•˜ëŠ” ë””ë ‰í† ë¦¬
+- /ì„œë²„ : ì„œë²„ì—ì„œ ê´€ë¦¬ë˜ëŠ” ìš”ì†Œë“¤ì„ ìœ„í•œ ë””ë ‰í† ë¦¬
+- /ì„¤ê³„ : í”„ë¡œì íŠ¸ ì„¤ê³„ ìž‘ì—…ìš© ë””ë ‰í† ë¦¬
 
 ---
-
 ## < For What & How it works >
 
 
@@ -24,7 +23,7 @@
 
 ---
 ## < System Requirement >
- <b>1) ¼­¹ö Á¤º¸</b>
+ <b>1) ì„œë²„ ì •ë³´</b>
 
 | Hardware | Information |
 |:---|:---|
@@ -44,7 +43,7 @@
 | OpenCV | 3.4.8 |
 
 <br></br>
-<b>2) Å¬¶óÀÌ¾ðÆ® ¿ä±¸»çÇ×</b>
+<b>2) í´ë¼ì´ì–¸íŠ¸ ìš”êµ¬ì‚¬í•­</b>
 
 | Client | Requirement |
 |:---|:---|
@@ -53,11 +52,11 @@
 
 ---
 ## < License >
-<img src="./¸®¼Ò½º/nifs.jpg" width="223" height="60"><br></br>
-¾î·ù Á¤º¸ ¹× ±Ý¾î±â Á¤º¸´Â ±¹¸³¼ö»ê°úÇÐ¿ø¿¡¼­ Á¦°øÇÏ´Â ÀÚ·á¸¦ ¹ÙÅÁÀ¸·Î Á¦ÀÛÇÏ¿´´Ù.
+<img src="./ë¦¬ì†ŒìŠ¤/nifs.jpg" width="223" height="60"><br></br>
+ì–´ë¥˜ ì •ë³´ ë° ê¸ˆì–´ê¸° ì •ë³´ëŠ” êµ­ë¦½ìˆ˜ì‚°ê³¼í•™ì›ì—ì„œ ì œê³µí•˜ëŠ” ìžë£Œë¥¼ ë°”íƒ•ìœ¼ë¡œ ì œìž‘í•˜ì˜€ë‹¤.
 
-<img src="./¸®¼Ò½º/tflite.png" width="223" height="126"><br></br>
-¾î·ù ÆÇº° ¸ðµ¨ Á¦ÀÛ ½Ã¿¡ Tensorflow¿¡¼­ Á¦°øÇÏ´Â Keras¸¦ ÀÌ¿ëÇÏ¿´´Ù.<br>
-¾î·ù ÆÇº° ½Ã¿¡ Tensorflow¿¡¼­ Á¦°øÇÏ´Â TFLite ¸ðµâÀ» ÀÌ¿ëÇÏ¿´´Ù.
+<img src="./ë¦¬ì†ŒìŠ¤/tflite.png" width="223" height="126"><br></br>
+ì–´ë¥˜ íŒë³„ ëª¨ë¸ ì œìž‘ ì‹œì— Tensorflowì—ì„œ ì œê³µí•˜ëŠ” Kerasë¥¼ ì´ìš©í•˜ì˜€ë‹¤.<br>
+ì–´ë¥˜ íŒë³„ ì‹œì— Tensorflowì—ì„œ ì œê³µí•˜ëŠ” TFLite ëª¨ë“ˆì„ ì´ìš©í•˜ì˜€ë‹¤.
 <br></br>
 <b>Copyright 2021. "2021-KNU-Capstone-Team1" All Rights Reserved.</b><br></br>
