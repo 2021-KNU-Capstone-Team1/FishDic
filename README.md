@@ -1,6 +1,6 @@
 # FishDic
 <br></br>
-<img src="./리소스/Logo.png"><br></br>
+<p align="center"><img src="./리소스/Logo.png"><br></br></p>
 <b>(2021 Kangwon National University Department of Computer Science Capstone Design Team 1)</b><br>
 
 ---
@@ -53,11 +53,11 @@
 
 ---
 ## < License >
-<b>Copyright 2021. "2021-KNU-Capstone-Team1" All Rights Reserved.</b><br></br>
-
 <img src="./리소스/nifs.jpg" width="223" height="60"><br></br>
 어류 정보 및 금어기 정보는 국립수산과학원에서 제공하는 자료를 바탕으로 제작하였다.
 
 <img src="./리소스/tflite.png" width="223" height="126"><br></br>
 어류 판별 모델 제작 시에 Tensorflow에서 제공하는 Keras를 이용하였다.<br>
 어류 판별 시에 Tensorflow에서 제공하는 TFLite 모듈을 이용하였다.
+<br></br>
+<b>Copyright 2021. "2021-KNU-Capstone-Team1" All Rights Reserved.</b><br></br>
