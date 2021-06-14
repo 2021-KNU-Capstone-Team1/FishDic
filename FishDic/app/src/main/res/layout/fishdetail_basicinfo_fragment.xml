@@ -14,7 +14,7 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/icon_96x96" />
+        android:src="@drawable/photo_coming_soon_600x600" />
 
     <TextView
         android:layout_width="wrap_content"

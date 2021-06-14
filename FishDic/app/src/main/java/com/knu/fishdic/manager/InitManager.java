@@ -87,8 +87,8 @@ public class InitManager {
         if (bannerImagesCount > 0) { //배너 이미지 존재 시
             FishDic.bannerImages = new Bitmap[bannerImagesCount];
             for (int index = 0; index < bannerImagesCount; index++) {
-
                 FileInputStream fileInputStream;
+
                 try {
                     fileInputStream = new FileInputStream(bannerImagesList[index]);
                     byte[] buffer = new byte[fileInputStream.available()];

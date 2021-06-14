@@ -299,13 +299,27 @@ public class UpdateManager {
 
                 response = request.executeForString();
                 if (response.isSuccess()) {
-                    String[] bannerImagesList = response.getResult().split("\r\n"); //서버의 배너 이미지 목록 (줄바꿈 문자로 분리)
+                    String[] serverBannerImagesList = response.getResult().split("\r\n"); //서버의 배너 이미지 목록 (줄바꿈 문자로 분리)
 
-                    for (int index = 0; index < bannerImagesList.length; index++) {
-                        Log.d("bannerImageList[" + index + "]", bannerImagesList[index]);
+                    /***
+                     * 1) 로컬의 오래 된 기존 배너 이미지들 모두 삭제
+                     * 2) 서버로부터 최신 배너 이미지들 다운로드
+                     * ***/
 
-                        ANRequest subRequest = AndroidNetworking //서버로부터 최신 배너 이미지들 다운로드
-                                .download(updateServer + bannerImagesList[index], FishDic.BANNER_IMAGES_PATH, bannerImagesList[index])
+                    File[] localBannerImagesList = dir.listFiles((dir1, name) -> {
+                        //버전 관리 파일 제외한 모든 파일만 허용
+                        return !name.matches(FishDic.VERSION_FILE_NAME);
+                    }); //배너 이미지 목록
+
+                    for (int index = 0; index < localBannerImagesList.length; index++) { //로컬의 오래 된 기존 배너 이미지들 모두 삭제
+                        localBannerImagesList[index].delete();
+                    }
+
+                    for (int index = 0; index < serverBannerImagesList.length; index++) {  //서버로부터 최신 배너 이미지들 다운로드
+                        Log.d("bannerImageList[" + index + "]", serverBannerImagesList[index]);
+
+                        ANRequest subRequest = AndroidNetworking
+                                .download(updateServer + serverBannerImagesList[index], localTargetPath, serverBannerImagesList[index])
                                 .doNotCacheResponse()
                                 .build()
                                 .setDownloadProgressListener((bytesDownloaded, totalBytes) -> {
