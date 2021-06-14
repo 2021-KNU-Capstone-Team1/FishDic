@@ -24,7 +24,7 @@ import okhttp3.Response;
 
 public class UpdateManager {
     private static final String PUBLIC_DB_SERVER = "http://fishdic.asuscomm.com/DB/";
-    private static final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/Model/";
+    private static final String PUBLIC_MODEL_SERVER = "http://fishdic.asuscomm.com/model/";
     private static final String PUBLIC_BANNER_SERVER = "http://fishdic.asuscomm.com/banner/";
     private static final String REQUEST_BANNERLIST = "request_bannerlist.php"; //배너 목록 요청
 
