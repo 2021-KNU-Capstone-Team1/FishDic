@@ -1,6 +1,6 @@
 # FishDic
 <br></br>
-<p align="center"><img src="./리소스/Logo.png"><br></br></p>
+<p align="center"><img src="./리소스/Logo.png"></p>
 <p align="center"><b>(2021 Kangwon National University Department of Computer Science Capstone Design Team 1)</b><br></p>
 
 ---
