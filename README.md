@@ -10,11 +10,6 @@
 - ./서버 : 서버에서 관리되는 요소들을 위한 디렉토리
 - ./설계 : 프로젝트 설계 작업용 디렉토리
 
----
-## < UML Class Diagram >
-<p align="center"><img src="./설계/class_diagram.png"></p>
-
----
 ## < For What & How it works >
 
 
