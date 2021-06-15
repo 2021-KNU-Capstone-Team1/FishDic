@@ -11,6 +11,10 @@
 - ./설계 : 프로젝트 설계 작업용 디렉토리
 
 ---
+## < UML Class Diagram >
+<p align="center"><img src="./설계/class_diagram.png"></p>
+
+---
 ## < For What & How it works >
 
 
