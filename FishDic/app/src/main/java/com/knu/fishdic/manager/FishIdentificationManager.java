@@ -34,7 +34,7 @@ public class FishIdentificationManager {
     public final String SEND_FEEDBACK = "send_feedback.php";
     public final String FEEDBACK_KEY = "Gh94K7572e503WjsiiV6dQZjQHea2126";
 
-    private final int NOTIFICATION_ID = 1; //알림 아이디
+    //private final int NOTIFICATION_ID = 1; //알림 아이디
 
     public FishIdentificationManager() {
         this.allocateLocalModelVersion();

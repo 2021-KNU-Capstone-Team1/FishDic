@@ -26,7 +26,7 @@ public class DBManager extends SQLiteOpenHelper {
     public static final String TOTAL_SPECIAL_PROHIBIT_ADMIN_COUNT_KEY = "totalSpecialProhibitAdminCountKey"; //전체 특별 금지행정의 수를 위한 키 값
     public static final String QUERY_RESULT_KEY = "queryResultKey"; //쿼리 결과를 위한 키 값
 
-    private final int NOTIFICATION_ID = 0; //알림 아이디
+    //private final int NOTIFICATION_ID = 0; //알림 아이디
 
     public enum FISH_DATA_TYPE { //어류 데이터 타입 정의
         ALL_FISH, //모든 어류

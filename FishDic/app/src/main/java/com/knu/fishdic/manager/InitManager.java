@@ -14,7 +14,7 @@ import java.io.InputStream;
 // 앱 초기화를 위한 InitManager 정의
 
 public class InitManager {
-    private final int NOTIFICATION_ID = 2; //알림 아이디
+    //private final int NOTIFICATION_ID = 2; //알림 아이디
     public static boolean isAllComponentsInitialized = false; //모든 구성요소 초기화 작업 수행여부
 
     public static void initAllComponents() { //모든 구성요소 초기화
