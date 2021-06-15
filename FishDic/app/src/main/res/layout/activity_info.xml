@@ -60,7 +60,7 @@
                     android:text="@string/copyright"
                     android:textAlignment="center"
                     android:textColor="@color/logo"
-                    android:textSize="10sp" />
+                    android:textSize="11sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -107,43 +107,48 @@
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_margin="20dp"
                     android:visibility="visible">
 
                     <ImageView
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:adjustViewBounds="true"
                         android:padding="20dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/nifs"
                         android:visibility="visible" />
 
-                  <WebView
-                      android:id="@+id/info_nifs_webView"
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"></WebView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/nifs_info"
+                        android:textColor="@color/black"
+                        android:textSize="9sp" />
 
                 </androidx.appcompat.widget.Toolbar>
-
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_margin="20dp"
                     android:visibility="visible">
 
                     <ImageView
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:adjustViewBounds="true"
                         android:padding="20dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/tflite"
                         android:visibility="visible" />
 
-                    <WebView
-                        android:id="@+id/info_tflite_webView"
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></WebView>
+                        android:layout_height="match_parent"
+                        android:text="@string/tflite_info"
+                        android:textColor="@color/black"
+                        android:textSize="9sp" />
                 </androidx.appcompat.widget.Toolbar>
 
             </LinearLayout>

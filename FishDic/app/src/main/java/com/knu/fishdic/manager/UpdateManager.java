@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import okhttp3.Response;
 
@@ -164,8 +165,7 @@ public class UpdateManager {
                     BufferedReader localTargetVersionReader = new BufferedReader(new FileReader(localTargetVersionFile));
                     localTargetVersion = Integer.parseInt(localTargetVersionReader.readLine());
                     localTargetVersionReader.close();
-                } else { //로컬 타겟 대상이 존재하지 않을 시 다운로드 받은 서버의 타겟 대상 버전 관리 파일을 로컬 타겟 대상의 버전 파일로 이동 및 초기 상태 반환
-                    Files.move(serverTargetVersionFile.toPath(), Paths.get(localTargetPath + FishDic.VERSION_FILE_NAME));
+                } else { //로컬 타겟 대상이 존재하지 않을 시 초기 상태 반환
                     return VERSION_STATE.INIT;
                 }
 
@@ -256,6 +256,20 @@ public class UpdateManager {
             dir.mkdir();
         }
 
+        File serverTargetVersionFile = new File(FishDic.CACHE_PATH + FishDic.VERSION_FILE_NAME); //서버로부터 업데이트 된 타겟 버전 파일
+        if (!serverTargetVersionFile.exists())
+            try {
+                throw new Exception("Integrity ERR");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        try { //서버로부터 업데이트 된 타겟 버전 관리 파일을 로컬 타겟 대상의 버전 관리 파일로 이동 (Overwrite)
+            Files.move(serverTargetVersionFile.toPath(), Paths.get(localTargetPath + FishDic.VERSION_FILE_NAME), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ANRequest request; //요청
         ANResponse<String> response; //결과
         switch (currentUpdateTarget) { //서버로부터 업데이트 수행
@@ -276,16 +290,9 @@ public class UpdateManager {
                     Log.d("Server Download", "body : " + okHttpResponse.body().toString());
                     Log.d("Server Download", "HTTP Status Code : " + okHttpResponse.code());
 
-                    File serverTargetVersionFile = new File(localTargetPath + FishDic.VERSION_FILE_NAME); //서버로부터 업데이트 된 타겟 버전 파일
-                    if (!serverTargetVersionFile.exists())
-                        try {
-                            throw new Exception("Integrity ERR");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
                 } else { //다운로드 오류 시
                     ANError error = response.getError();
+                    serverTargetVersionFile.delete(); //다음 업데이트를 위해 삭제
                     Log.d("Server Download ERR", error.getMessage());
 
                     copyFromAssets(currentUpdateTarget);
@@ -334,11 +341,13 @@ public class UpdateManager {
 
                         } else { //다운로드 오류 시
                             ANError error = subResponse.getError();
+                            serverTargetVersionFile.delete(); //다음 업데이트를 위해 삭제
                             Log.e("Server Download ERR", error.getMessage());
                         }
                     }
                 } else {
                     ANError error = response.getError();
+                    serverTargetVersionFile.delete(); //다음 업데이트를 위해 삭제
                     Log.e("Request Banner List ERR", error.getMessage());
                 }
                 break;
