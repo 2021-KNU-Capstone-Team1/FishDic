@@ -1,1 +1,2 @@
-*.html linguist-vendored # HTML 파일 무시
+ # HTML 파일 무시
+*.html linguist-vendored
