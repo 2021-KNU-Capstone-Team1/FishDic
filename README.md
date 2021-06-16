@@ -33,18 +33,19 @@
 ---
 ## < Demo & Screenshot >
 
-<img src="./설계/캡처/캡처.PNG" alt="스플래시 스크린"/>
-<img src="./설계/캡처/캡처1.PNG" alt="사이드 메뉴"/>
-<img src="./설계/캡처/캡처2.PNG" alt="도감"/>
-<img src="./설계/캡처/캡처3.PNG" alt="검색"/>
-<img src="./설계/캡처/캡처4.PNG" alt="상세정보"/>
-<img src="./설계/캡처/캡처5.PNG" alt="이달의 금어기"/>
-<img src="./설계/캡처/캡처6.PNG" alt="금지 행정정보"/>
-<img src="./설계/캡처/캡처7.PNG" alt="어류판별1"/>
-<img src="./설계/캡처/캡처8.PNG" alt="어류판별2"/>
-<img src="./설계/캡처/캡처9.PNG" alt="어류판별 결과"/>
-<img src="./설계/캡처/캡처10.PNG" alt="어류판별 결과 상세정보"/>
-<img src="./설계/캡처/캡처11.PNG" alt="이용가이드"/>
+<img src="./설계/캡처/캡처.PNG" alt="스플래시 스크린" width="300" height="622"/>
+<img src="./설계/캡처/캡처1.PNG" alt="사이드 메뉴" width="300" height="622"/>
+<img src="./설계/캡처/캡처2.PNG" alt="메인화면" width="300" height="622"/>
+<img src="./설계/캡처/캡처3.PNG" alt="도감" width="300" height="622"/>
+<img src="./설계/캡처/캡처4.PNG" alt="검색" width="300" height="622"/>
+<img src="./설계/캡처/캡처5.PNG" alt="상세정보" width="300" height="622"/>
+<img src="./설계/캡처/캡처6.PNG" alt="이달의 금어기" width="300" height="622"/>
+<img src="./설계/캡처/캡처7.PNG" alt="금지 행정정보" width="300" height="622"/>
+<img src="./설계/캡처/캡처8.PNG" alt="어류판별1" width="300" height="622"/>
+<img src="./설계/캡처/캡처9.PNG" alt="어류판별2"" width="300" height="622"/>
+<img src="./설계/캡처/캡처10.PNG" alt="어류판별 결과" width="300" height="622"/>
+<img src="./설계/캡처/캡처11.PNG" alt="어류판별 결과 상세정보" width="300" height="622"/>
+<img src="./설계/캡처/캡처12.PNG" alt="이용가이드" width="300" height="622"/>
 
 ---
 ## < System Requirement >
