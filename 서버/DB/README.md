@@ -2,7 +2,7 @@
 <b>(서버 어류 DB 관리를 위한 디렉토리)</b><br>
 
 ---
-## < 파일 설명 >
+## < Directory Structure Information >
     ./images : 어류 DB의 각 어류에 대하여 이미지 갱신을 위한 어류 이미지 저장 디렉토리
     ./작업용 : 어류 DB 구축 시 사용 한 참고 데이터들
 

@@ -2,7 +2,7 @@
 <b>(서버에서 관리되는 요소들을 위한 디렉토리)</b><br>
 
 ---
-## < 파일 설명 >
+## < Directory Structure Information >
     ./banner : 서버 배너 이미지 디렉토리
     ./DB : 서버 어류 DB 디렉토리
     ./feedback : 서버로 전송 될 피드백 데이터 저장 디렉토리
