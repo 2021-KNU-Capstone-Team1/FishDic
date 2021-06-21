@@ -143,6 +143,12 @@
 <p align="center"><img src="./설계/캡처/캡처11.PNG" alt="어류판별 - 결과 상세정보" width="300" height="622"/></p>
 <p align="center"><b><u>Figure 19) 어류판별 - 결과 상세정보</u></b></p>
 
+<p align="center"><img src="./설계/캡처/캡처13.PNG" alt="어류판별 - 피드백 데이터"/></p>
+<p align="center"><b><u>Figure 20) 어류판별 - 피드백 데이터</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처14.PNG" alt="어류판별 - 피드백 데이터 내용"/></p>
+<p align="center"><b><u>Figure 21) 어류판별 - 피드백 데이터 내용</u></b></p>
+
 ---
 ## < System Requirement >
 
