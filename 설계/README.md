@@ -1,5 +1,5 @@
 # 설계
-<b>(Image Processing을 이용한 어류 정보 제공 시스템 구축을 위한 설계)</b><br>
+<b>(Image Processing을 이용한 어류 정보 제공 솔루션 설계)</b><br>
 
 ---
 ## < DB Design >
@@ -7,8 +7,10 @@
 
 ---
 ## < UML Design >
-<p align="center"><img src="./UML_Design.png"></p>
-
+<p align="center"> <img src="./UML_onlyusecase.png"></p>
+<p align="center"> <img src=".//UML_전체_조회.png"></p>
+<p align="center"> <img src="./UML_금어기_조회.png"></p>
+<p align="center"> <img src="./UML_판별.png"></p>
 ---
 
 ## < Class Diagram >

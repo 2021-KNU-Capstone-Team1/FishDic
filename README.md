@@ -2,8 +2,8 @@
 <br></br>
 <p align="center"><img src="./리소스/Logo.png"></p>
 
-#### <p align="center"> Image Processing을 이용한 어류 정보 제공 시스템</p>
-##### <p align="center">2021 Kangwon National University<br>Dept. of Computer Science & Engineering Capstone Design Team 1</p>
+#### <p align="center">(Image Processing을 이용한 어류 정보 제공 솔루션)</p>
+##### <p align="center">2021 Kangwon National University<br>Dept. of Computer Science & Engineering<br>Capstone Design Team 1</p>
 
 ---
 ## < Directory Structure Information >
@@ -19,17 +19,17 @@
 
 <p align="center"> <img src="./설계/비교-방어,부시리.png"></p>
 
-<p align="center"><b><u>그림 1) 방어와 부시리</u></b></p>
+<p align="center"><b><u>Figure 1) 방어와 부시리</u></b></p>
 
 <p align="center"> <img src="./설계/비교-가자미류.png"></p>
 
-<p align="center"><b><u>그림 2) 가자미류</u></b></p>
+<p align="center"><b><u>Figure 2) 가자미류</u></b></p>
 
 <p align="center"> <img src="./설계/비교-쭈꾸미,낙지.png"></p>
 
-<p align="center"><b><u>그림 3) 쭈꾸미와 낙지</u></b></p>
+<p align="center"><b><u>Figure 3) 쭈꾸미와 낙지</u></b></p>
 
-    1-1) 낚시를 하거나 어류를 구매하는 경우 전문가가 아닌 일반인들은 위 그림 1), 그림 2), 그림 3) 과 같이 각 어류의 외형을 보고 구분하는 것은 어려운 일이다.
+    1-1) 낚시를 하거나 어류를 구매하는 경우 전문가가 아닌 일반인들은 위 Figure 1) 방어와 부시리, Figure 2) 가자미류, Figure 3) 쭈꾸미와 낙지와 같이 각 어류의 외형을 보고 구분하는 것은 어려운 일이다.
     따라서, 어류에 대해서 잘 모르는 일반인들이 수산시장 등에서 물고기를 구매하는 경우 잘 모르고 비슷한 종류의 물고기를 구매하거나 속여파는 사기행위가 발생 할 수 있다.
     
     1-2) 금어기와 금지체장은 매년 해양수산부에 의해서 변경되기 때문에 낚시 전문가도 직접 찾아보지 않는다면 틀리기 쉽다.
@@ -51,17 +51,29 @@
 <b>3. 작동 방식</b>
 <p align="center"> <img src="./설계/UML_onlyusecase.png"></p>
 
-<p align="center"><b><u>그림 4) 사용 사례 분석</u></b></p>
+<p align="center"><b><u>Figure 4) 사용 사례 분석</u></b></p>
 
-    작동 방식은 위 그림 4) 사용 사례 분석과 같다.
+    전체적인 작동 방식은 위 Figure 4) 사용 사례 분석과 같다.
 
-    3-1) 사용자는 어류 정보(전체 어류 정보 조회 혹은 이달의 금어기 정보)를 조회 할 수 있으며, 어류 이름 검색을 추가적으로 제공하여, 어류 이름에 해당되는 어류의 정보를 조회 할 수 있다.
-    
-    3-2) 사용자는 어류 판별 기능을 통해 사진을 입력하여 해당 사진과 일치 혹은 유사한 모든 어류 정보를 조회 할 수 있다.
-    
-    3-3) 사용자는 조회 된 각 어류에 대해 상세 어류 정보(이름, 학명, 생물분류, 개통분류, 서식지, 분포, 형태, 몸길이, 이미지, 금어기 정보)를 조회 할 수 있다.
-    
-    3-4) 어류 판별 시 높은 정확성(Accuracy)을 가지는 정보를 제공하기 위하여 피드백 데이터를 이용, 지속적인 기능 개선을 제공한다.
+<p align="center"> <img src="./설계/UML_전체_조회.png"></p>
+
+<p align="center"><b><u>Figure 5) 어류 도감 조회</u></b></p>
+
+<p align="center"> <img src="./설계/UML_금어기_조회.png"></p>
+
+<p align="center"><b><u>Figure 6) 이달의 금어기 조회</u></b></p>
+
+    위 Figure 5) 어류 도감 조회 및 Figure 6) 이달의 금어기 조회에 따라, 사용자는 어류 정보(전체 어류 정보 조회 혹은 이달의 금어기 정보)를 조회 할 수 있으며, 
+    어류 이름 검색을 추가적으로 제공하여, 어류 이름에 해당되는 어류의 정보를 조회 할 수 있다.
+    해당 어류 이름 검색의 질의 범위는 어류 도감 조회 혹은 이달의 금어기 조회에서 조회된 어류 목록에 대해서만 적용된다. 
+    또한, 사용자는 조회 된 각 어류에 대해 상세 어류 정보(이름, 학명, 생물분류, 개통분류, 서식지, 분포, 형태, 몸길이, 이미지, 금어기 정보)를 조회 할 수 있다.
+
+<p align="center"> <img src="./설계/UML_판별.png"></p>
+
+<p align="center"><b><u>Figure 7) 어류 판별</u></b></p>
+
+    위 Figure 7) 어류 판별에 따라 사용자는 어류 판별 기능을 통해 사진을 입력하여 해당 사진과 일치 혹은 유사한 모든 어류 정보를 조회 할 수 있다.
+    어류 판별 시 높은 정확성(Accuracy)을 가지는 정보를 제공하기 위하여 피드백 데이터를 서버로 전송하여, 지속적인 기능 개선을 제공한다.
 
     - 피드백 데이터 : 사용자가 어류 판별 기능 이용 시 입력 한 이미지와 해당 이미지에 대한 판별 결과 데이터
 
