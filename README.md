@@ -49,17 +49,17 @@
     2-3) 본 솔루션의 제공되는 모든 기능에 대한 신뢰성(Reliability)을 위하여 서버와 연결이 불가능 한 극한의 상황에서도 모든 기능을 정상적으로 수행함을 목표로 한다.
 
 <b>3. 작동 방식</b>
-<p align="center"> <img src="./설계/UML_onlyusecase.png"></p>
+<p align="center"><img src="./설계/UML_onlyusecase.png"></p>
 
 <p align="center"><b><u>Figure 4) 사용 사례 분석</u></b></p>
 
     전체적인 작동 방식은 위 Figure 4) 사용 사례 분석과 같다.
 
-<p align="center"> <img src="./설계/UML_전체_조회.png"></p>
+<p align="center"><img src="./설계/UML_전체_조회.png"></p>
 
 <p align="center"><b><u>Figure 5) 어류 도감 조회</u></b></p>
 
-<p align="center"> <img src="./설계/UML_금어기_조회.png"></p>
+<p align="center"><img src="./설계/UML_금어기_조회.png"></p>
 
 <p align="center"><b><u>Figure 6) 이달의 금어기 조회</u></b></p>
 
@@ -107,12 +107,41 @@
 ---
 ## < Demo & Screenshot >
 
-<img src="./설계/캡처/캡처.PNG" alt="스플래시 스크린" width="300" height="622"/> <img src="./설계/캡처/캡처1.PNG" alt="사이드 메뉴" width="300" height="622"/>
-<img src="./설계/캡처/캡처2.PNG" alt="메인화면" width="300" height="622"/> <img src="./설계/캡처/캡처3.PNG" alt="도감" width="300" height="622"/>
-<img src="./설계/캡처/캡처4.PNG" alt="검색" width="300" height="622"/> <img src="./설계/캡처/캡처5.PNG" alt="상세정보" width="300" height="622"/>
-<img src="./설계/캡처/캡처6.PNG" alt="이달의 금어기" width="300" height="622"/> <img src="./설계/캡처/캡처7.PNG" alt="금지 행정정보" width="300" height="622"/>
-<img src="./설계/캡처/캡처8.PNG" alt="어류판별1" width="300" height="622"/> <img src="./설계/캡처/캡처9.PNG" alt="어류판별2" width="300" height="622"/>
-<img src="./설계/캡처/캡처10.PNG" alt="어류판별 결과" width="300" height="622"/> <img src="./설계/캡처/캡처11.PNG" alt="어류판별 결과 상세정보" width="300" height="622"/>
+<p align="center"><img src="./설계/캡처/캡처.PNG" alt="스플래시 화면" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 8) 스플래시 화면</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처2.PNG" alt="메인화면" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 9) 메인 화면</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처1.PNG" alt="사이드 메뉴" width="300" height="622"/><p>
+<p align="center"><b><u>Figure 10) 사이드 메뉴</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처3.PNG" alt="도감" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 11) 도감</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처4.PNG" alt="도감 - 검색" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 12) 도감 - 검색</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처5.PNG" alt="도감 - 상세정보" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 13) 도감 - 상세정보</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처6.PNG" alt="이달의 금어기" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 14) 이달의 금어기</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처7.PNG" alt="이달의 금어기 - 금지 행정정보" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 15) 이달의 금어기 - 금지 행정정보</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처8.PNG" alt="어류 판별 - 이미지 선택" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 16) 어류 판별 - 이미지 선택</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처9.PNG" alt="어류 판별 - 이미지 조절" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 17) 어류 판별 - 이미지 조절</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처10.PNG" alt="어류 판별 - 결과" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 18) 어류 판별 - 결과</u></b></p>
+
+<p align="center"><img src="./설계/캡처/캡처11.PNG" alt="어류판별 - 결과 상세정보" width="300" height="622"/></p>
+<p align="center"><b><u>Figure 19) 어류판별 - 결과 상세정보</u></b></p>
 
 ---
 ## < System Requirement >
@@ -121,8 +150,6 @@
 |:---|:---|
 | Target Framework | Android Pie (9.0, API 28) or above |
 | Permissions | 1) 공유 저장공간의 콘텐츠 읽기<br>2) 공유 저장공간의 콘텐츠 수정 또는 삭제<br>3) 휴대전화 상태 및 ID 읽기<br>4) 사진과 동영상 찍기<br>5) 완전한 네트워크 접근<br>6) 휴대전화가 절전 모드로 전환되지 않도록 설정 |
-
-
 
 ---
 ## < License >
