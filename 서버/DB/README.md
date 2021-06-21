@@ -1,5 +1,5 @@
 # DB
-<b>(서버 어류 DB 관리를 위한 디렉토리)</b><br>
+<b>(서버 어류 DB를 위한 디렉토리)</b><br>
 
 ---
 ## < Directory Structure Information >
