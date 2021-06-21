@@ -3,7 +3,7 @@
 <p align="center"><img src="./리소스/Logo.png"></p>
 
 #### <p align="center">(Image Processing을 이용한 어류 정보 제공 솔루션)</p>
-##### <p align="center">2021 Kangwon National University<br>Dept. of Computer Science & Engineering<br>Capstone Design Team 1</p>
+##### <p align="center">2021 Kangwon National University Dept. of Computer Science & Engineering Capstone Design Team 1</p>
 
 ---
 ## < Directory Structure Information >

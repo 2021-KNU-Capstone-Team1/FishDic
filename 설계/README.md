@@ -2,6 +2,10 @@
 <b>(Image Processing을 이용한 어류 정보 제공 솔루션 설계)</b><br>
 
 ---
+## < User Interface Design >
+<p align="center"><img src="./UI_Design.png"></p>
+
+---
 ## < DB Design >
 <p align="center"><img src="./DB_Design.png"></p>
 
