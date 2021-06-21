@@ -15,6 +15,7 @@
 <p align="center"> <img src=".//UML_전체_조회.png"></p>
 <p align="center"> <img src="./UML_금어기_조회.png"></p>
 <p align="center"> <img src="./UML_판별.png"></p>
+<p align="center"> <img src="./UML_sequence.png"></p>
 
 ---
 ## < Class Diagram >
