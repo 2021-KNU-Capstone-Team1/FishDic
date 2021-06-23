@@ -46,7 +46,7 @@ public class FishIdentificationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() { //하드웨어, 소프트웨어 back 키와 앱 내의 뒤로 가기 버튼을 위하여 현재 액티비티 종료 시 수행 할 작업 설정
-        FishDic.globalFishIdentificationRecyclerAdapter.clearItemItemList(); //원본 목록 초기화
+        FishDic.globalFishIdentificationRecyclerAdapter.clearItemList(); //원본 목록 초기화
 
         super.onBackPressed();
     }

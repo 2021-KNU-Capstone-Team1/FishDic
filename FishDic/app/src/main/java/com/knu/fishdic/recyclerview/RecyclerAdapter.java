@@ -183,7 +183,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         }
     }
 
-    public void clearItemItemList() { //원본 목록 초기화
+    public void clearItemList() { //원본 목록 초기화
         if (!this.itemList.isEmpty()) {
             this.itemList.clear();
         }
