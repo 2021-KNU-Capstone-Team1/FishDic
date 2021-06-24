@@ -15,7 +15,7 @@
 ---
 ## < For What & How it works >
 
-<b>1. 문제 인식</b>
+<b>1. 문제인식</b>
 
 <p align="center"> <img src="./설계/비교-방어,부시리.png"></p>
 
