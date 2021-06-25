@@ -24,8 +24,13 @@ define ('SITE_ROOT', realpath(dirname(__FILE__))); //서버 절대 경로
 
 $target_dir = "\\feedback\\";
 $target_dir = $target_dir . basename($_FILES[$KEY]['name']); //목적지 디렉토리의 업로드 될 파일의 전체 경로
+$uploaded_file_extension = strtolower(pathinfo($target_dir, PATHINFO_EXTENSION)); //업로드 된 파일의 확장자
 
-if($_FILES[$KEY]['size'] > 0 && $_FILES[$KEY]['size'] <= $MAX_UPLOAD_SIZE)
+if($uploaded_file_extension != "zip") //zip만 허용
+    exit();
+
+if($_FILES[$KEY]['size'] > 0 && 
+$_FILES[$KEY]['size'] <= $MAX_UPLOAD_SIZE)
 {
     if(move_uploaded_file(realpath($_FILES[$KEY]['tmp_name']), SITE_ROOT . $target_dir)) //임시 디렉토리에서 목적지 디렉토리로 이동
         echo "success";
