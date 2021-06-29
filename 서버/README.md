@@ -12,8 +12,8 @@
     
     .htaccess : 디렉토리 단위 웹 서버 설정 파일
     send_feedback.php : 서버로 피드백 데이터 전송을 위한 Server-Side PHP 스크립트
-    install to assets.cmd : DB, banner, model을 앱 디렉토리의 assets에 설치 위한 스크립트
-
+    install_to_assets.cmd : DB, banner, model을 앱 디렉토리의 assets에 설치 위한 스크립트
+    version_update.cmd : 버전 관리 파일 갱신 위한 스크립트
 ---
 ## < Server Information >
 | Hardware | Information |
