@@ -266,6 +266,7 @@ public class UpdateManager {
 
         try { //서버로부터 업데이트 된 타겟 버전 관리 파일을 로컬 타겟 대상의 버전 관리 파일로 이동 (Overwrite)
             Files.move(serverTargetVersionFile.toPath(), Paths.get(localTargetPath + FishDic.VERSION_FILE_NAME), StandardCopyOption.REPLACE_EXISTING);
+            serverTargetVersionFile = new File(localTargetPath + FishDic.VERSION_FILE_NAME); //다운로드 오류 시 삭제 위해 이동 된 경로로 재 할당
         } catch (IOException e) {
             e.printStackTrace();
         }
