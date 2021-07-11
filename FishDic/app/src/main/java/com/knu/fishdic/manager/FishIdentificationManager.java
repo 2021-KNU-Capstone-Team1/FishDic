@@ -33,7 +33,6 @@ public class FishIdentificationManager {
     public final String PUBLIC_FEEDBACK_SERVER = "http://fishdic.asuscomm.com/";
     public final String SEND_FEEDBACK = "send_feedback.php";
     public final String FEEDBACK_KEY = "Gh94K7572e503WjsiiV6dQZjQHea2126";
-
     //private final int NOTIFICATION_ID = 1; //알림 아이디
 
     public FishIdentificationManager() {
@@ -131,10 +130,10 @@ public class FishIdentificationManager {
 
         /***
          * < 전송 위한 피드백 데이터 예시 >
-         * 2021-06-03T08:59:32_a5f815c6de14843a.jpeg
-         * 2021-06-03T08:59:32_a5f815c6de14843a.txt
+         * 2021-06-03T085932_a5f815c6de14843a.jpeg
+         * 2021-06-03T085932_a5f815c6de14843a.txt
          * ---
-         * 2021-06-03T08:59:32_a5f815c6de14843a.zip
+         * 2021-06-03T085932_a5f815c6de14843a.zip
          ***/
 
         String androidId = Settings.Secure.getString(FishDic.globalContext.getContentResolver(), Settings.Secure.ANDROID_ID); //고유 사용자 식별을 위한 안드로이드 ID

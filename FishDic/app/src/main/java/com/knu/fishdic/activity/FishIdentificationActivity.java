@@ -40,7 +40,6 @@ public class FishIdentificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fishidentification);
 
         setComponentsInteraction();
-
         startCropImageActivity(); //이미지 Crop 작업 위한 액티비티 시작
     }
 
@@ -87,8 +86,9 @@ public class FishIdentificationActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) { //이미지 자르기 작업 완료 시
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result != null ? result.getUriContent() : null;
+                Uri resultUri = (result != null) ? result.getUriContent() : null;
                 ImageDecoder.Source src = ImageDecoder.createSource(getContentResolver(), resultUri);
 
                 try {
