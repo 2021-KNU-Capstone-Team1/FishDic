@@ -1,20 +1,20 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <Windows.h>
-#define _CRT_SECURE_NO_WARNINGS
 
 
 using namespace std;
 using namespace cv;
 
-Mat rotate(Mat src, double angle) //È¸Àü ÇÔ¼ö
+Mat rotate(Mat src, double angle) //íšŒì „ í•¨ìˆ˜
 {
 	Mat dst;
-	Point2f pt(src.cols / 2.0, src.rows / 2.0); //È¸Àü Áß½ÉÀ» ¿µ»óÀÇ Áß¾ÓÀ¸·ÎÇÔ
-	Mat r = getRotationMatrix2D(pt, angle, 1.0); //È¸Àü Çà·Ä °è»ê
-	warpAffine(src, dst, r, Size(src.cols, src.rows)); //¾îÆÄÀÎ º¯È¯ ¼öÇà
+	Point2f pt(src.cols / 2.0, src.rows / 2.0); //íšŒì „ ì¤‘ì‹¬ì„ ì˜ìƒì˜ ì¤‘ì•™ìœ¼ë¡œí•¨
+	Mat r = getRotationMatrix2D(pt, angle, 1.0); //íšŒì „ í–‰ë ¬ ê³„ì‚°
+	warpAffine(src, dst, r, Size(src.cols, src.rows)); //ì–´íŒŒì¸ ë³€í™˜ ìˆ˜í–‰
 	return dst;
 
 }
@@ -25,45 +25,45 @@ int main()
 	Mat resize_img;
 	Mat out_img_1;
 	Mat out_img_2;
-	string in_dir = "C:\\Users\\wook\\Desktop\\2Â÷\\ÇØ»ï\\"; //Å×½ºÆ® ÀÔ·Â µğ·ºÅÍ¸®
-	string out_dir = "C:\\Users\\wook\\Desktop\\2Â÷_Ãâ·Â\\ÇØ»ï\\"; //Å×½ºÆ® Ãâ·Â µğ·ºÅÍ¸®
+	string in_dir = "C:\\Users\\wook\\Desktop\\2ì°¨\\í•´ì‚¼\\"; //í…ŒìŠ¤íŠ¸ ì…ë ¥ ë””ë ‰í„°ë¦¬
+	string out_dir = "C:\\Users\\wook\\Desktop\\2ì°¨_ì¶œë ¥\\í•´ì‚¼\\"; //í…ŒìŠ¤íŠ¸ ì¶œë ¥ ë””ë ‰í„°ë¦¬
 	string name;
 	double angle = 0.0;
 	int j = 0;
-	int x = 590; //Çà
-	int y = 445; //¿­
-	//cout << "ÆÄÀÏÀ» ÀĞ¾î¿Ã µğ·ºÅÍ¸® °æ·Î¸¦ ÀÔ·ÂÇÏ¼¼¿ä. ex)C:\\Users\\....\\>>";
+	int x = 590; //í–‰
+	int y = 445; //ì—´
+	//cout << "íŒŒì¼ì„ ì½ì–´ì˜¬ ë””ë ‰í„°ë¦¬ ê²½ë¡œë¥¼ ì…ë ¥í•˜ì„¸ìš”. ex)C:\\Users\\....\\>>";
 	//cin >> in_dir;
-	//cout << "ÆÄÀÏÀ» Ãâ·ÂÇÒ µğ·ºÅÍ¸® °æ·Î¸¦ ÀÔ·ÂÇÏ¼¼¿ä. ex)C:\\users\\....\\>>";
+	//cout << "íŒŒì¼ì„ ì¶œë ¥í•  ë””ë ‰í„°ë¦¬ ê²½ë¡œë¥¼ ì…ë ¥í•˜ì„¸ìš”. ex)C:\\users\\....\\>>";
 	//cin >> out_dir;
-	vector<String> str; //ÆÄÀÏ ÀÌ¸§ ÀúÀåÇÒ º¤ÅÍ
+	vector<String> str; //íŒŒì¼ ì´ë¦„ ì €ì¥í•  ë²¡í„°
 	char buf[256];
 
-	glob(in_dir, str, false); //glob(Ã£À» ÆÄÀÏ °æ·Î, Ã£Àº ÆÄÀÏ °æ·Î, recuisive(T or F)
-		//T : Æú´õ ³» ÇÏÀ§ Æú´õ ¼Ó ±îÁö ÆÄÀÏÀ» Ã£À½
-		//F : Æú´õ ³» ÆÄÀÏÀ» Ã£À½
-	cout << "·Îµå °³¼ö : " << str.size() << endl;
+	glob(in_dir, str, false); //glob(ì°¾ì„ íŒŒì¼ ê²½ë¡œ, ì°¾ì€ íŒŒì¼ ê²½ë¡œ, recuisive(T or F)
+		//T : í´ë” ë‚´ í•˜ìœ„ í´ë” ì† ê¹Œì§€ íŒŒì¼ì„ ì°¾ìŒ
+		//F : í´ë” ë‚´ íŒŒì¼ì„ ì°¾ìŒ
+	cout << "ë¡œë“œ ê°œìˆ˜ : " << str.size() << endl;
 
-	if (str.size() == 0) //º¤ÅÍ¿¡ ¾Æ¹«·± µ¥ÀÌÅÍ°¡ ¾Èµé¾î°¬À» ¶§
+	if (str.size() == 0) //ë²¡í„°ì— ì•„ë¬´ëŸ° ë°ì´í„°ê°€ ì•ˆë“¤ì–´ê°”ì„ ë•Œ
 	{
-		cout << "ÀÌ¹ÌÁö°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.\n";
+		cout << "ì´ë¯¸ì§€ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.\n";
 	}
 
 		for (int i = 0; i < str.size(); i++)
 		{
-			img = imread(str[i], IMREAD_COLOR); //ÀÌ¹ÌÁö ÀĞ¾î¿À±â
-			resize(img, resize_img, Size(x, y), 0, 0, CV_INTER_LINEAR); //ÆÄÀÏ resize (¼±Çü º¸°£¹ı »ç¿ë)
+			img = imread(str[i], IMREAD_COLOR); //ì´ë¯¸ì§€ ì½ì–´ì˜¤ê¸°
+			resize(img, resize_img, Size(x, y), 0, 0, CV_INTER_LINEAR); //íŒŒì¼ resize (ì„ í˜• ë³´ê°„ë²• ì‚¬ìš©)
 
 			//out_img_1 = Labeling(resize_img, name);
-			for (angle = 0.0; angle < 360; angle += 5) //ÀÌ¹ÌÁö È¸Àü
+			for (angle = 0.0; angle < 360; angle += 5) //ì´ë¯¸ì§€ íšŒì „
 			{
-				sprintf_s(buf, sizeof(buf), "C:\\Users\\wook\\Desktop\\2Â÷_Ãâ·Â\\ÇØ»ï\\%d.jpg", j); //ÆÄÀÏÀúÀåÀ§ÇÑ Æ÷¸ä º¯°æ
-				//out_img_2 = rotate(out_img_1, angle); //ÀÌ¹ÌÁö È¸Àü
+				sprintf_s(buf, sizeof(buf), "C:\\Users\\wook\\Desktop\\2ì°¨_ì¶œë ¥\\í•´ì‚¼\\%d.jpg", j); //íŒŒì¼ì €ì¥ìœ„í•œ í¬ë©§ ë³€ê²½
+				//out_img_2 = rotate(out_img_1, angle); //ì´ë¯¸ì§€ íšŒì „
 				out_img_2 = rotate(resize_img, angle);
-				imwrite(buf, out_img_2); //ÀÌ¹ÌÁö ÀúÀå
+				imwrite(buf, out_img_2); //ì´ë¯¸ì§€ ì €ì¥
 				j++;
 			}
-			cout << i << "¹øÂ° ÀÌ¹ÌÁö »çÀÌÁîº¯°æ ¹× È¸Àü ¿Ï·á\n";
+			cout << i << "ë²ˆì§¸ ì´ë¯¸ì§€ ì‚¬ì´ì¦ˆë³€ê²½ ë° íšŒì „ ì™„ë£Œ\n";
 		}
 		return 0;
 	}
@@ -78,12 +78,12 @@ int main()
 //	cvtColor(src, img_gray, COLOR_BGR2GRAY);
 //
 //	Mat img_threshold;
-//	threshold(img_gray, img_threshold, 100, 255, THRESH_BINARY_INV); //ÀÌ¹ÌÁö ÀÌÁøÈ­
+//	threshold(img_gray, img_threshold, 100, 255, THRESH_BINARY_INV); //ì´ë¯¸ì§€ ì´ì§„í™”
 //
 //	Mat img_labels, stats, centroids;
 //	int numOfLables = connectedComponentsWithStats(img_threshold, img_labels, stats, centroids, 8, CV_32S);
 //
-//	// ·¹ÀÌºí¸µ °á°ú¿¡ »ç°¢Çü ±×¸®°í, ³Ñ¹ö Ç¥½ÃÇÏ±â
+//	// ë ˆì´ë¸”ë§ ê²°ê³¼ì— ì‚¬ê°í˜• ê·¸ë¦¬ê³ , ë„˜ë²„ í‘œì‹œí•˜ê¸°
 //	for (int j = 1; j < numOfLables; j++) {
 //		int area = stats.at<int>(j, CC_STAT_AREA);
 //		int left = stats.at<int>(j, CC_STAT_LEFT);
@@ -94,12 +94,12 @@ int main()
 //		if(width > 200 || height > 200 && left > 30 && top > 90 )
 //		{
 //			width = width + 30;
-//			rectangle(src, Point(left, top), Point(left + width, top + height), Scalar(0, 0, 255), 1); //Point(left, top) ½ÃÀÛÁ¡ ÁÂÇ¥ ,  Point(left + width, top + height) Á¾·áÁ¡ ÁÂÇ¥
+//			rectangle(src, Point(left, top), Point(left + width, top + height), Scalar(0, 0, 255), 1); //Point(left, top) ì‹œì‘ì  ì¢Œí‘œ ,  Point(left + width, top + height) ì¢…ë£Œì  ì¢Œí‘œ
 //
-//			putText(src, "Scomber japonicus", Point(left + 20, top + 20), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 0, 0), 1); //ÅØ½ºÆ® ¾²´Â°÷
+//			putText(src, "Scomber japonicus", Point(left + 20, top + 20), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 0, 0), 1); //í…ìŠ¤íŠ¸ ì“°ëŠ”ê³³
 //		}
 //		
 //	}
-//	//cout << "numOfLables : " << numOfLables - 1 << endl;	// ÃÖÁ¾ ³Ñ¹ö¸µ¿¡¼­ 1À» »©Áà¾ß ÇÔ
+//	//cout << "numOfLables : " << numOfLables - 1 << endl;	// ìµœì¢… ë„˜ë²„ë§ì—ì„œ 1ì„ ë¹¼ì¤˜ì•¼ í•¨
 //	return src;
 //}
