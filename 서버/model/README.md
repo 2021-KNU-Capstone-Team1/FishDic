@@ -26,5 +26,5 @@
     version : 로컬 버전 (클라이언트)과 비교하여 클라이언트 측의 모델 갱신 수행 위한 모델의 버전 관리 파일로서, 서버 측에서 모델 갱신 시 갱신 날짜를 기록한다.
 
 ---
-## < Current Model Accuracy & Loss Information >
+## < Model Accuracy & Loss Information >
 <p align="center"><img src="./model.png"></p>
