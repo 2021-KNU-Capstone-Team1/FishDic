@@ -170,4 +170,11 @@
     어류 판별 모델 제작 시에 Tensorflow에서 제공하는 Keras를 이용하였다.
     어류 판별 시에 Tensorflow에서 제공하는 TFLite 모듈을 이용하였다.
 
+---
+## < Awards>
+<a href="https://project.kangwon.ac.kr/index.php?mt=page&mp=4_1_1&mm=oxbbs&oxid=1&BID=790&cmd=view"><p align="center"><img src="./리소스/awards.PNG" ></p></a>
+- https://project.kangwon.ac.kr/index.php?mt=page&mp=4_1_1&mm=oxbbs&oxid=1&BID=790&cmd=view
+
+---
+
 <p align="center"><b>Copyright 2021. "2021-KNU-Capstone-Team1" All Rights Reserved.</b></p>
